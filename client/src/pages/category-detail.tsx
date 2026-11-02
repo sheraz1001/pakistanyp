@@ -71,6 +71,13 @@ export default function CategoryDetail() {
     enabled: !!category?.id
   });
 
+  // Main (top-level) categories don't hold businesses: their page lists the sub-categories instead.
+  const isMainCategory = !!category && (category.level === 1 || category.parentId === null || category.parentId === undefined);
+  const { data: allCategories = [] } = useQuery<any[]>({
+    queryKey: ['/api/categories'],
+    enabled: isMainCategory,
+  });
+
   // Get businesses in this category
   const { data: businessData, isLoading: businessesLoading, error: businessesError, refetch: retryBusinesses } = useQuery({
     queryKey: ['/api/businesses', {
@@ -79,7 +86,7 @@ export default function CategoryDetail() {
       provinceId: selectedProvince !== 'all' ? parseInt(selectedProvince) : undefined,
       localityId: selectedLocality !== 'all' ? parseInt(selectedLocality) : undefined,
     }],
-    enabled: !!category?.id
+    enabled: !!category?.id && !isMainCategory
   });
 
   // Get provinces and localities for filters
@@ -92,7 +99,15 @@ export default function CategoryDetail() {
   });
 
   const businesses = (businessData as any)?.businesses || [];
-  const totalBusinesses = (businessData as any)?.total || 0;
+  const subTotal = (subcategories as any[]).reduce((n: number, c: any) => n + (Number(c.businessCount) || 0), 0);
+  const totalBusinesses = isMainCategory ? subTotal : (businessData as any)?.total || 0;
+  // Main category: each sub-category with its own specialised categories
+  const groups = isMainCategory
+    ? (subcategories as any[]).map((sub: any) => ({
+        ...sub,
+        children: (allCategories as any[]).filter((c: any) => c.parentId === sub.id).sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || String(a.name).localeCompare(String(b.name))),
+      }))
+    : [];
 
   if (categoryLoading) {
     return (
@@ -186,7 +201,7 @@ export default function CategoryDetail() {
         canonicalUrl={`https://pakistanyp.com/categories/${category.slug}`}
         ogTitle={category.metaTitle || `${category.name} in Pakistan | Business Directory`}
         ogDescription={category.metaDescription || `Discover ${category.name.toLowerCase()} businesses in Pakistan with verified reviews and contact details.`}
-        noindex={!businessesLoading && !!businessData && totalBusinesses === 0 && (subcategories as any[]).every((c: any) => !Number(c.businessCount))}
+        noindex={!isMainCategory && category.level !== 2 && !businessesLoading && !!businessData && totalBusinesses === 0 && (subcategories as any[]).every((c: any) => !Number(c.businessCount))}
         schemaMarkup={[
           category.schemaMarkup,
           breadcrumbLd([
@@ -221,7 +236,7 @@ export default function CategoryDetail() {
             })()}
             <div className="min-w-0">
               <h1 className="text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-[-0.04em]">{category.name}</h1>
-              <p className="mt-2 text-[15px] text-[#5B6475]">{totalBusinesses} businesses found</p>
+              <p className="mt-2 text-[15px] text-[#5B6475]">{isMainCategory ? `${subcategories.length} sub-categories · ${totalBusinesses} ${totalBusinesses === 1 ? 'business' : 'businesses'}` : `${totalBusinesses} ${totalBusinesses === 1 ? 'business' : 'businesses'} found`}</p>
             </div>
           </div>
           <Button 
@@ -237,8 +252,44 @@ export default function CategoryDetail() {
           <p className="-mt-3 mb-8 max-w-4xl text-[17px] leading-relaxed text-[#4B5565]">{category.description}</p>
         )}
 
+        {/* Main category: directory of sub-categories (businesses are listed under sub-categories) */}
+        {isMainCategory && (
+          <section aria-labelledby="subcategories-heading">
+            <div className="mb-5">
+              <h2 id="subcategories-heading" className="text-[22px] font-semibold tracking-[-0.02em]">Sub-categories in {category.name}</h2>
+              <p className="mt-1 text-sm text-[#5B6475]">Choose a sub-category to see its businesses.</p>
+            </div>
+            {subcategoriesLoading ? (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3" aria-hidden="true">{Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-40 animate-pulse rounded-[16px] bg-[#EEF0F4]" />)}</div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {groups.map((group: any) => (
+                  <section key={group.id} className="yp-card flex flex-col gap-3 p-5" aria-labelledby={`sub-${group.id}`}>
+                    <Link href={`/categories/${group.slug}`} className="flex items-start justify-between gap-3 text-[#0A0A0A] hover:text-[#0B6B2E]">
+                      <h3 id={`sub-${group.id}`} className="text-[17px] font-semibold leading-snug">{group.name}</h3>
+                      <span className="flex-none rounded-full bg-[#E8F4EC] px-2.5 py-0.5 text-xs font-semibold tabular-nums text-[#05501F]">{Number(group.businessCount) || 0}</span>
+                    </Link>
+                    {group.children.length > 0 && (
+                      <ul className="flex flex-wrap gap-1.5">
+                        {group.children.map((child: any) => (
+                          <li key={child.id}>
+                            <Link href={`/categories/${child.slug}`} className="inline-flex items-center gap-1.5 rounded-full border border-[#E7E9EE] bg-white px-2.5 py-1 text-[13px] text-[#3A4354] hover:border-[#9FD3B3] hover:text-[#0B6B2E]">
+                              {child.name}{Number(child.businessCount) > 0 && <span className="font-semibold tabular-nums text-[#05501F]">{child.businessCount}</span>}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <Link href={`/categories/${group.slug}`} className="mt-auto text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">View {group.name} →</Link>
+                  </section>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* Subcategories Section */}
-        {subcategories.length > 0 && (
+        {!isMainCategory && subcategories.length > 0 && (
           <section className="mb-10" aria-labelledby="subcategories-heading">
             <div className="mb-4">
               <div className="yp-label">Refine</div>
@@ -259,7 +310,7 @@ export default function CategoryDetail() {
                   <span className="min-w-0">
                     <span className="block text-[15px] font-semibold">{subcategory.name}</span>
                     <span className="mt-0.5 block text-[13px] text-[#5B6475]">
-                      {subcategory.businessCount || 0} businesses
+                      {subcategory.businessCount || 0} {Number(subcategory.businessCount) === 1 ? 'business' : 'businesses'}
                     </span>
                   </span>
                   <ChevronRight className="h-4 w-4 flex-none text-[#0B6B2E]" />
@@ -269,7 +320,7 @@ export default function CategoryDetail() {
           </section>
         )}
 
-        <div className="flex flex-wrap items-start gap-6">
+        {!isMainCategory && <div className="flex flex-wrap items-start gap-6">
           {/* Filters */}
           <aside className="yp-card flex w-full flex-col gap-5 p-6 lg:w-[300px] lg:flex-none" aria-label="Filters">
             <div className="flex items-center justify-between">
@@ -391,7 +442,7 @@ export default function CategoryDetail() {
               </div>
             )}
           </section>
-        </div>
+        </div>}
       </main>
 
       <div className="yp-wrap-wide pb-20">

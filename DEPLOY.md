@@ -78,6 +78,14 @@ longer while the database is set up.
 
 ## 5. After launch
 
+**Sitemap and search engines are automatic.** `https://pakistanyp.com/sitemap.xml` is built live from the
+database, so new businesses, news, blog posts, categories, cities, localities and provinces appear as soon
+as they are saved (admin panel or users). Each section shows the date it last changed. The app also
+notifies IndexNow (Bing and others) about new and changed pages every 10 minutes; nothing to set up.
+Optional env vars: `INDEXNOW_KEY`, `INDEXNOW_INTERVAL_MINUTES`, `INDEXNOW_DISABLED=true`.
+For Google, submit the sitemap once in Search Console; Google re-reads it on its own.
+
+
 1. Search Console: add `https://pakistanyp.com`, verify (meta tag via `GOOGLE_SITE_VERIFICATION`),
    submit `https://pakistanyp.com/sitemap.xml`.
 2. Check a province, a category and a business page with "URL inspection".

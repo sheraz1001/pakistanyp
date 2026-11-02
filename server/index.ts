@@ -1,4 +1,5 @@
 import { ensureSchema } from "./ensureSchema";
+import { registerIndexNowKeyRoute, startSitemapWatcher } from "./indexNow";
 import { bootstrapDatabase } from "./bootstrapDatabase";
 import compression from "compression";
 import connectPgSimple from "connect-pg-simple";
@@ -286,6 +287,7 @@ function escapeJsonForScript(json: string): string {
       await emailTemplateService.initializeDefaultTemplates();
     }
     void ensureSchema(); // background, with retries – never blocks the health check
+    registerIndexNowKeyRoute(app);
     const server = await registerRoutes(app);
     console.log('Routes registered successfully');
 
@@ -608,6 +610,7 @@ function escapeJsonForScript(json: string): string {
     const port = parseInt(process.env.PORT || "5000", 10);
     console.log('About to start server listener...');
     server.listen(port, "0.0.0.0", () => {
+      startSitemapWatcher();
       console.log(`✓ Server successfully listening on port ${port}`);
       log(`serving on port ${port}`);
     });

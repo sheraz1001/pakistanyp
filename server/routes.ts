@@ -4305,23 +4305,19 @@ Instructions:
   // Categories with stats endpoint (alias)
   app.get('/api/categories/with-stats', disableCache, async (req, res) => {
     try {
-      console.log('API: categories with stats requested');
       const { level, parentId } = req.query;
       let categories = await storage.getCategoriesWithStats();
       
-      console.log('Categories from storage:', categories.length, 'categories');
       
       // Filter by level or parentId if requested
       if (level) {
         categories = categories.filter(cat => cat.level === parseInt(level as string));
-        console.log('Filtered by level', level, 'count:', categories.length);
       }
       if (parentId) {
-        categories = categories.filter(cat => (cat as any).parent_id === parseInt(parentId as string));
-        console.log('Filtered by parentId', parentId, 'count:', categories.length);
+        const pid = parseInt(parentId as string);
+        categories = categories.filter(cat => Number((cat as any).parentId ?? (cat as any).parent_id) === pid);
       }
       
-      console.log('Sending response with', categories.length, 'categories');
       res.json(categories);
     } catch (error) {
       console.error("Error fetching categories with stats:", error);

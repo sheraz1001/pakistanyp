@@ -29,6 +29,26 @@ async function localityBusinessCounts(): Promise<Map<number, number>> {
   return new Map(rows.map((r: any) => [Number(r.id), Number(r.n)]));
 }
 
+/**
+ * Categories in the sitemap: every main category and sub-category (their pages list
+ * sub-categories and businesses), plus specialised (3rd-level) categories once they
+ * have an active business. Inactive and redirected categories are left out.
+ */
+async function sitemapCategories(counts: Map<number, number>) {
+  const all: any[] = await storage.getCategories();
+  const byId = new Map(all.map((c: any) => [Number(c.id), c]));
+  const depth = (c: any) => {
+    if (c.level) return Number(c.level);
+    let d = 1, p = c.parentId ? byId.get(Number(c.parentId)) : null;
+    while (p && d < 5) { d++; p = p.parentId ? byId.get(Number(p.parentId)) : null; }
+    return d;
+  };
+  return all
+    .filter((c: any) => c.slug && c.isActive !== false && !(categoryRedirects as Record<string, string>)[c.slug])
+    .map((c: any) => ({ ...c, level: depth(c) }))
+    .filter((c: any) => c.level <= 2 || (counts.get(Number(c.id)) || 0) > 0);
+}
+
 const day = (d: any) => (d ? new Date(d).toISOString().split('T')[0] : undefined);
 const xmlEsc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -46,47 +66,48 @@ export async function generateSitemap() {
   return await generateSitemapIndex();
 }
 
+/** Latest change per section, so crawlers see when each sitemap last changed. */
+async function sectionDates(): Promise<Record<string, string>> {
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const { rows } = await pool.query(`select
+      (select max(greatest(updated_at, created_at)) from businesses where coalesce(is_active, true)) as businesses,
+      (select max(greatest(updated_at, created_at)) from categories) as categories,
+      (select max(greatest(updated_at, created_at)) from provinces) as provinces,
+      greatest((select max(greatest(updated_at, created_at)) from localities), (select max(greatest(updated_at, created_at)) from businesses)) as localities,
+      (select max(greatest(updated_at, published_at, created_at)) from news_articles) as news,
+      (select max(greatest(updated_at, published_at, created_at)) from blog_posts) as pages`);
+    const r = rows[0] || {};
+    const out: Record<string, string> = {};
+    for (const k of ['businesses', 'categories', 'provinces', 'localities', 'news', 'pages']) out[k] = day(r[k]) || DEPLOYED_ON;
+    out.static = DEPLOYED_ON;
+    out.top = out.businesses;
+    return out;
+  } catch {
+    return { static: DEPLOYED_ON, provinces: today, businesses: today, categories: today, top: today, localities: today, pages: today, news: today };
+  }
+}
+
 export async function generateSitemapIndex() {
   const baseUrl = country.origin;
-  const today = new Date().toISOString().split('T')[0];
-
-  const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+  const d = await sectionDates();
+  const sections: Array<[string, string]> = [
+    ['sitemap-static.xml', d.static],
+    ['sitemap-provinces.xml', d.provinces],
+    ['sitemap-localities.xml', d.localities],
+    ['sitemap-categories.xml', d.categories],
+    ['sitemap-businesses.xml', d.businesses],
+    ['sitemap-top.xml', d.top],
+    ['sitemap-pages.xml', d.pages],
+    ['sitemap-news.xml', d.news],
+  ];
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${baseUrl}/sitemap-static.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-provinces.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-businesses.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-categories.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-top.xml</loc>
-    <lastmod>${new Date().toISOString().slice(0, 10)}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-localities.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-pages.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${baseUrl}/sitemap-news.xml</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
+${sections.map(([file, lastmod]) => `  <sitemap>
+    <loc>${baseUrl}/${file}</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>`).join('\n')}
 </sitemapindex>`;
-
-  return sitemapIndex;
 }
 
 // Static Pages Sitemap
@@ -139,10 +160,7 @@ export async function generateBusinessSitemap() {
 export async function generateCategorySitemap() {
   const baseUrl = country.origin;
   const counts = await categoryBusinessCounts();
-  // Category pages without any active business are thin (and served noindex) - keep them out.
-  const categories = (await storage.getCategories()).filter(
-    (c: any) => !(categoryRedirects as Record<string, string>)[c.slug] && (counts.get(Number(c.id)) || 0) > 0,
-  );
+  const categories = await sitemapCategories(counts);
 
   const categoryPages: SitemapUrl[] = categories.map(category => ({
     url: `/categories/${category.slug}`,
@@ -158,10 +176,7 @@ export async function generateCategorySitemap() {
 export async function generateCategoriesLevel1Sitemap() {
   const baseUrl = country.origin;
   const counts = await categoryBusinessCounts();
-  // Category pages without any active business are thin (and served noindex) - keep them out.
-  const categories = (await storage.getCategories()).filter(
-    (c: any) => !(categoryRedirects as Record<string, string>)[c.slug] && (counts.get(Number(c.id)) || 0) > 0,
-  );
+  const categories = await sitemapCategories(counts);
 
   const level1Categories = categories.filter(category => category.level === 1);
   const categoryPages: SitemapUrl[] = level1Categories.map(category => ({
@@ -178,10 +193,7 @@ export async function generateCategoriesLevel1Sitemap() {
 export async function generateCategoriesLevel2Sitemap() {
   const baseUrl = country.origin;
   const counts = await categoryBusinessCounts();
-  // Category pages without any active business are thin (and served noindex) - keep them out.
-  const categories = (await storage.getCategories()).filter(
-    (c: any) => !(categoryRedirects as Record<string, string>)[c.slug] && (counts.get(Number(c.id)) || 0) > 0,
-  );
+  const categories = await sitemapCategories(counts);
 
   const level2Categories = categories.filter(category => category.level === 2);
   const categoryPages: SitemapUrl[] = level2Categories.map(category => ({
@@ -228,7 +240,11 @@ export async function generateLocalitiesSitemap() {
       cityTotals.set(cityId, (cityTotals.get(cityId) || 0) + n);
     }
     const isCity = (l: any) => !!l.isMainArea && !l.parentId;
-    const localities = all.filter((l: any) => (isCity(l) ? cityTotals.get(Number(l.id)) || 0 : counts.get(Number(l.id)) || 0) > 0);
+    const hasLocalities = new Set(all.filter((l: any) => l.parentId).map((l: any) => Number(l.parentId)));
+    // Cities: when they list businesses or have localities (their page lists them); localities: when they list businesses
+    const localities = all.filter((l: any) => l.isActive !== false && (isCity(l)
+      ? (cityTotals.get(Number(l.id)) || 0) > 0 || hasLocalities.has(Number(l.id))
+      : (counts.get(Number(l.id)) || 0) > 0));
     
     const seenLocality = new Set<string>();
     const seenSlug = new Set<string>();

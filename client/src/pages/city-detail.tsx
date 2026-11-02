@@ -87,7 +87,7 @@ export default function CityDetail() {
         title={title}
         description={description}
         canonicalUrl={`${country.origin}${path}`}
-        noindex={businessesQuery.isSuccess && total === 0}
+        noindex={businessesQuery.isSuccess && total === 0 && placesQuery.isSuccess && localities.length === 0}
         schemaMarkup={[
           {
             "@context": "https://schema.org",

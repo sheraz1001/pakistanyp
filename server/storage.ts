@@ -2084,25 +2084,34 @@ export class DatabaseStorage implements IStorage {
     totalCities: number;
     totalUsers: number;
   }> {
+    // Published businesses only (same rule as the public listings)
     const [businessCount] = await db
       .select({ count: count() })
       .from(businesses)
-      .where(eq(businesses.isActive, true));
+      .where(and(eq(businesses.isActive, true), or(eq(businesses.adminApproved, true), isNull(businesses.adminApproved))));
 
     const [categoryCount] = await db
       .select({ count: count() })
       .from(categories)
       .where(eq(categories.isActive, true));
 
-    const [localityCount] = await db.select({ count: count() }).from(localities);
+    // Province > City > Locality: cities are main areas without a parent, localities sit inside a city
+    const placeCounts: any = await db.execute(sql`
+      select count(*) filter (where is_main_area = true and parent_id is null)::int as cities,
+             count(*) filter (where not (coalesce(is_main_area, false) = true and parent_id is null))::int as localities
+      from localities where coalesce(is_active, true) = true`);
+    const places = (placeCounts.rows ?? placeCounts)[0] || { cities: 0, localities: 0 };
+    const [provinceCount] = await db.select({ count: count() }).from(provinces);
     const [userCount] = await db.select({ count: count() }).from(users);
 
     return {
       totalBusinesses: businessCount.count,
       totalCategories: categoryCount.count,
-      totalLocalities: localityCount.count,
+      totalProvinces: provinceCount.count,
+      totalCities: Number(places.cities),
+      totalLocalities: Number(places.localities),
       totalUsers: userCount.count,
-    };
+    } as any;
   }
 
 

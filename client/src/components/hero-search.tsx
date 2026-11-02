@@ -72,7 +72,7 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
     onSearch({ query: term, province });
   };
 
-  const localities = stats?.totalLocalities ?? stats?.totalCities;
+  const localities = stats?.totalLocalities;
   const provinceCount = provinces.length || country.regions.length;
 
   return (
@@ -183,23 +183,19 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
 
       {/* Stats strip */}
       <div className="yp-wrap relative z-10 pb-12 md:pb-16">
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-[#E7E9EE] bg-[#E7E9EE] lg:grid-cols-4">
-          <div className="bg-white p-5 md:p-6">
-            <div className="text-[28px] font-bold tracking-[-0.04em] md:text-4xl"><StatValue value={stats?.totalBusinesses} /></div>
-            <div className="mt-1 text-sm text-[#5B6475]">Listed businesses</div>
-          </div>
-          <div className="bg-white p-5 md:p-6">
-            <div className="text-[28px] font-bold tracking-[-0.04em] md:text-4xl"><StatValue value={stats?.totalCategories} /></div>
-            <div className="mt-1 text-sm text-[#5B6475]">Categories</div>
-          </div>
-          <div className="bg-white p-5 md:p-6">
-            <div className="text-[28px] font-bold tracking-[-0.04em] md:text-4xl"><StatValue value={localities} /></div>
-            <div className="mt-1 text-sm text-[#5B6475]">Localities covered</div>
-          </div>
-          <div className="bg-white p-5 md:p-6">
-            <div className="text-[28px] font-bold tracking-[-0.04em] md:text-4xl">{provinceCount}</div>
-            <div className="mt-1 text-sm text-[#5B6475]">{country.regionTerm.plural}</div>
-          </div>
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border border-[#E7E9EE] bg-[#E7E9EE] sm:grid-cols-3 lg:grid-cols-5">
+          {[
+            { href: "/businesses", value: <StatValue value={stats?.totalBusinesses} />, label: "Listed businesses" },
+            { href: "/categories", value: <StatValue value={stats?.totalCategories} />, label: "Categories" },
+            { href: country.regionsPath, value: (stats as any)?.totalProvinces ?? provinceCount, label: country.regionTerm.plural },
+            { href: "/cities", value: <StatValue value={(stats as any)?.totalCities} />, label: "Cities" },
+            { href: "/localities", value: <StatValue value={localities} />, label: "Localities" },
+          ].map((tile) => (
+            <a key={tile.label} href={tile.href} className="group bg-white p-5 transition-colors hover:bg-[#F2F9F4] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 md:p-6">
+              <div className="text-[28px] font-bold tracking-[-0.04em] md:text-4xl">{tile.value}</div>
+              <div className="mt-1 flex items-center gap-1 text-sm text-[#5B6475] group-hover:text-[#0B6B2E]">{tile.label}<span aria-hidden="true">→</span></div>
+            </a>
+          ))}
         </div>
       </div>
 
