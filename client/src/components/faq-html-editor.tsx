@@ -1,3 +1,4 @@
+import { SAMPLE_FAQ } from "@shared/countries/locale";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -220,17 +221,7 @@ function toggleFAQ(index) {
   };
 
   // Sample FAQ text for demonstration
-  const sampleFAQs = `1. How do I register a company in Pakistan?
-Companies are registered online with the Securities and Exchange Commission of Pakistan (SECP). A private limited company can be registered by one or more people.
-
-2. Do I need an NTN for my business?
-Yes. Businesses and individuals earning taxable income register with the Federal Board of Revenue (FBR) to get a National Tax Number (NTN).
-
-3. How long does SECP company registration take?
-Online registration is usually completed within a few working days once the name is approved and documents are submitted.
-
-4. Which documents are usually needed?
-Copies of the CNICs of directors and shareholders, the proposed company name, the registered office address and the company's memorandum and articles of association.`;
+  const sampleFAQs = SAMPLE_FAQ;
 
   return (
     <div className="space-y-6">

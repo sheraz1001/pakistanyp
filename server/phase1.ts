@@ -1,3 +1,4 @@
+import { isValidPhone, PHONE_HELP } from "@shared/countries/locale";
 import { country } from "@shared/country";
 /**
  * Phase 1 features: business verification (licence + email + phone), structured reviews with
@@ -114,7 +115,7 @@ export function registerPhase1Routes(app: Express) {
     if (!licenceAuthority) return res.status(400).json({ message: "Select the licensing authority." });
     if (!EMAIL_RE.test(businessEmail)) return res.status(400).json({ message: "Enter a valid business email address." });
     if (FREE_MAIL.test(businessEmail)) return res.status(400).json({ message: "Use an email on your company domain (not Gmail/Hotmail/Yahoo) so we can verify the business." });
-    if (!/^(\+?92|0)?3\d{9}$|^(\+?92|0)?[1-9]\d{8,9}$/.test(String(phone).replace(/[\s-]/g, ""))) return res.status(400).json({ message: "Enter a Pakistani phone number, e.g. 0300 1234567 or 021 12345678." });
+    if (!isValidPhone(phone)) return res.status(400).json({ message: PHONE_HELP });
     const emailToken = crypto.randomBytes(24).toString("hex");
     const existing = await one("select id, status from verification_requests where business_id = $1 order by id desc limit 1", [id]);
     let row;

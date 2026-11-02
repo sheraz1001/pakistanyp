@@ -1,3 +1,4 @@
+import { LEGAL_FORMS } from "@shared/countries/locale";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -1796,14 +1797,7 @@ export default function AddBusinessEnhanced() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="Sole Proprietorship">Sole Proprietorship</SelectItem>
-                                <SelectItem value="Partnership">Partnership (AOP)</SelectItem>
-                                <SelectItem value="SMC-Pvt">Single Member Company (SMC-Private) Limited</SelectItem>
-                                <SelectItem value="Pvt Ltd">Private Limited Company</SelectItem>
-                                <SelectItem value="Public Ltd">Public Limited Company</SelectItem>
-                                <SelectItem value="LLP">Limited Liability Partnership (LLP)</SelectItem>
-                                <SelectItem value="Branch">Branch / Liaison Office</SelectItem>
-                                <SelectItem value="NGO">NGO / Trust / Society</SelectItem>
+                                {LEGAL_FORMS.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
                               </SelectContent>
                             </Select>
                             <FormMessage />

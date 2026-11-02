@@ -1,3 +1,4 @@
+import { COUNTRY_FACTS } from "@shared/countries/locale";
 import OpenAI from 'openai';
 
 interface CategoryData {
@@ -19,16 +20,6 @@ interface GeneratedCategoryContent {
   error?: string;
 }
 
-const PK_FACTS = [
-  "Pakistan is one of the world's most populous countries, with a large and young consumer market",
-  "Karachi is Pakistan's largest city and financial centre",
-  "Textiles are Pakistan's largest export industry",
-  "Pakistan has one of the world's largest communities of freelancers",
-  "Businesses register for tax with the Federal Board of Revenue (FBR)",
-  "Companies in Pakistan are incorporated with the SECP",
-  "Lahore is a major hub for trade, education and culture",
-  "Islamabad and Rawalpindi together form a growing business region"
-];
 
 const CATEGORY_TIPS = {
   professional: [
@@ -97,7 +88,7 @@ export class CategoryContentGenerator {
       ? `This is a subcategory under "${category.parentName}".` 
       : 'This is a top-level category.';
     
-    const randomFact = PK_FACTS[Math.floor(Math.random() * PK_FACTS.length)];
+    const randomFact = COUNTRY_FACTS[Math.floor(Math.random() * COUNTRY_FACTS.length)];
     
     return `You are an expert SEO content writer for Pakistani business directories. Generate unique, valuable content for a business category page.
 

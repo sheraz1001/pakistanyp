@@ -8,7 +8,9 @@
 
 import { REGIONS } from "./countries/places";
 
+// <country-code>
 export type CountryCode = "pk";
+// </country-code>
 
 export interface Region {
   /** URL slug, also how existing pages derive slugs from the regions table: name.toLowerCase().replace(/\s+/g, "-") */
@@ -72,7 +74,8 @@ export interface CountryConfig {
   licenceAuthorities?: string[];
 }
 
-const PAKISTAN: CountryConfig = {
+// <country-config>  (each country pack replaces this block)
+const SITE: CountryConfig = {
   code: "pk",
   iso: "PK",
   name: "Pakistan",
@@ -129,10 +132,11 @@ const PAKISTAN: CountryConfig = {
     "Other",
   ],
 };
+// </country-config>
 
-export const COUNTRIES: Record<CountryCode, CountryConfig> = { pk: PAKISTAN };
+export const COUNTRIES = { [SITE.code]: SITE } as Record<CountryCode, CountryConfig>;
 
-export const country: CountryConfig = PAKISTAN;
+export const country: CountryConfig = SITE;
 /** lang/dir attributes for Urdu names (nameAr) */
 export const localLang = country.localLanguage?.code || "ur";
 export const localDir: "rtl" | "ltr" = country.localLanguage?.dir || "rtl";

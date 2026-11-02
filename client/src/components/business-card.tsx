@@ -1,3 +1,4 @@
+import { normalizePhone, formatPhone, isMobilePhone, UPPERCASE_WORDS } from "@shared/countries/locale";
 import { useState } from "react";
 import { ArrowUpRight, Check, Globe, LayoutGrid, List, MapPin, MessageCircle, Navigation, Phone, Star } from "lucide-react";
 import "./business-card.css";
@@ -40,38 +41,12 @@ export function cleanBusinessDescription(value: unknown): string {
 export function businessTitleCase(value: unknown): string {
   if (typeof value !== "string") return "";
   return value.replace(/[\p{L}\p{N}]+(?:['’][\p{L}]+)?/gu, word =>
-    /^(PVT|LTD|SMC|LLP|DHA|PECHS|IT|CNG|LPG|ATM|NADRA|SECP|FBR)$/i.test(word)
+    UPPERCASE_WORDS.test(word)
       ? word.toUpperCase()
       : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
 }
 
-// Pakistani numbers. Mobiles: 03XX XXXXXXX (10 digits after the trunk 0).
-// Landlines: 0 + area code (2 digits for the big cities, e.g. 21 Karachi, 42 Lahore,
-// 51 Islamabad/Rawalpindi; 3 digits elsewhere) + local number.
-const PK_TWO_DIGIT_AREA = /^(21|22|41|42|51|52|55|61|71|81|91)/;
-
-export function normalizeBusinessPhone(value: unknown): string {
-  if (typeof value !== "string") return "";
-  // Do not merge extensions or multiple phone numbers into a fictional number.
-  const first = value.split(/[,;/]|\s+(?:or|ext\.?|x)\s*/i)[0].trim();
-  let digits = first.replace(/\D/g, "");
-  if (digits.startsWith("00")) digits = digits.slice(2);
-  if (/^03\d{9}$/.test(digits)) return `92${digits.slice(1)}`;
-  if (/^3\d{9}$/.test(digits)) return `92${digits}`;
-  if (/^0[1-9]\d{8,9}$/.test(digits)) return `92${digits.slice(1)}`;
-  return digits;
-}
-
-export function formatBusinessPhone(value: unknown): string {
-  const digits = normalizeBusinessPhone(value);
-  if (/^923\d{9}$/.test(digits)) return `+92 ${digits.slice(2, 5)} ${digits.slice(5)}`;
-  if (/^92[1-9]\d{8,9}$/.test(digits)) {
-    const rest = digits.slice(2);
-    const code = PK_TWO_DIGIT_AREA.test(rest) ? rest.slice(0, 2) : rest.slice(0, 3);
-    return `+92 ${code} ${rest.slice(code.length)}`;
-  }
-  return typeof value === "string" ? value : "";
-}
+export { normalizePhone as normalizeBusinessPhone, formatPhone as formatBusinessPhone } from "@shared/countries/locale";
 
 function safeWebUrl(value: unknown): string {
   if (typeof value !== "string" || !value.trim()) return "";
@@ -111,8 +86,8 @@ export default function BusinessCard({ business, layout = "grid", category, prov
   const [tint, ink] = TILE_TINTS[hash(String(business.name || "")) % TILE_TINTS.length];
   const logo = safeImage(business.logoUrl) || safeImage(business.logo);
   const initials = String(business.name || "").trim().split(/\s+/).filter(Boolean).slice(0, 2).map(word => word[0]).join("").toUpperCase();
-  const phone = normalizeBusinessPhone(business.phone);
-  const whatsapp = [business.whatsapp, business.phone].map(normalizeBusinessPhone).find(number => (new RegExp(`^${country.phonePrefix.replace(/\D/g, "")}5\\d{8}$`)).test(number));
+  const phone = normalizePhone(business.phone);
+  const whatsapp = [business.whatsapp, business.phone].map(normalizePhone).find(isMobilePhone);
   const website = safeWebUrl(business.website);
   const domain = website ? new URL(website).hostname.replace(/^www\./i, "") : "";
   const count = Number(business.ratingCount ?? business.reviewCount ?? business.totalReviews ?? 0);
@@ -177,7 +152,7 @@ export default function BusinessCard({ business, layout = "grid", category, prov
         <div className="flex flex-[0_1_170px] flex-col justify-center gap-2">
           <a className="yp-btn yp-btn-primary" href={`${href}#quote`} onClick={onProfileClick}>Request quote</a>
           {phone
-            ? <a className="yp-btn yp-btn-ghost" href={`tel:+${phone}`} aria-label={`Call ${name} at ${formatBusinessPhone(business.phone)}`}><Phone size={16} aria-hidden="true" />Call</a>
+            ? <a className="yp-btn yp-btn-ghost" href={`tel:+${phone}`} aria-label={`Call ${name} at ${formatPhone(business.phone)}`}><Phone size={16} aria-hidden="true" />Call</a>
             : <a className="yp-btn yp-btn-ghost" href={href} onClick={onProfileClick}>View profile</a>}
           {whatsapp && <a className="yp-btn yp-btn-ghost" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label={`Message ${name} on WhatsApp (opens in a new tab)`}><MessageCircle size={16} aria-hidden="true" />WhatsApp</a>}
         </div>
@@ -197,7 +172,7 @@ export default function BusinessCard({ business, layout = "grid", category, prov
       {description && <p className="directory-description line-clamp-2">{description}</p>}
       {tags}
       {(phone || website) && <div className="directory-contact">
-        {phone && <a href={`tel:+${phone}`} aria-label={`Call ${name} at ${formatBusinessPhone(business.phone)}`}><Phone size={14} aria-hidden="true" /><span dir="ltr">{formatBusinessPhone(business.phone)}</span></a>}
+        {phone && <a href={`tel:+${phone}`} aria-label={`Call ${name} at ${formatPhone(business.phone)}`}><Phone size={14} aria-hidden="true" /><span dir="ltr">{formatPhone(business.phone)}</span></a>}
         {website && <a href={website} target="_blank" rel="noopener noreferrer" aria-label={`${name} website (opens in a new tab)`}><Globe size={14} aria-hidden="true" /><span className="truncate">{domain}</span></a>}
       </div>}
       <div className="directory-actions">

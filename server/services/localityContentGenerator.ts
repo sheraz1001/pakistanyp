@@ -1,3 +1,4 @@
+import { REGION_FACTS } from "@shared/countries/locale";
 import OpenAI from 'openai';
 
 interface LocalityData {
@@ -20,57 +21,6 @@ interface GeneratedLocalityContent {
   error?: string;
 }
 
-const PROVINCE_FACTS: Record<string, string[]> = {
-  'Punjab': [
-    "Punjab is Pakistan's most populous province",
-    "Lahore, the provincial capital, is Pakistan's second-largest city",
-    "Punjab is the country's agricultural heartland and grows most of its wheat",
-    "Faisalabad is a major centre of the textile industry",
-    "Sialkot is known worldwide for sports goods and surgical instruments"
-  ],
-  'Sindh': [
-    "Karachi is Pakistan's largest city and main commercial hub",
-    "The Port of Karachi is the country's busiest seaport",
-    "The Indus River flows through Sindh to the Arabian Sea",
-    "Hyderabad is Sindh's second-largest city",
-    "Mohenjo-daro, a UNESCO World Heritage Site, is in Sindh"
-  ],
-  'Khyber Pakhtunkhwa': [
-    "Peshawar is one of the oldest cities in South Asia",
-    "The province is known for mountain valleys such as Swat",
-    "Abbottabad and Mansehra are gateways to the northern areas",
-    "The Khyber Pass links Pakistan with Afghanistan",
-    "Peshawar's Qissa Khwani Bazaar is a historic trading centre"
-  ],
-  'Balochistan': [
-    "Balochistan is Pakistan's largest province by area",
-    "Gwadar is a deep-sea port on the Arabian Sea coast",
-    "Quetta is the provincial capital",
-    "The province is rich in minerals and natural gas",
-    "Balochistan has a long coastline along the Arabian Sea"
-  ],
-  'Islamabad Capital Territory': [
-    "Islamabad is Pakistan's planned capital city",
-    "The city is laid out in sectors such as F-7 and G-9",
-    "The Faisal Mosque is one of the largest mosques in the world",
-    "The Margalla Hills National Park borders the city",
-    "Blue Area is the city's main business district"
-  ],
-  'Gilgit-Baltistan': [
-    "Gilgit-Baltistan is home to K2, the world's second-highest mountain",
-    "The Karakoram Highway runs through the region",
-    "Hunza and Skardu are popular tourist destinations",
-    "Gilgit is the regional capital",
-    "Tourism and hospitality are key local industries"
-  ],
-  'Azad Jammu and Kashmir': [
-    "Muzaffarabad is the capital of Azad Jammu and Kashmir",
-    "Mirpur has a large overseas community, mainly in the United Kingdom",
-    "The Neelum Valley is a well-known tourist destination",
-    "The Jhelum and Neelum rivers flow through the region",
-    "Hydropower is an important local industry"
-  ]
-};
 
 // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
 export class LocalityContentGenerator {
@@ -104,7 +54,7 @@ export class LocalityContentGenerator {
   }
 
   private buildPrompt(locality: LocalityData): string {
-    const provinceFacts = PROVINCE_FACTS[locality.provinceName] || PROVINCE_FACTS['Punjab'];
+    const provinceFacts = REGION_FACTS[locality.provinceName] || Object.values(REGION_FACTS)[0] || [];
     const randomFact = provinceFacts[Math.floor(Math.random() * provinceFacts.length)];
     
     return `You are an expert local guide and SEO content writer for Pakistani localities. Generate unique, valuable content for a locality/area business directory page.

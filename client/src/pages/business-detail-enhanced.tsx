@@ -53,10 +53,10 @@ import QuickShareQRCode from "@/components/quick-share-qr-code";
 import { breadcrumbLd } from "@/lib/structured-data";
 import { Business, BusinessReview, insertBusinessReviewSchema, insertBusinessEnquirySchema } from "@shared/schema";
 import { localLang, localDir, country } from "@shared/country";
-import { normalizeBusinessPhone, formatBusinessPhone } from "@/components/business-card";
+import { normalizePhone, formatPhone as formatBusinessPhone, isValidPhone } from "@shared/countries/locale";
 
 // E.164 tel: link (e.g. tel:+919876543210); falls back to the stored value.
-const telHref = (phone: string) => { const d = normalizeBusinessPhone(phone); return /^92\d{9,10}$/.test(d) ? `tel:+${d}` : `tel:${phone}`; };
+const telHref = (phone: string) => (isValidPhone(phone) ? `tel:+${normalizePhone(phone)}` : `tel:${phone}`);
 
 function formatHours(hours: unknown): string {
   if (typeof hours === "string") return hours || "Not provided";
