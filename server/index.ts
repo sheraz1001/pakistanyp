@@ -335,7 +335,7 @@ function escapeJsonForScript(json: string): string {
       maxAge: '1y',
       immutable: true,
     }));
-    app.use(express.static(publicPath, { setHeaders: staticCacheHeaders }));
+    app.use(express.static(publicPath, { setHeaders: staticCacheHeaders, redirect: false }));
 
     if (app.get("env") === "development") {
       console.log('Setting up Vite SSR in development mode...');

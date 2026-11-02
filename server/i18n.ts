@@ -32,6 +32,9 @@ export function languageRouting(req: Request, res: Response, next: NextFunction)
   if (ENGLISH_ONLY.test(rest) || rest.startsWith("/api/") || /\.[a-z0-9]{2,5}$/i.test(rest)) {
     return res.redirect(301, rest + query);
   }
+  if (path.length > SECOND_PREFIX.length + 1 && path.endsWith("/") || path === `${SECOND_PREFIX}/`) {
+    return res.redirect(301, path.replace(/\/+$/, "") + query); // canonical: no trailing slash
+  }
   (req as any).ypLang = SECOND.code;
   req.url = rest + query;
   const redirect = res.redirect.bind(res) as any;

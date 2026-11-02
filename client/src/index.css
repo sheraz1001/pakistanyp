@@ -897,3 +897,4 @@ html[dir="rtl"] *, html[dir="rtl"] *::before, html[dir="rtl"] *::after { letter-
 /* Monospace labels have no Arabic glyphs: use the text font on right-to-left pages */
 html[dir="rtl"] { --font-mono: var(--font-body); }
 html[dir="rtl"] .font-mono { font-family: var(--font-body) !important; }
+html[dir="rtl"] :is(h1, h2, h3) { line-height: 1.3 !important; } /* Arabic needs taller lines than Latin display type */
