@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0B6B2E">
+    <title>Offline - PakistanYP</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32.png">
+    <style>
+        body {
+            font-family: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #FAF8F3;
+            color: #0A0A0A;
+            -webkit-font-smoothing: antialiased;
+        }
+        .stripe { display: flex; height: 4px; }
+        .stripe span:nth-child(1) { flex: 1; background: #D71920; }
+        .stripe span:nth-child(2) { flex: 3; background: #0B6B2E; }
+        .stripe span:nth-child(3) { flex: 3; background: #FFFFFF; }
+        .stripe span:nth-child(4) { flex: 3; background: #0A0A0A; }
+        main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .card {
+            max-width: 440px; width: 100%; text-align: center; background: #FFFFFF;
+            border: 1px solid #E7E9EE; border-radius: 24px; padding: 40px 32px;
+            display: flex; flex-direction: column; align-items: center; gap: 16px;
+        }
+        .lockup { display: inline-flex; align-items: center; gap: 10px; }
+        .wordmark { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 23px; letter-spacing: -0.03em; color: #1A1A1A; }
+        .wordmark span { color: #0B6B2E; }
+        .wordmark .dot { color: #D71920; }
+        .wordmark .com { color: #4A4A4A; font-weight: 700; }
+        h1 { margin: 8px 0 0; font-size: 30px; letter-spacing: -0.04em; }
+        p { margin: 0; color: #5B6475; font-size: 16px; line-height: 1.6; }
+        button {
+            margin-top: 8px; min-height: 48px; padding: 0 24px; border: 0; border-radius: 12px;
+            background: #0B6B2E; color: #FFFFFF; font: 600 15px inherit; cursor: pointer;
+        }
+        button:hover { background: #05501F; }
+    </style>
+</head>
+<body>
+    <div class="stripe" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <main>
+        <div class="card">
+            <img src="/logo/pakistanyp-logo.png" width="180" height="66" alt="pakistanyp.com — Pakistani Business Directory">
+            <h1>You're offline</h1>
+            <p>It looks like you're not connected to the internet. Check your connection and try again.</p>
+            <button type="button" onclick="window.location.reload()">Try again</button>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,114 @@
+{
+  "name": "Pakistani Business Directory - PakistanYP",
+  "short_name": "PakistanYP",
+  "description": "Discover and connect with businesses across all seven Pakistani provinces",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F3",
+  "theme_color": "#00732F",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": [
+    "business",
+    "directory",
+    "local"
+  ],
+  "lang": "en-US",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/logo/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/logo/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Search Businesses",
+      "short_name": "Search",
+      "description": "Search for businesses in Pakistan",
+      "url": "/search",
+      "icons": [
+        {
+          "src": "/logo/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "AI Recommendations",
+      "short_name": "AI",
+      "description": "Get AI-powered business recommendations",
+      "url": "/ai-recommendations",
+      "icons": [
+        {
+          "src": "/logo/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "short_name": "Categories",
+      "description": "Browse business categories",
+      "url": "/categories",
+      "icons": [
+        {
+          "src": "/logo/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Provinces",
+      "short_name": "Provinces",
+      "description": "Browse by province",
+      "url": "/provinces",
+      "icons": [
+        {
+          "src": "/logo/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

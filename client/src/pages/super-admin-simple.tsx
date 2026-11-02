@@ -1,0 +1,5578 @@
+import React, { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { 
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
+import { 
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  LineChart, Line, PieChart, Pie, Cell
+} from "recharts";
+import {
+  Settings, Users, FileText, TrendingUp, Shield, Key, CreditCard,
+  BarChart3, Activity, DollarSign, UserPlus, Globe, Zap, Building2,
+  FolderOpen, Mail, Calendar, Search, Tags, Image, Database,
+  Megaphone, BookOpen, PenTool, Palette, Cpu, Home, ChevronDown,
+  Newspaper,
+  ChevronRight, Layout, Monitor, Phone, Workflow, Archive, Plus,
+  Edit, Trash2, Eye, RefreshCw, CheckCircle, AlertCircle, Clock,
+  Square, Bold, Italic, Heading1, Heading2, Heading3, Link, List,
+  Code, Quote, Type, ExternalLink, Maximize2, Save, Send, ArrowLeft,
+  Target, Upload, Bot, Loader2, X
+} from "lucide-react";
+import MenuManagement from "@/components/menu-management";
+import FeatureManagement from "@/components/feature-management";
+import BusinessApproval from "@/components/business-approval";
+import BusinessCategories from "@/components/business-categories";
+import BusinessVerification from "@/components/business-verification";
+import PagesManagement from "@/components/pages-management";
+import EmailTemplates from "@/components/email-templates";
+import SEOSettings from "@/components/seo-settings";
+import MediaLibrary from "@/components/media-library";
+import AdvancedBusinessManagement from "@/components/advanced-business-management";
+import SubscriptionManagement from "@/components/subscription-management";
+import ThemeCustomizer from "@/components/theme-customizer";
+import { AdvancedReporting } from "@/components/advanced-reporting";
+import { SystemMonitor } from "@/components/system-monitor";
+import UserAnalytics from "@/components/user-analytics";
+import { FaviconCacheManagement } from "@/components/admin/favicon-cache-management";
+import ProvincesManagement from "@/components/admin/ProvincesManagement";
+import AdminNewsManagement from "@/components/admin-news-management";
+import { SocialMediaPreviewGenerator } from "@/components/social-media-preview-generator";
+import SeoTechnicalSettings from "@/components/admin/SeoTechnicalSettings";
+import { BlogAutomationDashboard } from "@/components/admin/blog-automation-dashboard";
+import { apiRequest } from "@/lib/queryClient";
+import { format } from "date-fns";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { useToast } from "@/hooks/use-toast";
+import { AdminShell, AdminSideLabel, AdminSideLink, AdminPageHeader } from "@/components/admin/admin-shell";
+import { AdminOverview } from "@/components/admin/admin-overview";
+
+// AI Auto-Blogging Management Component
+function AIAutoBloggingManagement() {
+  const [activeTab, setActiveTab] = useState("scheduler");
+  const [showCreateTask, setShowCreateTask] = useState(false);
+  const [showGenerateNow, setShowGenerateNow] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch scheduler tasks
+  const { data: schedulerTasks = [], isLoading: tasksLoading } = useQuery({
+    queryKey: ["/api/admin/blog-scheduler"],
+    queryFn: async () => {
+      const response = await fetch("/api/admin/blog-scheduler", {
+        credentials: 'include'
+      });
+      if (!response.ok) return [];
+      return response.json();
+    },
+    retry: false
+  });
+
+  // Fetch auto-generated blog posts
+  const { data: autoPosts = [], isLoading: postsLoading } = useQuery({
+    queryKey: ["/api/admin/blog-posts", "auto-generated"],
+    queryFn: async () => {
+      const response = await fetch("/api/admin/blog-posts?auto_generated=true", {
+        credentials: 'include'
+      });
+      if (!response.ok) return [];
+      const posts = await response.json();
+      return posts.filter(post => post.isAutoGenerated);
+    },
+    retry: false
+  });
+
+  // Create scheduler task mutation
+  const createTaskMutation = useMutation({
+    mutationFn: (taskData) => apiRequest("POST", "/api/admin/blog-scheduler", taskData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog-scheduler"] });
+      setShowCreateTask(false);
+      toast({ title: "Auto-blogging task created successfully" });
+    }
+  });
+
+  // Generate blog post immediately
+  const generateNowMutation = useMutation({
+    mutationFn: (data) => apiRequest("POST", "/api/admin/generate-blog", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog-posts"] });
+      setShowGenerateNow(false);
+      toast({ title: "Blog post generated successfully" });
+    }
+  });
+
+  // Toggle task status
+  const toggleTaskMutation = useMutation({
+    mutationFn: ({ id, isActive }) => apiRequest("PATCH", `/api/admin/blog-scheduler/${id}`, { isActive }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog-scheduler"] });
+      toast({ title: "Task status updated" });
+    }
+  });
+
+  // Delete task
+  const deleteTaskMutation = useMutation({
+    mutationFn: (id) => apiRequest("DELETE", `/api/admin/blog-scheduler/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog-scheduler"] });
+      toast({ title: "Task deleted successfully" });
+    }
+  });
+
+  const handleCreateTask = (taskData) => {
+    createTaskMutation.mutate({
+      ...taskData,
+      nextRun: new Date(Date.now() + (taskData.frequency === 'daily' ? 86400000 : taskData.frequency === 'weekly' ? 604800000 : 2592000000))
+    });
+  };
+
+  const handleGenerateNow = (data) => {
+    generateNowMutation.mutate(data);
+  };
+
+  const handleToggleTask = (task) => {
+    toggleTaskMutation.mutate({ id: task.id, isActive: !task.isActive });
+  };
+
+  const handleDeleteTask = (taskId) => {
+    if (confirm("Are you sure you want to delete this auto-blogging task?")) {
+      deleteTaskMutation.mutate(taskId);
+    }
+  };
+
+  const getFrequencyBadge = (frequency) => {
+    const colors = {
+      daily: "bg-green-100 text-green-800",
+      weekly: "bg-blue-100 text-blue-800", 
+      monthly: "bg-purple-100 text-purple-800"
+    };
+    return colors[frequency] || "bg-gray-100 text-gray-800";
+  };
+
+  const getStatusBadge = (isActive) => {
+    return isActive 
+      ? "bg-green-100 text-green-800" 
+      : "bg-red-100 text-red-800";
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">AI Auto-Blogging</h2>
+          <p className="text-gray-600 ">
+            Automated content generation using Gemini AI for consistent blog publishing
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => setShowGenerateNow(true)}
+            variant="outline"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Zap className="h-4 w-4 mr-2" />
+            Generate Now
+          </Button>
+          <Button 
+            onClick={() => setShowCreateTask(true)}
+            className="bg-green-600 hover:bg-green-700"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create Schedule
+          </Button>
+        </div>
+      </div>
+
+      {/* Overview Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 ">Active Tasks</p>
+                <p className="text-2xl font-bold">{schedulerTasks.filter(t => t.isActive).length}</p>
+              </div>
+              <Activity className="h-8 w-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 ">Generated Posts</p>
+                <p className="text-2xl font-bold">{autoPosts.length}</p>
+              </div>
+              <BookOpen className="h-8 w-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 ">Success Rate</p>
+                <p className="text-2xl font-bold">
+                  {schedulerTasks.length > 0 
+                    ? Math.round(schedulerTasks.reduce((acc, task) => acc + (task.successRate || 0), 0) / schedulerTasks.length)
+                    : 0}%
+                </p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 ">Next Scheduled</p>
+                <p className="text-sm font-bold">
+                  {schedulerTasks.find(t => t.isActive && t.nextRun) 
+                    ? format(new Date(schedulerTasks.find(t => t.isActive && t.nextRun).nextRun), "MMM dd, HH:mm")
+                    : "None"
+                  }
+                </p>
+              </div>
+              <Clock className="h-8 w-8 text-[#B45309]" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="intelligence">
+            <Bot className="h-4 w-4 mr-2" />
+            AI Intelligence
+          </TabsTrigger>
+          <TabsTrigger value="scheduler">Scheduled Tasks</TabsTrigger>
+          <TabsTrigger value="generated">Generated Posts</TabsTrigger>
+          <TabsTrigger value="content-ideas">Content Ideas</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="intelligence" className="mt-6">
+          <BlogAutomationDashboard />
+        </TabsContent>
+
+        <TabsContent value="scheduler" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Auto-Blogging Schedule</CardTitle>
+              <CardDescription>
+                Manage automated blog post generation tasks
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {tasksLoading ? (
+                <div className="text-center py-8">Loading scheduler tasks...</div>
+              ) : schedulerTasks.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Cpu className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <h3 className="text-lg font-medium mb-2">No Auto-Blogging Tasks</h3>
+                  <p className="text-sm mb-4">Create your first automated blogging schedule to start generating content with AI</p>
+                  <Button onClick={() => setShowCreateTask(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create First Task
+                  </Button>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-3">Task Name</th>
+                        <th className="text-left p-3">Prompt</th>
+                        <th className="text-left p-3">Frequency</th>
+                        <th className="text-left p-3">Status</th>
+                        <th className="text-left p-3">Next Run</th>
+                        <th className="text-left p-3">Success Rate</th>
+                        <th className="text-left p-3">Total Posts</th>
+                        <th className="text-left p-3">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {schedulerTasks.map((task) => (
+                        <tr key={task.id} className="border-b hover:bg-gray-50 ">
+                          <td className="p-3 font-medium">{task.name}</td>
+                          <td className="p-3 max-w-xs truncate">{task.prompt}</td>
+                          <td className="p-3">
+                            <Badge className={getFrequencyBadge(task.frequency)}>
+                              {task.frequency}
+                            </Badge>
+                          </td>
+                          <td className="p-3">
+                            <Badge className={getStatusBadge(task.isActive)}>
+                              {task.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </td>
+                          <td className="p-3">
+                            {task.nextRun 
+                              ? format(new Date(task.nextRun), "MMM dd, yyyy HH:mm")
+                              : 'Not scheduled'
+                            }
+                          </td>
+                          <td className="p-3">{Math.round(task.successRate || 0)}%</td>
+                          <td className="p-3">{task.totalPosts || 0}</td>
+                          <td className="p-3">
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleToggleTask(task)}
+                              >
+                                {task.isActive ? 'Pause' : 'Resume'}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDeleteTask(task.id)}
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="generated" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>AI Generated Posts</CardTitle>
+              <CardDescription>
+                Review and manage automatically generated blog content
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {postsLoading ? (
+                <div className="text-center py-8">Loading generated posts...</div>
+              ) : autoPosts.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <h3 className="text-lg font-medium mb-2">No Generated Posts</h3>
+                  <p className="text-sm mb-4">AI-generated blog posts will appear here once your scheduled tasks start running</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {autoPosts.map((post) => (
+                    <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50 ">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-medium text-lg">{post.title}</h3>
+                        <div className="flex gap-2">
+                          <Badge variant="outline" className="bg-blue-100 text-blue-800">
+                            AI Generated
+                          </Badge>
+                          <Badge className={post.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+                            {post.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">{post.excerpt}</p>
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <div className="flex gap-4">
+                          <span>SEO Score: {post.seoScore || 0}%</span>
+                          <span>Reading Time: {post.readingTime || 0} min</span>
+                          <span>Views: {post.viewCount || 0}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span>Generated: {post.createdAt ? format(new Date(post.createdAt), "MMM dd, yyyy") : 'N/A'}</span>
+                        </div>
+                      </div>
+                      {post.aiPrompt && (
+                        <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
+                          <strong>AI Prompt:</strong> {post.aiPrompt}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="content-ideas" className="space-y-4">
+          <ContentIdeasGenerator />
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-4">
+          <AutoBloggingSettings />
+        </TabsContent>
+      </Tabs>
+
+      {/* Create Task Dialog */}
+      <CreateScheduleTaskDialog 
+        open={showCreateTask}
+        onOpenChange={setShowCreateTask}
+        onSubmit={handleCreateTask}
+        isLoading={createTaskMutation.isPending}
+      />
+
+      {/* Generate Now Dialog */}
+      <GenerateNowDialog
+        open={showGenerateNow}
+        onOpenChange={setShowGenerateNow}
+        onSubmit={handleGenerateNow}
+        isLoading={generateNowMutation.isPending}
+      />
+    </div>
+  );
+}
+
+// Content Ideas Generator Component
+function ContentIdeasGenerator() {
+  const [topic, setTopic] = useState("");
+  const [ideaCount, setIdeaCount] = useState(10);
+  const [generatedIdeas, setGeneratedIdeas] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+  const [showGenerateDialog, setShowGenerateDialog] = useState(false);
+  const [selectedIdea, setSelectedIdea] = useState("");
+
+  // Mutations for blog generation
+  const queryClient = useQueryClient();
+  const generateNowMutation = useMutation({
+    mutationFn: (data) => apiRequest("POST", "/api/admin/generate-blog", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/blog-posts"] });
+      toast({ title: "Blog post generated successfully from content idea!" });
+      setShowGenerateDialog(false);
+      setSelectedIdea("");
+    },
+    onError: () => {
+      toast({ title: "Failed to generate blog post", variant: "destructive" });
+    }
+  });
+
+  const generateIdeas = async () => {
+    if (!topic.trim()) {
+      toast({ title: "Please enter a topic", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/admin/generate-content-ideas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify({ topic, count: ideaCount })
+      });
+
+      if (response.ok) {
+        const ideas = await response.json();
+        setGeneratedIdeas(ideas);
+        toast({ title: `Generated ${ideas.length} content ideas` });
+      } else {
+        throw new Error("Failed to generate ideas");
+      }
+    } catch (error) {
+      toast({ title: "Failed to generate ideas", variant: "destructive" });
+      // Fallback ideas for testing
+      setGeneratedIdeas([
+        `Top 10 ${topic} Strategies for Pakistan Businesses`,
+        `How to Start a ${topic} Business in Karachi`,
+        `${topic} Market Trends in Pakistan 2025`,
+        `Success Stories: Pakistani ${topic} Entrepreneurs`,
+        `Legal Requirements for ${topic} Businesses in Pakistan`
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGenerateBlogFromIdea = (idea) => {
+    setSelectedIdea(idea);
+    setShowGenerateDialog(true);
+  };
+
+  const handleGenerateNow = (data) => {
+    generateNowMutation.mutate({
+      ...data,
+      prompt: selectedIdea || data.prompt,
+      wordCount: data.wordCount || 1500
+    });
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>AI Content Ideas Generator</CardTitle>
+        <CardDescription>
+          Generate blog post ideas using AI based on topics relevant to Pakistan business directory
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex gap-4">
+          <Input
+            placeholder="Enter topic (e.g., 'restaurant marketing', 'e-commerce')"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            className="flex-1"
+          />
+          <Select value={ideaCount.toString()} onValueChange={(value) => setIdeaCount(parseInt(value))}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5 ideas</SelectItem>
+              <SelectItem value="10">10 ideas</SelectItem>
+              <SelectItem value="15">15 ideas</SelectItem>
+              <SelectItem value="20">20 ideas</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button onClick={generateIdeas} disabled={isLoading}>
+            {isLoading ? (
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Zap className="h-4 w-4 mr-2" />
+            )}
+            Generate
+          </Button>
+        </div>
+
+        {generatedIdeas.length > 0 && (
+          <div className="space-y-2">
+            <h3 className="font-medium">Generated Ideas:</h3>
+            <div className="space-y-2">
+              {generatedIdeas.map((idea, index) => (
+                <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
+                  <span className="flex-1">{idea}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleGenerateBlogFromIdea(idea)}
+                  >
+                    <Plus className="h-3 w-3 mr-1" />
+                    Use
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+      
+      {/* Generate Now Dialog for Content Ideas */}
+      <GenerateNowDialog
+        open={showGenerateDialog}
+        onOpenChange={setShowGenerateDialog}
+        onSubmit={handleGenerateNow}
+        isLoading={generateNowMutation.isPending}
+        defaultPrompt={selectedIdea}
+      />
+    </Card>
+  );
+}
+
+// Auto-Blogging Settings Component
+function AutoBloggingSettings() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Auto-Blogging Settings</CardTitle>
+        <CardDescription>
+          Configure global settings for AI content generation
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <h3 className="font-medium">Content Settings</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Auto-publish generated posts</Label>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label>Enable SEO optimization</Label>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label>Generate featured images</Label>
+                <Switch />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label>Include social media meta</Label>
+                <Switch defaultChecked />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-medium">AI Settings</h3>
+            <div className="space-y-3">
+              <div>
+                <Label>Default tone</Label>
+                <Select defaultValue="professional">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="professional">Professional</SelectItem>
+                    <SelectItem value="casual">Casual</SelectItem>
+                    <SelectItem value="informative">Informative</SelectItem>
+                    <SelectItem value="engaging">Engaging</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Default word count</Label>
+                <Select defaultValue="800">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="500">500 words</SelectItem>
+                    <SelectItem value="800">800 words</SelectItem>
+                    <SelectItem value="1200">1200 words</SelectItem>
+                    <SelectItem value="1500">1500 words</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-4">
+          <h3 className="font-medium">Notification Settings</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center justify-between">
+              <Label>Email on successful generation</Label>
+              <Switch defaultChecked />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label>Email on generation failure</Label>
+              <Switch defaultChecked />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label>Daily summary report</Label>
+              <Switch />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label>Weekly analytics report</Label>
+              <Switch />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <Button>Save Settings</Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Create Schedule Task Dialog - Enhanced with category selection, AI image generation, and calendar
+function CreateScheduleTaskDialog({ open, onOpenChange, onSubmit, isLoading }) {
+  const [taskData, setTaskData] = useState({
+    name: "",
+    prompt: "",
+    frequency: "weekly",
+    categoryId: "",
+    tags: [],
+    generateAiImage: true,
+    nextRunDate: ""
+  });
+
+  // Fetch blog categories for dropdown
+  const { data: categories = [] } = useQuery({
+    queryKey: ["/api/blog-categories"],
+    queryFn: async () => {
+      const response = await fetch("/api/blog-categories", {
+        credentials: 'include'
+      });
+      if (!response.ok) return [];
+      const cats = await response.json();
+      return cats; // Blog categories are already filtered
+    },
+    retry: false
+  });
+
+  // Calculate next run date based on frequency
+  const calculateNextRun = (frequency) => {
+    const now = new Date();
+    let nextRun = new Date();
+    
+    switch (frequency) {
+      case "daily":
+        nextRun.setDate(now.getDate() + 1);
+        break;
+      case "weekly":
+        nextRun.setDate(now.getDate() + 7);
+        break;
+      case "monthly":
+        nextRun.setMonth(now.getMonth() + 1);
+        break;
+    }
+    
+    return nextRun.toISOString().slice(0, 16); // Format for datetime-local input
+  };
+
+  // Update next run date when frequency changes
+  useEffect(() => {
+    if (taskData.frequency) {
+      setTaskData(prev => ({
+        ...prev,
+        nextRunDate: calculateNextRun(prev.frequency)
+      }));
+    }
+  }, [taskData.frequency]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!taskData.name || !taskData.prompt) return;
+    onSubmit({
+      ...taskData,
+      nextRunDate: taskData.nextRunDate ? new Date(taskData.nextRunDate) : new Date()
+    });
+    setTaskData({ 
+      name: "", 
+      prompt: "", 
+      frequency: "weekly", 
+      categoryId: "", 
+      tags: [],
+      generateAiImage: true,
+      nextRunDate: ""
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-blue-500" />
+            Create Auto-Blogging Schedule
+          </DialogTitle>
+          <DialogDescription>
+            Set up automated blog post generation with AI including category selection and image generation
+          </DialogDescription>
+        </DialogHeader>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Task Name */}
+          <div className="space-y-2">
+            <Label htmlFor="taskName" className="text-sm font-medium">
+              Task Name <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="taskName"
+              value={taskData.name}
+              onChange={(e) => setTaskData(prev => ({ ...prev, name: e.target.value }))}
+              placeholder="e.g., Weekly Pakistani Business Tips, Daily Tech News"
+              required
+              className="h-10"
+            />
+          </div>
+          
+          {/* AI Prompt */}
+          <div className="space-y-2">
+            <Label htmlFor="prompt" className="text-sm font-medium">
+              AI Prompt <span className="text-red-500">*</span>
+            </Label>
+            <Textarea
+              id="prompt"
+              value={taskData.prompt}
+              onChange={(e) => setTaskData(prev => ({ ...prev, prompt: e.target.value }))}
+              placeholder="Write comprehensive blog posts about Pakistani business opportunities, focusing on practical tips for entrepreneurs and investors. Include current market trends, regulatory updates, and success stories from local businesses..."
+              rows={4}
+              required
+              className="resize-none"
+            />
+            <p className="text-xs text-gray-500">
+              Describe the type of content you want AI to generate. Be specific about topics, tone, and target audience.
+            </p>
+          </div>
+
+          {/* Blog Category Selection */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Blog Category</Label>
+            <Select 
+              value={taskData.categoryId} 
+              onValueChange={(categoryId) => setTaskData(prev => ({ ...prev, categoryId }))}
+            >
+              <SelectTrigger className="h-10">
+                <SelectValue placeholder="Select a category for blog posts" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No Category</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id.toString()}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-gray-500">
+              Choose which business category these blog posts should focus on
+            </p>
+          </div>
+
+          {/* Frequency & Schedule */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Frequency</Label>
+              <Select 
+                value={taskData.frequency} 
+                onValueChange={(frequency) => setTaskData(prev => ({ ...prev, frequency }))}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Daily
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="weekly">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Weekly
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="monthly">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Monthly
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="nextRunDate" className="text-sm font-medium">Next Run Date</Label>
+              <Input
+                id="nextRunDate"
+                type="datetime-local"
+                value={taskData.nextRunDate}
+                onChange={(e) => setTaskData(prev => ({ ...prev, nextRunDate: e.target.value }))}
+                className="h-10"
+              />
+            </div>
+          </div>
+
+          {/* AI Image Generation Toggle */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-blue-50 ">
+              <div className="flex items-center space-x-3">
+                <Image className="h-5 w-5 text-blue-600" />
+                <div>
+                  <h4 className="text-sm font-medium">AI Image Generation</h4>
+                  <p className="text-xs text-gray-600">Generate custom images for each blog post using AI</p>
+                </div>
+              </div>
+              <Switch
+                checked={taskData.generateAiImage}
+                onCheckedChange={(checked) => setTaskData(prev => ({ ...prev, generateAiImage: checked }))}
+              />
+            </div>
+            {taskData.generateAiImage && (
+              <div className="text-xs text-green-600 bg-green-50 p-2 rounded border">
+                ✓ AI will generate unique featured images based on each blog post title and content
+              </div>
+            )}
+          </div>
+
+          {/* Schedule Preview */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Schedule Preview</Label>
+            <div className="p-3 bg-gray-50 rounded-lg border">
+              <div className="text-sm space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Task:</span>
+                  <span className="font-medium">{taskData.name || "Untitled Task"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Frequency:</span>
+                  <span className="capitalize">{taskData.frequency}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Category:</span>
+                  <span>{categories.find(c => c.id.toString() === taskData.categoryId)?.name || "No Category"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">AI Images:</span>
+                  <span className={taskData.generateAiImage ? "text-green-600" : "text-gray-500"}>
+                    {taskData.generateAiImage ? "Enabled" : "Disabled"}
+                  </span>
+                </div>
+                {taskData.nextRunDate && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Next Run:</span>
+                    <span>{new Date(taskData.nextRunDate).toLocaleString()}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="flex gap-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading || !taskData.name || !taskData.prompt}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating Task...
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Auto-Blogging Task
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Generate Now Dialog
+function GenerateNowDialog({ open, onOpenChange, onSubmit, isLoading, defaultPrompt = "" }) {
+  const [generateData, setGenerateData] = useState({
+    prompt: defaultPrompt || "",
+    tone: "professional",
+    wordCount: 1500,
+    categoryId: ""
+  });
+
+  // Update prompt when defaultPrompt changes
+  React.useEffect(() => {
+    if (defaultPrompt) {
+      setGenerateData(prev => ({ ...prev, prompt: defaultPrompt }));
+    }
+  }, [defaultPrompt]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!generateData.prompt) return;
+    onSubmit(generateData);
+    setGenerateData({ prompt: "", tone: "professional", wordCount: 1500, categoryId: "" });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Generate Blog Post Now</DialogTitle>
+          <DialogDescription>
+            Create a blog post immediately using AI
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="generatePrompt">Blog Topic</Label>
+            <Textarea
+              id="generatePrompt"
+              value={generateData.prompt}
+              onChange={(e) => setGenerateData(prev => ({ ...prev, prompt: e.target.value }))}
+              placeholder="What should the blog post be about?"
+              rows={3}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Tone</Label>
+              <Select value={generateData.tone} onValueChange={(tone) => setGenerateData(prev => ({ ...prev, tone }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="professional">Professional</SelectItem>
+                  <SelectItem value="casual">Casual</SelectItem>
+                  <SelectItem value="informative">Informative</SelectItem>
+                  <SelectItem value="engaging">Engaging</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Word Count</Label>
+              <Select value={generateData.wordCount?.toString() || "1500"} onValueChange={(count) => setGenerateData(prev => ({ ...prev, wordCount: parseInt(count) }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1500">1500 words</SelectItem>
+                  <SelectItem value="2000">2000 words</SelectItem>
+                  <SelectItem value="2500">2500 words</SelectItem>
+                  <SelectItem value="3000">3000 words</SelectItem>
+                  <SelectItem value="4000">4000 words</SelectItem>
+                  <SelectItem value="5000">5000 words</SelectItem>
+                  <SelectItem value="6000">6000 words</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Generating..." : "Generate Post"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Advanced HTML Editor Component
+function AdvancedHTMLEditor({ value, onChange }) {
+  const [editorMode, setEditorMode] = useState('visual'); // 'visual' | 'html' | 'split'
+  const [htmlContent, setHtmlContent] = useState(value || '');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  React.useEffect(() => {
+    setHtmlContent(value || '');
+  }, [value]);
+
+  const handleContentChange = (newContent) => {
+    setHtmlContent(newContent);
+    onChange(newContent);
+  };
+
+  const insertHTML = (htmlTag) => {
+    const textarea = document.getElementById('html-editor');
+    if (!textarea) {
+      // If in visual mode, insert at cursor position or end of content
+      const cursorPos = htmlContent.length;
+      insertAtPosition(htmlTag, cursorPos, cursorPos, '');
+      return;
+    }
+    
+    const start = textarea.selectionStart || 0;
+    const end = textarea.selectionEnd || 0;
+    const selectedText = htmlContent.substring(start, end);
+    insertAtPosition(htmlTag, start, end, selectedText);
+  };
+
+  const insertAtPosition = (htmlTag, start, end, selectedText) => {
+    let newContent;
+    switch (htmlTag) {
+      case 'bold':
+        newContent = htmlContent.substring(0, start) + `<strong>${selectedText}</strong>` + htmlContent.substring(end);
+        break;
+      case 'italic':
+        newContent = htmlContent.substring(0, start) + `<em>${selectedText}</em>` + htmlContent.substring(end);
+        break;
+      case 'h1':
+        newContent = htmlContent.substring(0, start) + `<h1>${selectedText || 'Heading 1'}</h1>` + htmlContent.substring(end);
+        break;
+      case 'h2':
+        newContent = htmlContent.substring(0, start) + `<h2>${selectedText || 'Heading 2'}</h2>` + htmlContent.substring(end);
+        break;
+      case 'h3':
+        newContent = htmlContent.substring(0, start) + `<h3>${selectedText || 'Heading 3'}</h3>` + htmlContent.substring(end);
+        break;
+      case 'paragraph':
+        newContent = htmlContent.substring(0, start) + `<p>${selectedText || 'Your paragraph text here'}</p>` + htmlContent.substring(end);
+        break;
+      case 'link':
+        const url = prompt('Enter URL:');
+        if (url) {
+          newContent = htmlContent.substring(0, start) + `<a href="${url}">${selectedText || 'Link text'}</a>` + htmlContent.substring(end);
+        } else return;
+        break;
+      case 'image':
+        const imgUrl = prompt('Enter image URL:');
+        const altText = prompt('Enter alt text:');
+        if (imgUrl) {
+          newContent = htmlContent.substring(0, start) + `<img src="${imgUrl}" alt="${altText || 'Image'}" />` + htmlContent.substring(end);
+        } else return;
+        break;
+      case 'list':
+        newContent = htmlContent.substring(0, start) + `<ul>\n  <li>Item 1</li>\n  <li>Item 2</li>\n  <li>Item 3</li>\n</ul>` + htmlContent.substring(end);
+        break;
+      case 'code':
+        newContent = htmlContent.substring(0, start) + `<code>${selectedText || 'your code here'}</code>` + htmlContent.substring(end);
+        break;
+      case 'blockquote':
+        newContent = htmlContent.substring(0, start) + `<blockquote>${selectedText || 'Quote text here'}</blockquote>` + htmlContent.substring(end);
+        break;
+      case 'div':
+        const className = prompt('Enter CSS class (optional):');
+        newContent = htmlContent.substring(0, start) + `<div${className ? ` class="${className}"` : ''}>${selectedText || 'Content here'}</div>` + htmlContent.substring(end);
+        break;
+      default:
+        return;
+    }
+    
+    handleContentChange(newContent);
+  };
+
+  const formatHTML = () => {
+    // Simple HTML formatting
+    let formatted = htmlContent
+      .replace(/></g, '>\n<')
+      .replace(/^\s*\n/gm, '')
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+    
+    let indentLevel = 0;
+    const indentedHTML = formatted.map(line => {
+      if (line.includes('</') && !line.includes('</'+ line.split('</')[1].split('>')[0] + '>')) {
+        indentLevel--;
+      }
+      const indentedLine = '  '.repeat(Math.max(0, indentLevel)) + line;
+      if (line.includes('<') && !line.includes('</') && !line.includes('/>')) {
+        indentLevel++;
+      }
+      return indentedLine;
+    }).join('\n');
+    
+    handleContentChange(indentedHTML);
+  };
+
+  const insertTemplate = (template) => {
+    const templates = {
+      'article': `<article>
+  <header>
+    <h1>Article Title</h1>
+    <p class="meta">Published on <time datetime="2025-07-15">July 15, 2025</time></p>
+  </header>
+  <main>
+    <p>Your article content goes here...</p>
+  </main>
+</article>`,
+      'section': `<section>
+  <h2>Section Title</h2>
+  <p>Section content...</p>
+</section>`,
+      'card': `<div class="card">
+  <div class="card-header">
+    <h3>Card Title</h3>
+  </div>
+  <div class="card-body">
+    <p>Card content...</p>
+  </div>
+</div>`,
+      'grid': `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="grid-item">
+    <h3>Grid Item 1</h3>
+    <p>Content for first item...</p>
+  </div>
+  <div class="grid-item">
+    <h3>Grid Item 2</h3>
+    <p>Content for second item...</p>
+  </div>
+</div>`,
+      'button': `<button class="btn btn-primary" onclick="handleClick()">
+  Click Me
+</button>`,
+      'form': `<form action="#" method="post">
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div class="form-group">
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" rows="4" required></textarea>
+  </div>
+  <button type="submit">Submit</button>
+</form>`
+    };
+    
+    if (templates[template]) {
+      handleContentChange(htmlContent + '\n\n' + templates[template]);
+    }
+  };
+
+  return (
+    <div className={`border rounded-lg ${isFullscreen ? 'fixed inset-0 z-50 bg-white ' : ''}`}>
+      {/* Editor Header */}
+      <div className="flex items-center justify-between p-3 border-b bg-gray-50 ">
+        <div className="flex items-center space-x-2">
+          <Button 
+            variant={editorMode === 'visual' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setEditorMode('visual')}
+          >
+            Visual
+          </Button>
+          <Button 
+            variant={editorMode === 'html' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setEditorMode('html')}
+          >
+            HTML
+          </Button>
+          <Button 
+            variant={editorMode === 'split' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setEditorMode('split')}
+          >
+            Split
+          </Button>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" size="sm" onClick={formatHTML}>
+            Format HTML
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setIsFullscreen(!isFullscreen)}
+          >
+            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+          </Button>
+        </div>
+      </div>
+
+      {/* Visual Mode Toolbar */}
+      {(editorMode === 'visual' || editorMode === 'split') && (
+        <div className="p-3 border-b bg-gray-50 ">
+          <div className="flex flex-wrap gap-1">
+            {/* Text Formatting */}
+            <div className="flex items-center space-x-1 pr-2 border-r">
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('bold')} title="Bold">
+                <strong>B</strong>
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('italic')} title="Italic">
+                <em>I</em>
+              </Button>
+            </div>
+            
+            {/* Headings */}
+            <div className="flex items-center space-x-1 px-2 border-r">
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('h1')}>H1</Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('h2')}>H2</Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('h3')}>H3</Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('paragraph')}>P</Button>
+            </div>
+            
+            {/* Content Elements */}
+            <div className="flex items-center space-x-1 px-2 border-r">
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('link')} title="Link">
+                🔗
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('image')} title="Image">
+                🖼️
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('list')} title="List">
+                📝
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('code')} title="Code">
+                &lt;/&gt;
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('blockquote')} title="Quote">
+                💬
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => insertHTML('div')} title="Div">
+                📦
+              </Button>
+            </div>
+
+            {/* Templates */}
+            <div className="flex items-center space-x-1 px-2">
+              <Select onValueChange={insertTemplate}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Templates" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="article">Article</SelectItem>
+                  <SelectItem value="section">Section</SelectItem>
+                  <SelectItem value="card">Card</SelectItem>
+                  <SelectItem value="grid">Grid Layout</SelectItem>
+                  <SelectItem value="button">Button</SelectItem>
+                  <SelectItem value="form">Form</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Editor Content Area */}
+      <div className={`${isFullscreen ? 'h-screen' : 'h-96'} flex`}>
+        {/* Visual Editor */}
+        {(editorMode === 'visual' || editorMode === 'split') && (
+          <div className={`${editorMode === 'split' ? 'w-1/2 border-r' : 'w-full'} p-4`}>
+            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: htmlContent }} />
+          </div>
+        )}
+        
+        {/* HTML Source Editor */}
+        {(editorMode === 'html' || editorMode === 'split') && (
+          <div className={`${editorMode === 'split' ? 'w-1/2' : 'w-full'}`}>
+            <Textarea
+              id="html-editor"
+              value={htmlContent}
+              onChange={(e) => handleContentChange(e.target.value)}
+              placeholder="Enter your HTML content here..."
+              className={`${isFullscreen ? 'h-full' : 'h-full'} border-0 rounded-none font-mono text-sm resize-none focus:ring-0`}
+              style={{ fontFamily: 'Monaco, Consolas, "Courier New", monospace' }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Editor Footer */}
+      <div className="flex justify-between items-center p-3 border-t bg-gray-50 text-sm text-gray-600">
+        <div className="flex space-x-4">
+          <span>Characters: {htmlContent.length}</span>
+          <span>Words: {htmlContent.replace(/<[^>]*>/g, '').split(/\s+/).filter(word => word.length > 0).length}</span>
+          <span>Lines: {htmlContent.split('\n').length}</span>
+        </div>
+        <div className="text-xs">
+          Mode: {editorMode.charAt(0).toUpperCase() + editorMode.slice(1)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Analytics Dashboard Component - REAL DATA ONLY
+function AnalyticsDashboard({ onNavigate }: { onNavigate?: (section: string) => void }) {
+  // Real statistics, daily analytics, review queue, activity, provinces and content - NO DEMO DATA
+  return <AdminOverview onNavigate={onNavigate} />;
+}
+
+// Add User Dialog Component
+function AddUserDialog({ open, onClose, onSubmit, isLoading, subscriptionPlans }) {
+  const [formData, setFormData] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    role: "user",
+    subscriptionPlan: "free",
+    isActive: true,
+    password: ""
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Add New User</DialogTitle>
+          <DialogDescription>Create a new user account</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                value={formData.firstName}
+                onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                value={formData.lastName}
+                onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              required
+              minLength={8}
+            />
+          </div>
+          <div>
+            <Label htmlFor="role">Role</Label>
+            <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="business_owner">Business Owner</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="super_admin">Super Admin</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="subscriptionPlan">Subscription Plan</Label>
+            <Select value={formData.subscriptionPlan} onValueChange={(value) => setFormData({...formData, subscriptionPlan: value})}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="free">Free</SelectItem>
+                <SelectItem value="basic">Basic</SelectItem>
+                <SelectItem value="premium">Premium</SelectItem>
+                <SelectItem value="enterprise">Enterprise</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="isActive"
+              checked={formData.isActive}
+              onCheckedChange={(checked) => setFormData({...formData, isActive: checked})}
+            />
+            <Label htmlFor="isActive">Account Active</Label>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Creating..." : "Create User"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Edit User Dialog Component
+function EditUserDialog({ open, onClose, user, onSubmit, isLoading, subscriptionPlans, onActivateSubscription }) {
+  const [formData, setFormData] = useState({
+    email: user?.email || "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    role: user?.role || "user",
+    subscriptionPlan: user?.subscriptionPlan || "free",
+    subscriptionStatus: user?.subscriptionStatus || "active",
+    isActive: user?.isActive ?? true,
+    permissions: Array.isArray(user?.permissions) ? user.permissions : [],
+    notes: user?.notes || ""
+  });
+
+  // Update form data when user changes
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        email: user.email || "",
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        role: user.role || "user",
+        subscriptionPlan: user.subscriptionPlan || "free",
+        subscriptionStatus: user.subscriptionStatus || "active",
+        isActive: user.isActive ?? true,
+        permissions: Array.isArray(user.permissions) ? user.permissions : [],
+        notes: user.notes || ""
+      });
+    }
+  }, [user]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Include user ID in the submitted data for proper updating
+    onSubmit({ id: user?.id, ...formData });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Edit User: {user?.firstName} {user?.lastName}</DialogTitle>
+          <DialogDescription>Update user account details and permissions</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Tabs defaultValue="profile" className="w-full">
+            <TabsList>
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="subscription">Subscription</TabsTrigger>
+              <TabsTrigger value="permissions">Permissions</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="profile" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="role">Role</Label>
+                <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="business_owner">Business Owner</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="super_admin">Super Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="isActive"
+                  checked={formData.isActive}
+                  onCheckedChange={(checked) => setFormData({...formData, isActive: checked})}
+                />
+                <Label htmlFor="isActive">Account Active</Label>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="subscription" className="space-y-4">
+              <div>
+                <Label htmlFor="subscriptionPlan">Current Plan</Label>
+                <Select value={formData.subscriptionPlan} onValueChange={(value) => setFormData({...formData, subscriptionPlan: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="free">Free</SelectItem>
+                    <SelectItem value="basic">Basic</SelectItem>
+                    <SelectItem value="premium">Premium</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="subscriptionStatus">Status</Label>
+                <Select value={formData.subscriptionStatus} onValueChange={(value) => setFormData({...formData, subscriptionStatus: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="suspended">Suspended</SelectItem>
+                    <SelectItem value="expired">Expired</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Quick Actions</Label>
+                <div className="flex gap-2">
+                  <Button 
+                    type="button" 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => onActivateSubscription(2)}
+                  >
+                    Activate Premium
+                  </Button>
+                  <Button 
+                    type="button" 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => onActivateSubscription(3)}
+                  >
+                    Activate Enterprise
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="permissions" className="space-y-4">
+              {/* Real-time User Information */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>User Information</Label>
+                  <div className="text-sm text-gray-600 space-y-1 p-3 bg-gray-50 rounded-md">
+                    <div>ID: {user?.id}</div>
+                    <div>Created: {user?.createdAt ? format(new Date(user.createdAt), "MMM dd, yyyy HH:mm") : 'N/A'}</div>
+                    <div>Last Login: {user?.lastLoginAt ? format(new Date(user.lastLoginAt), "MMM dd, yyyy HH:mm") : 'Never'}</div>
+                    <div>Last Login IP: {user?.lastLoginIp || 'N/A'}</div>
+                    <div>Registration IP: {user?.registrationIp || 'N/A'}</div>
+                    <div>Email Verified: 
+                      <Badge variant={user?.isEmailVerified ? "default" : "destructive"} className="ml-2">
+                        {user?.isEmailVerified ? 'Yes' : 'No'}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label>Activity Status</Label>
+                  <div className="text-sm text-gray-600 space-y-1 p-3 bg-blue-50 rounded-md">
+                    <div>Account Status: 
+                      <Badge variant={user?.isActive ? "default" : "destructive"} className="ml-2">
+                        {user?.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
+                    <div>Total Logins: {user?.totalLogins || 0}</div>
+                    <div>Last Modified: {user?.lastModifiedAt ? format(new Date(user.lastModifiedAt), "MMM dd, yyyy HH:mm") : 'N/A'}</div>
+                    <div>Modified By: {user?.lastModifiedBy || 'System'}</div>
+                    <div>Current Session: 
+                      <Badge variant="outline" className="ml-2">
+                        {user?.lastLoginAt && new Date(user.lastLoginAt) > new Date(Date.now() - 24*60*60*1000) ? 'Online' : 'Offline'}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Comprehensive Permission Management */}
+              <div>
+                <Label>User Permissions & Access Control</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Business Management</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('business_management')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'business_management']
+                            : currentPermissions.filter(p => p !== 'business_management');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">User Management</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('user_management')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'user_management']
+                            : currentPermissions.filter(p => p !== 'user_management');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Content Management</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('content_management')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'content_management']
+                            : currentPermissions.filter(p => p !== 'content_management');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Analytics Access</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('analytics_access')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'analytics_access']
+                            : currentPermissions.filter(p => p !== 'analytics_access');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">System Settings</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('system_settings')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'system_settings']
+                            : currentPermissions.filter(p => p !== 'system_settings');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Financial Reports</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('financial_reports')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'financial_reports']
+                            : currentPermissions.filter(p => p !== 'financial_reports');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">API Access</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('api_access')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'api_access']
+                            : currentPermissions.filter(p => p !== 'api_access');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">Audit Logs</span>
+                      <Switch
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes('audit_logs')}
+                        onCheckedChange={(checked) => {
+                          const currentPermissions = Array.isArray(formData.permissions) ? formData.permissions : [];
+                          const newPermissions = checked 
+                            ? [...currentPermissions, 'audit_logs']
+                            : currentPermissions.filter(p => p !== 'audit_logs');
+                          setFormData({...formData, permissions: newPermissions});
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Permission Notes */}
+              <div>
+                <Label htmlFor="permissionNotes">Permission Notes</Label>
+                <textarea
+                  id="permissionNotes"
+                  className="w-full mt-1 p-2 border rounded-md text-sm"
+                  rows={3}
+                  placeholder="Add notes about special permissions or restrictions..."
+                  value={formData.notes || ''}
+                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+          
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Updating..." : "Update User"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Audit Log Table Component
+function AuditLogTable() {
+  const { data: auditLogs = [], isLoading } = useQuery({
+    queryKey: ["/api/admin/audit-logs"],
+    queryFn: async () => {
+      const response = await fetch("/api/admin/audit-logs?limit=20", {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        return [];
+      }
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    },
+    retry: false
+  });
+
+  if (isLoading) {
+    return <div className="text-center py-4">Loading audit logs...</div>;
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left p-3">Admin</th>
+            <th className="text-left p-3">Action</th>
+            <th className="text-left p-3">Target</th>
+            <th className="text-left p-3">Description</th>
+            <th className="text-left p-3">IP Address</th>
+            <th className="text-left p-3">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {auditLogs.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="text-center py-8 text-gray-500">
+                No audit logs found
+              </td>
+            </tr>
+          ) : (
+            auditLogs.map((log) => (
+              <tr key={log.id} className="border-b hover:bg-gray-50 ">
+                <td className="p-3">{log.adminEmail || log.adminId}</td>
+                <td className="p-3">
+                  <Badge variant="outline">{log.action}</Badge>
+                </td>
+                <td className="p-3">
+                  {log.targetType}: {log.targetId}
+                </td>
+                <td className="p-3">{log.description}</td>
+                <td className="p-3">{log.ipAddress}</td>
+                <td className="p-3">
+                  {log.createdAt ? format(new Date(log.createdAt), "MMM dd, yyyy HH:mm") : 'N/A'}
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// User Management Component
+function UserManagement() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRole, setSelectedRole] = useState("all");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showAddUser, setShowAddUser] = useState(false);
+  const [showEditUser, setShowEditUser] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch users with filters
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ["/api/admin/users", searchTerm, selectedRole],
+    queryFn: async ({ queryKey }) => {
+      const [, search, role] = queryKey;
+      const response = await fetch(`/api/admin/users?search=${search}&role=${role}`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        // Return empty array for unauthorized access rather than throwing
+        return [];
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    },
+    retry: false
+  });
+
+  // Fetch subscription plans
+  const { data: subscriptionPlans = [] } = useQuery({
+    queryKey: ["/api/admin/subscription-plans"]
+  });
+
+  // Add user mutation
+  const addUserMutation = useMutation({
+    mutationFn: (userData) => apiRequest("POST", "/api/admin/users", userData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setShowAddUser(false);
+      toast({ title: "User created successfully" });
+    }
+  });
+
+  // Update user mutation
+  const updateUserMutation = useMutation({
+    mutationFn: ({ id, ...userData }) => apiRequest("PATCH", `/api/admin/users/${id}`, userData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/real-stats"] });
+      setShowEditUser(false);
+      setSelectedUser(null);
+      toast({ title: "User updated successfully" });
+    },
+    onError: (error) => {
+      console.error("Error updating user:", error);
+      toast({ 
+        title: "Failed to update user", 
+        description: error?.message || "Please try again", 
+        variant: "destructive" 
+      });
+    }
+  });
+
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: (id) => apiRequest("DELETE", `/api/admin/users/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "User deleted successfully" });
+    }
+  });
+
+  // Reset password mutation
+  const resetPasswordMutation = useMutation({
+    mutationFn: ({ id, newPassword }) => apiRequest("POST", `/api/admin/users/${id}/reset-password`, { newPassword }),
+    onSuccess: () => {
+      toast({ title: "Password reset successfully" });
+    }
+  });
+
+  // Activate subscription mutation
+  const activateSubscriptionMutation = useMutation({
+    mutationFn: ({ userId, planId }) => apiRequest("POST", `/api/admin/users/${userId}/subscription`, { planId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/real-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/audit-logs"] });
+      toast({ title: "Subscription activated successfully" });
+    }
+  });
+
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setShowEditUser(true);
+  };
+
+  const handleDeleteUser = (userId) => {
+    if (confirm("Are you sure you want to delete this user?")) {
+      deleteUserMutation.mutate(userId);
+    }
+  };
+
+  const handleResetPassword = (userId) => {
+    const newPassword = prompt("Enter new password for user:");
+    if (newPassword && newPassword.length >= 8) {
+      resetPasswordMutation.mutate({ id: userId, newPassword });
+    } else {
+      toast({ title: "Password must be at least 8 characters", variant: "destructive" });
+    }
+  };
+
+  const getRoleBadgeColor = (role) => {
+    switch (role) {
+      case "super_admin": return "bg-red-100 text-red-800";
+      case "admin": return "bg-[#FFF4E0] text-[#7C4A03]";
+      case "business_owner": return "bg-blue-100 text-blue-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusBadgeColor = (isActive, subscriptionStatus) => {
+    if (!isActive) return "bg-red-100 text-red-800";
+    if (subscriptionStatus === "expired") return "bg-[#FFF4E0] text-[#7C4A03]";
+    return "bg-green-100 text-green-800";
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">User Management</h2>
+          <p className="text-gray-600 ">
+            Manage user accounts, permissions, and subscriptions
+          </p>
+        </div>
+        <Button 
+          onClick={() => setShowAddUser(true)}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add User
+        </Button>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex gap-4 items-center">
+            <div className="flex-1">
+              <Input
+                placeholder="Search users by name, email, or ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="max-w-md"
+              />
+            </div>
+            <Select value={selectedRole} onValueChange={setSelectedRole}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Roles</SelectItem>
+                <SelectItem value="user">Users</SelectItem>
+                <SelectItem value="business_owner">Business Owners</SelectItem>
+                <SelectItem value="admin">Admins</SelectItem>
+                <SelectItem value="super_admin">Super Admins</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Users Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Users ({users.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="text-center py-8">Loading users...</div>
+          ) : users.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No users found</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-3">User</th>
+                    <th className="text-left p-3">Role</th>
+                    <th className="text-left p-3">Status</th>
+                    <th className="text-left p-3">Subscription</th>
+                    <th className="text-left p-3">Join Date</th>
+                    <th className="text-left p-3">Last Login</th>
+                    <th className="text-left p-3">Last Modified</th>
+                    <th className="text-left p-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id} className="border-b hover:bg-gray-50 ">
+                      <td className="p-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
+                            {user.firstName?.[0] || user.email[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="font-medium">{user.firstName} {user.lastName}</div>
+                            <div className="text-sm text-gray-500">{user.email}</div>
+                            <div className="text-xs text-gray-400">ID: {user.id}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <Badge className={getRoleBadgeColor(user.role)}>
+                          {user.role?.replace('_', ' ').toUpperCase()}
+                        </Badge>
+                      </td>
+                      <td className="p-3">
+                        <Badge className={getStatusBadgeColor(user.isActive, user.subscriptionStatus)}>
+                          {user.isActive ? 'Active' : 'Inactive'}
+                        </Badge>
+                        {user.lastLoginIp && (
+                          <div className="text-xs text-gray-400 mt-1">IP: {user.lastLoginIp}</div>
+                        )}
+                      </td>
+                      <td className="p-3">
+                        <div className="text-sm">
+                          <div className="font-medium">{user.subscriptionPlan || 'Free'}</div>
+                          <div className="text-gray-500">{user.subscriptionStatus}</div>
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="text-sm">
+                          {user.createdAt ? format(new Date(user.createdAt), "MMM dd, yyyy") : 'N/A'}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="text-sm">
+                          {user.lastLoginAt ? format(new Date(user.lastLoginAt), "MMM dd, yyyy HH:mm") : 'Never'}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="text-sm">
+                          {user.lastModifiedAt ? format(new Date(user.lastModifiedAt), "MMM dd, yyyy HH:mm") : 'N/A'}
+                          {user.lastModifiedBy && (
+                            <div className="text-xs text-gray-400">by {user.lastModifiedBy}</div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditUser(user)}
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleResetPassword(user.id)}
+                          >
+                            <Key className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteUser(user.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Add User Dialog */}
+      {showAddUser && (
+        <AddUserDialog
+          open={showAddUser}
+          onClose={() => setShowAddUser(false)}
+          onSubmit={(userData) => addUserMutation.mutate(userData)}
+          isLoading={addUserMutation.isPending}
+          subscriptionPlans={subscriptionPlans}
+        />
+      )}
+
+      {/* Edit User Dialog */}
+      {showEditUser && selectedUser && (
+        <EditUserDialog
+          open={showEditUser}
+          onClose={() => {
+            setShowEditUser(false);
+            setSelectedUser(null);
+          }}
+          user={selectedUser}
+          onSubmit={(userData) => updateUserMutation.mutate({ id: selectedUser.id, ...userData })}
+          isLoading={updateUserMutation.isPending}
+          subscriptionPlans={subscriptionPlans}
+          onActivateSubscription={(planId) => 
+            activateSubscriptionMutation.mutate({ userId: selectedUser.id, planId })
+          }
+        />
+      )}
+
+      {/* Audit Logs Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Admin Actions</CardTitle>
+          <CardDescription>
+            Audit log of recent administrative actions
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AuditLogTable />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// Business Management Component - Now uses Advanced Business Management
+function BusinessManagement() {
+  return <AdvancedBusinessManagement />;
+}
+
+// Settings Component
+function SystemSettings() {
+  const [activeTab, setActiveTab] = useState("general");
+  const [logos, setLogos] = useState({
+    headerLogo: "/assets/pakistanyp-logo.png",
+    footerLogo: "/assets/pakistanyp-logo-white.png",
+    favicon: "/favicon.ico"
+  });
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isClearingCache, setIsClearingCache] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch current settings from server
+  const { data: settings = {}, isLoading } = useQuery({
+    queryKey: ['/api/admin/settings'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/settings', {
+        credentials: 'include'
+      });
+      if (!response.ok) return {};
+      return response.json();
+    },
+    retry: false
+  });
+
+  // Update local state when settings are fetched
+  useEffect(() => {
+    if (settings && Object.keys(settings).length > 0) {
+      setLogos(prev => ({
+        ...prev,
+        headerLogo: settings.headerLogo || prev.headerLogo,
+        footerLogo: settings.footerLogo || prev.footerLogo,
+        favicon: settings.favicon || prev.favicon
+      }));
+    }
+  }, [settings]);
+
+  // Update settings mutation
+  const updateSettingsMutation = useMutation({
+    mutationFn: async (settingsData) => {
+      return apiRequest('PUT', '/api/admin/settings', settingsData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/settings'] });
+      toast({ title: "Settings updated successfully" });
+    },
+    onError: (error) => {
+      console.error('Error updating settings:', error);
+      toast({ title: "Failed to update settings", variant: "destructive" });
+    }
+  });
+
+  // Manual cache clearing function
+  const handleManualCacheClear = async () => {
+    setIsClearingCache(true);
+    try {
+      const response = await fetch('/api/admin/clear-favicon-cache', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        // Refresh settings to get updated cache timestamp
+        queryClient.invalidateQueries({ queryKey: ['/api/admin/settings'] });
+        
+        // Update browser favicon with cache-busting
+        updateBrowserFavicon(logos.favicon);
+        
+        // Trigger favicon update event for automatic cache clearing
+        window.dispatchEvent(new CustomEvent('faviconUpdate'));
+        
+        toast({ 
+          title: "Cache cleared successfully",
+          description: `Favicon cache cleared at ${new Date().toLocaleTimeString()}`
+        });
+      } else {
+        throw new Error('Failed to clear cache');
+      }
+    } catch (error) {
+      console.error('Error clearing cache:', error);
+      toast({ 
+        title: "Failed to clear cache", 
+        variant: "destructive",
+        description: "Please try again or contact support"
+      });
+    } finally {
+      setIsClearingCache(false);
+    }
+  };
+
+  // Function to dynamically update browser favicon
+  const updateBrowserFavicon = (faviconUrl) => {
+    // Remove existing favicon links
+    const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
+    existingFavicons.forEach(favicon => favicon.remove());
+    
+    // Add cache-busting parameter to force browser to reload
+    const timestamp = Date.now();
+    const cacheBustingUrl = faviconUrl + (faviconUrl.includes('?') ? '&' : '?') + 'v=' + timestamp;
+    
+    // Add new favicon link with cache busting
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.href = cacheBustingUrl;
+    link.type = 'image/png';
+    document.head.appendChild(link);
+    
+    // Also add as shortcut icon for better browser support
+    const shortcutLink = document.createElement('link');
+    shortcutLink.rel = 'shortcut icon';
+    shortcutLink.href = cacheBustingUrl;
+    shortcutLink.type = 'image/png';
+    document.head.appendChild(shortcutLink);
+    
+    // Force browser to reload favicon by creating a temporary link
+    const tempLink = document.createElement('link');
+    tempLink.rel = 'icon';
+    tempLink.href = 'data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAP//2Q==';
+    document.head.appendChild(tempLink);
+    
+    // Remove temporary link after a short delay and add the real favicon
+    setTimeout(() => {
+      tempLink.remove();
+      
+      // Add the real favicon again to ensure it's loaded
+      const finalLink = document.createElement('link');
+      finalLink.rel = 'icon';
+      finalLink.href = cacheBustingUrl;
+      finalLink.type = 'image/png';
+      document.head.appendChild(finalLink);
+    }, 100);
+  };
+
+  // File upload handler
+  const handleFileUpload = async (file, type) => {
+    if (!file) return;
+
+    // Validate file type using both MIME type and file extension
+    const fileName = file.name.toLowerCase();
+    const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+    
+    if (type === 'favicon') {
+      const allowedMimeTypes = ['image/x-icon', 'image/vnd.microsoft.icon', 'image/png', 'image/jpeg', 'image/jpg'];
+      const allowedExtensions = ['.ico', '.png', '.jpg', '.jpeg'];
+      
+      if (!allowedMimeTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+        toast({ 
+          title: "Invalid file type", 
+          description: "Please select an ICO, PNG, or JPEG file",
+          variant: "destructive" 
+        });
+        return;
+      }
+    } else {
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({ 
+          title: "Invalid file type", 
+          description: "Please select a PNG, JPEG, or SVG file",
+          variant: "destructive" 
+        });
+        return;
+      }
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ 
+        title: "File too large", 
+        description: "Please select a file smaller than 5MB",
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', type);
+
+      const response = await fetch('/api/admin/upload-logo', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const result = await response.json();
+      
+      setLogos(prev => ({
+        ...prev,
+        [type]: result.url
+      }));
+
+      // Settings are automatically saved by the server
+      // Invalidate cache to refresh settings
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/settings'] });
+
+      // If favicon was updated, dynamically update the browser's favicon
+      if (type === 'favicon') {
+        updateBrowserFavicon(result.url);
+      }
+
+      toast({ title: `${type} uploaded successfully` });
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({ 
+        title: "Upload failed", 
+        description: "Please try again",
+        variant: "destructive" 
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  // Handle URL input for logos
+  const handleUrlUpdate = (type, url) => {
+    setLogos(prev => ({
+      ...prev,
+      [type]: url
+    }));
+  };
+
+  // Save URL changes
+  const handleSaveUrl = (type) => {
+    updateSettingsMutation.mutate({
+      [type]: logos[type]
+    });
+    
+    // If favicon was updated, dynamically update the browser's favicon
+    if (type === 'favicon') {
+      updateBrowserFavicon(logos[type]);
+    }
+  };
+
+  // Reset to default logos
+  const handleResetDefault = (type) => {
+    const defaults = {
+      headerLogo: "/assets/pakistanyp-logo.png",
+      footerLogo: "/assets/pakistanyp-logo-white.png",
+      favicon: "/favicon.ico"
+    };
+    
+    setLogos(prev => ({
+      ...prev,
+      [type]: defaults[type]
+    }));
+    
+    updateSettingsMutation.mutate({
+      [type]: defaults[type]
+    });
+    
+    // If favicon was reset, dynamically update the browser's favicon
+    if (type === 'favicon') {
+      updateBrowserFavicon(defaults[type]);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">System Settings</h2>
+          <p className="text-gray-600 ">
+            Configure system-wide settings and branding
+          </p>
+        </div>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="general">General</TabsTrigger>
+          <TabsTrigger value="branding">Branding</TabsTrigger>
+          <TabsTrigger value="email">Email</TabsTrigger>
+          <TabsTrigger value="system">System</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="general" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>General Settings</CardTitle>
+              <CardDescription>Basic website configuration</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="siteName">Site Name</Label>
+                  <Input 
+                    id="siteName" 
+                    defaultValue="Pakistan Yellow Pages" 
+                    placeholder="Enter site name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="siteDescription">Site Description</Label>
+                  <Input 
+                    id="siteDescription" 
+                    defaultValue="Pakistan's Premier Business Directory" 
+                    placeholder="Enter site description"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="contactEmail">Contact Email</Label>
+                  <Input 
+                    id="contactEmail" 
+                    type="email"
+                    defaultValue="contact@pakistanyp.com" 
+                    placeholder="Enter contact email"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="supportEmail">Support Email</Label>
+                  <Input 
+                    id="supportEmail" 
+                    type="email"
+                    defaultValue="support@pakistanyp.com" 
+                    placeholder="Enter support email"
+                  />
+                </div>
+              </div>
+
+              <Button className="w-full">Save General Settings</Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="branding" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Logo & Branding Management
+              </CardTitle>
+              <CardDescription>Upload and manage website logos and favicon</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              
+              {/* Header Logo Section */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Monitor className="w-5 h-5" />
+                  <h3 className="text-lg font-semibold">Header Logo</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <Label>Current Header Logo</Label>
+                    <div className="border rounded-lg p-4 bg-gray-50 ">
+                      <img 
+                        src={logos.headerLogo} 
+                        alt="Header Logo" 
+                        className="max-h-16 w-auto"
+                        onError={(e) => {
+                          e.target.src = "/assets/pakistanyp-logo.png";
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>Logo URL</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          value={logos.headerLogo}
+                          onChange={(e) => handleUrlUpdate('headerLogo', e.target.value)}
+                          placeholder="Enter logo URL"
+                        />
+                        <Button 
+                          variant="outline" 
+                          onClick={() => handleSaveUrl('headerLogo')}
+                          disabled={updateSettingsMutation.isPending}
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <Label>Upload New Header Logo</Label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileUpload(e.target.files[0], 'headerLogo')}
+                        className="hidden"
+                        id="headerLogoUpload"
+                      />
+                      <label 
+                        htmlFor="headerLogoUpload" 
+                        className="cursor-pointer flex flex-col items-center gap-2"
+                      >
+                        <Upload className="w-8 h-8 text-gray-400" />
+                        <span className="text-sm text-gray-600">
+                          Click to upload or drag and drop
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          PNG, JPG, SVG up to 5MB
+                        </span>
+                      </label>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => handleResetDefault('headerLogo')}
+                        className="flex-1"
+                      >
+                        Reset to Default
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-6">
+                {/* Footer Logo Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Monitor className="w-5 h-5" />
+                    <h3 className="text-lg font-semibold">Footer Logo</h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <Label>Current Footer Logo</Label>
+                      <div className="border border-[#E7E9EE] rounded-xl p-4 bg-[#F3F1EC]">
+                        <img 
+                          src={logos.footerLogo} 
+                          alt="Footer Logo" 
+                          className="max-h-16 w-auto"
+                          onError={(e) => {
+                            e.target.src = "/assets/pakistanyp-logo-white.png";
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Logo URL</Label>
+                        <div className="flex gap-2">
+                          <Input 
+                            value={logos.footerLogo}
+                            onChange={(e) => handleUrlUpdate('footerLogo', e.target.value)}
+                            placeholder="Enter logo URL"
+                          />
+                          <Button 
+                            variant="outline" 
+                            onClick={() => handleSaveUrl('footerLogo')}
+                            disabled={updateSettingsMutation.isPending}
+                          >
+                            Save
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <Label>Upload New Footer Logo</Label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e.target.files[0], 'footerLogo')}
+                          className="hidden"
+                          id="footerLogoUpload"
+                        />
+                        <label 
+                          htmlFor="footerLogoUpload" 
+                          className="cursor-pointer flex flex-col items-center gap-2"
+                        >
+                          <Upload className="w-8 h-8 text-gray-400" />
+                          <span className="text-sm text-gray-600">
+                            Click to upload or drag and drop
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            PNG, JPG, SVG up to 5MB (white/transparent recommended)
+                          </span>
+                        </label>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          onClick={() => handleResetDefault('footerLogo')}
+                          className="flex-1"
+                        >
+                          Reset to Default
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-6">
+                {/* Favicon Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-5 h-5" />
+                    <h3 className="text-lg font-semibold">Favicon</h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <Label>Current Favicon</Label>
+                      <div className="border rounded-lg p-4 bg-gray-50 ">
+                        <div className="flex items-center gap-3">
+                          <img 
+                            src={logos.favicon} 
+                            alt="Favicon" 
+                            className="w-8 h-8"
+                            onError={(e) => {
+                              e.target.src = "/favicon.ico";
+                            }}
+                          />
+                          <span className="text-sm text-gray-600">32x32 pixels</span>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Favicon URL</Label>
+                        <div className="flex gap-2">
+                          <Input 
+                            value={logos.favicon}
+                            onChange={(e) => handleUrlUpdate('favicon', e.target.value)}
+                            placeholder="Enter favicon URL"
+                          />
+                          <Button 
+                            variant="outline" 
+                            onClick={() => handleSaveUrl('favicon')}
+                            disabled={updateSettingsMutation.isPending}
+                          >
+                            Save
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <Label>Upload New Favicon</Label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <input
+                          type="file"
+                          accept=".ico,.png,.jpg,.jpeg"
+                          onChange={(e) => handleFileUpload(e.target.files[0], 'favicon')}
+                          className="hidden"
+                          id="faviconUpload"
+                        />
+                        <label 
+                          htmlFor="faviconUpload" 
+                          className="cursor-pointer flex flex-col items-center gap-2"
+                        >
+                          <Upload className="w-8 h-8 text-gray-400" />
+                          <span className="text-sm text-gray-600">
+                            Click to upload or drag and drop
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            ICO, PNG, JPG (32x32 or 16x16 recommended)
+                          </span>
+                        </label>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          onClick={() => handleResetDefault('favicon')}
+                          className="flex-1"
+                        >
+                          Reset to Default
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {isUploading && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span className="text-sm">Uploading...</span>
+                  </div>
+                  <Progress value={uploadProgress} className="w-full" />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="email" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Email Configuration</CardTitle>
+              <CardDescription>Configure email settings and templates</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Button variant="outline">SMTP Settings</Button>
+                <Button variant="outline">Email Templates</Button>
+                <Button variant="outline">Email Testing</Button>
+                <Button variant="outline">Deliverability</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="system" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Favicon Cache Management</CardTitle>
+              <CardDescription>Manage favicon caching and browser refresh settings</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <h4 className="font-medium">Automatic Cache Clearing</h4>
+                  <p className="text-sm text-gray-600 ">
+                    Automatically clears favicon cache when favicon is updated
+                  </p>
+                </div>
+                <Badge variant="outline" className="bg-green-50 text-green-700">
+                  ✓ Enabled
+                </Badge>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <h4 className="font-medium">Browser Cache Status</h4>
+                  <p className="text-sm text-gray-600 ">
+                    Last cache clearing: {settings.faviconLastUpdated ? new Date(settings.faviconLastUpdated).toLocaleString() : 'Never'}
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleManualCacheClear}
+                  disabled={isClearingCache}
+                >
+                  {isClearingCache ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Clearing...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Clear Now
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <h4 className="font-medium text-blue-900 ">Cache Clearing Features</h4>
+                <ul className="mt-2 text-sm text-blue-700 space-y-1">
+                  <li>• Automatic cache clearing when favicon is uploaded</li>
+                  <li>• Manual cache clearing button for instant refresh</li>
+                  <li>• Enhanced cache-busting headers for all browsers</li>
+                  <li>• Real-time browser favicon update without page reload</li>
+                  <li>• File validation to prevent broken favicon references</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>System Configuration</CardTitle>
+              <CardDescription>Advanced system settings</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Button variant="outline">Database Backup</Button>
+                <Button variant="outline">Cache Settings</Button>
+                <Button variant="outline">SEO Settings</Button>
+                <Button variant="outline">Performance</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Favicon Cache Management Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <RefreshCw className="w-5 h-5 text-blue-600" />
+                Favicon Cache Management
+              </CardTitle>
+              <CardDescription>
+                Real-time monitoring and control of favicon cache clearing system
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FaviconCacheManagement />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+// Blog Post Management Component
+function BlogPostManagement() {
+  const [, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState("posts");
+  const [showCreatePost, setShowCreatePost] = useState(false);
+  const [showEditPost, setShowEditPost] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [showPreviewPost, setShowPreviewPost] = useState(false);
+  const [previewPost, setPreviewPost] = useState(null);
+  const [showCreateCategory, setShowCreateCategory] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedAuthor, setSelectedAuthor] = useState("all");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Sample blog categories
+  const [blogCategories, setBlogCategories] = useState([
+    { id: 1, name: "Business News", description: "Latest business updates and news", postCount: 12, color: "blue" },
+    { id: 2, name: "Industry Insights", description: "Deep insights into various industries", postCount: 8, color: "green" },
+    { id: 3, name: "Pakistani Economy", description: "Economic developments in Pakistan", postCount: 15, color: "orange" },
+    { id: 4, name: "Entrepreneur Stories", description: "Success stories from entrepreneurs", postCount: 6, color: "purple" },
+    { id: 5, name: "Market Trends", description: "Current market trends and analysis", postCount: 9, color: "red" }
+  ]);
+
+  // Real blog posts from database
+  const { data: blogPosts = [], refetch: refetchBlogPosts, isLoading: blogPostsLoading } = useQuery({
+    queryKey: ['/api/admin/blog-posts'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/blog-posts', {
+        credentials: 'include'
+      });
+      if (!response.ok) return [];
+      return response.json();
+    },
+    retry: false
+  });
+
+  const [newPost, setNewPost] = useState({
+    title: "",
+    excerpt: "",
+    content: "",
+    categoryId: "",
+    tags: [] as string[],
+    status: "draft",
+    featuredImage: "",
+    seoTitle: "",
+    metaDescription: "",
+    keywords: [] as string[],
+    featured: false,
+    customCSS: "",
+    customJS: "",
+    externalLibraries: [] as string[],
+    canonicalUrl: "",
+    robots: "index, follow",
+    openGraphImage: "",
+    twitterCard: "summary_large_image",
+    schema: "Article",
+    focusKeyword: "",
+    readabilityScore: 0,
+    seoScore: 0
+  });
+
+  const [newCategory, setNewCategory] = useState({
+    name: "",
+    description: "",
+    color: "blue"
+  });
+
+  // Filter posts based on search and filters
+  const filteredPosts = (blogPosts || []).filter((post: any) => {
+    const matchesSearch = searchTerm === "" || 
+      post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.excerpt?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (Array.isArray(post.tags) && post.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase())));
+    
+    const matchesCategory = selectedCategory === "all" || post.category === selectedCategory;
+    const matchesStatus = selectedStatus === "all" || post.status === selectedStatus;
+    const matchesAuthor = selectedAuthor === "all" || post.authorId === selectedAuthor;
+    
+    return matchesSearch && matchesCategory && matchesStatus && matchesAuthor;
+  });
+
+  const createPostMutation = useMutation({
+    mutationFn: (postData: any) => apiRequest('POST', '/api/admin/blog-posts', postData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/blog-posts'] });
+      refetchBlogPosts();
+      setShowCreatePost(false);
+      toast({ title: "Blog post created successfully" });
+    },
+    onError: (error) => {
+      console.error('Error creating blog post:', error);
+      toast({ title: "Failed to create blog post", variant: "destructive" });
+    }
+  });
+
+  const handleCreatePost = () => {
+    if (!newPost.title.trim() || !newPost.content.trim()) {
+      toast({ title: "Title and content are required", variant: "destructive" });
+      return;
+    }
+
+    const postData = {
+      title: newPost.title,
+      slug: newPost.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      excerpt: newPost.excerpt,
+      content: newPost.content,
+      categoryId: parseInt(newPost.categoryId) || null,
+      tags: newPost.tags,
+      status: newPost.status,
+      featuredImage: newPost.featuredImage,
+      metaTitle: newPost.seoTitle,
+      metaDescription: newPost.metaDescription,
+      publishedAt: newPost.status === "published" ? new Date().toISOString() : null,
+      readingTime: Math.ceil(newPost.content.split(' ').length / 200)
+    };
+
+    createPostMutation.mutate(postData);
+    setNewPost({
+      title: "", excerpt: "", content: "", categoryId: "", tags: [] as string[], status: "draft",
+      featuredImage: "", seoTitle: "", metaDescription: "", keywords: [] as string[], featured: false,
+      customCSS: "", customJS: "", externalLibraries: [] as string[], canonicalUrl: "",
+      robots: "index, follow", openGraphImage: "", twitterCard: "summary_large_image",
+      schema: "Article", focusKeyword: "", readabilityScore: 0, seoScore: 0
+    });
+  };
+
+  const handleEditPost = (post: any) => {
+    // Store the post data in localStorage for the edit form
+    localStorage.setItem('editingBlogPost', JSON.stringify({
+      id: post.id,
+      title: post.title,
+      excerpt: post.excerpt,
+      content: post.content,
+      categoryId: post.categoryId?.toString() || "",
+      tags: Array.isArray(post.tags) ? [...post.tags] : [],
+      status: post.status,
+      featuredImage: post.featuredImage,
+      seoTitle: post.seoTitle || "",
+      metaDescription: post.metaDescription || "",
+      keywords: Array.isArray(post.keywords) ? [...post.keywords] : [],
+      featured: post.featured,
+      customCSS: post.customCSS || "",
+      customJS: post.customJS || "",
+      externalLibraries: Array.isArray(post.externalLibraries) ? [...post.externalLibraries] : [],
+      canonicalUrl: post.canonicalUrl || "",
+      robots: post.robots || "index, follow",
+      openGraphImage: post.openGraphImage || "",
+      twitterCard: post.twitterCard || "summary_large_image",
+      schema: post.schema || "Article",
+      focusKeyword: post.focusKeyword || "",
+      readabilityScore: post.readabilityScore || 0,
+      seoScore: post.seoScore || 0,
+      isEditing: true
+    }));
+    
+    // Navigate to the full blog creation form
+    setLocation('/create-blog-post');
+  };
+
+  const handlePreviewPost = (post: any) => {
+    setPreviewPost(post);
+    setShowPreviewPost(true);
+  };
+
+  const handleUpdatePost = () => {
+    // Use React Query for updates instead of local state
+    queryClient.invalidateQueries({ queryKey: ['/api/admin/blog-posts'] });
+    refetchBlogPosts();
+    setShowEditPost(false);
+    setSelectedPost(null);
+    setNewPost({
+      title: "", excerpt: "", content: "", categoryId: "", tags: [] as string[], status: "draft",
+      featuredImage: "", seoTitle: "", metaDescription: "", keywords: [] as string[], featured: false,
+      customCSS: "", customJS: "", externalLibraries: [] as string[], canonicalUrl: "",
+      robots: "index, follow", openGraphImage: "", twitterCard: "summary_large_image",
+      schema: "Article", focusKeyword: "", readabilityScore: 0, seoScore: 0
+    });
+    toast({ title: "Blog post updated successfully" });
+  };
+
+  const deletePostMutation = useMutation({
+    mutationFn: (postId: number) => apiRequest('DELETE', `/api/admin/blog-posts/${postId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/blog-posts'] });
+      refetchBlogPosts();
+      toast({ title: "Blog post deleted successfully" });
+    },
+    onError: (error) => {
+      console.error('Error deleting blog post:', error);
+      toast({ title: "Failed to delete blog post", variant: "destructive" });
+    }
+  });
+
+  const handleDeletePost = (postId: number) => {
+    if (confirm("Are you sure you want to delete this blog post? This action cannot be undone.")) {
+      deletePostMutation.mutate(postId);
+    }
+  };
+
+  const handleCreateCategory = () => {
+    if (!newCategory.name.trim()) {
+      toast({ title: "Category name is required", variant: "destructive" });
+      return;
+    }
+
+    const category = {
+      id: Date.now(),
+      ...newCategory,
+      postCount: 0
+    };
+
+    setBlogCategories(prev => [...prev, category]);
+    setNewCategory({ name: "", description: "", color: "blue" });
+    setShowCreateCategory(false);
+    toast({ title: "Category created successfully" });
+  };
+
+  const handleDeleteCategory = (categoryId) => {
+    const category = blogCategories.find(c => c.id === categoryId);
+    if (category?.postCount > 0) {
+      toast({ title: "Cannot delete category with existing posts", variant: "destructive" });
+      return;
+    }
+    
+    if (confirm("Are you sure you want to delete this category?")) {
+      setBlogCategories(prev => prev.filter(c => c.id !== categoryId));
+      toast({ title: "Category deleted successfully" });
+    }
+  };
+
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case "published": return "bg-green-100 text-green-800";
+      case "draft": return "bg-[#FFF4E0] text-[#7C4A03]";
+      case "archived": return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getCategoryColorClass = (color) => {
+    const colorMap = {
+      blue: "bg-blue-100 text-blue-800 border-blue-200",
+      green: "bg-green-100 text-green-800 border-green-200",
+      orange: "bg-[#FFF4E0] text-[#7C4A03] border-[#FBE3B5]",
+      purple: "bg-purple-100 text-purple-800 border-purple-200",
+      red: "bg-red-100 text-red-800 border-red-200"
+    };
+    return colorMap[color] || colorMap.blue;
+  };
+
+  const addTag = (tag) => {
+    if (tag.trim() && !newPost.tags.includes(tag.trim())) {
+      setNewPost(prev => ({ ...prev, tags: [...prev.tags, tag.trim()] }));
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setNewPost(prev => ({ ...prev, tags: prev.tags.filter(tag => tag !== tagToRemove) }));
+  };
+
+  const addKeyword = (keyword) => {
+    if (keyword.trim() && !newPost.keywords.includes(keyword.trim())) {
+      setNewPost(prev => ({ ...prev, keywords: [...prev.keywords, keyword.trim()] }));
+    }
+  };
+
+  const removeKeyword = (keywordToRemove) => {
+    setNewPost(prev => ({ ...prev, keywords: prev.keywords.filter(keyword => keyword !== keywordToRemove) }));
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Blog Post Management</h2>
+          <p className="text-gray-600 ">
+            Create and manage blog posts, categories, and content
+          </p>
+        </div>
+        <Button onClick={() => setLocation('/create-blog-post')} className="bg-blue-600 hover:bg-blue-700">
+          <Plus className="h-4 w-4 mr-2" />
+          Create Post
+        </Button>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="posts">Blog Posts</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="posts" className="space-y-4">
+          {/* Filters */}
+          <Card>
+            <CardContent className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Input
+                  placeholder="Search posts, tags, content..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filter by category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {blogCategories.map(category => (
+                      <SelectItem key={category.id} value={category.name}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="archived">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={selectedAuthor} onValueChange={setSelectedAuthor}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filter by author" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Authors</SelectItem>
+                    <SelectItem value="Admin User">Admin User</SelectItem>
+                    <SelectItem value="Content Editor">Content Editor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Posts Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Blog Posts ({blogPostsLoading ? '...' : filteredPosts.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {blogPostsLoading ? (
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="flex items-center space-x-4">
+                        <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                        <div className="h-4 bg-gray-200 rounded w-20"></div>
+                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        <div className="h-4 bg-gray-200 rounded w-12"></div>
+                        <div className="h-4 bg-gray-200 rounded w-20"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : filteredPosts.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-4">
+                    <FileText className="h-12 w-12 mx-auto" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Blog Posts</h3>
+                  <p className="text-gray-500 mb-4">
+                    Get started by creating your first blog post.
+                  </p>
+                  <Button onClick={() => setLocation('/create-blog-post')} className="bg-blue-600 hover:bg-blue-700">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create First Post
+                  </Button>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-3">Post</th>
+                        <th className="text-left p-3">Category</th>
+                        <th className="text-left p-3">Status</th>
+                        <th className="text-left p-3">Author</th>
+                        <th className="text-left p-3">Views</th>
+                        <th className="text-left p-3">Published</th>
+                        <th className="text-left p-3">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredPosts.map((post) => (
+                      <tr key={post.id} className="border-b hover:bg-gray-50 ">
+                        <td className="p-3">
+                          <div className="flex items-start space-x-3">
+                            {(post.featuredImage || post.featured_image) && (
+                              <img 
+                                src={post.featuredImage || post.featured_image} 
+                                alt={post.title} 
+                                className="w-16 h-12 object-cover rounded"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            )}
+                            <div className="flex-1">
+                              <div className="font-medium text-sm">{post.title}</div>
+                              <div className="text-xs text-gray-500 mt-1">{post.excerpt}</div>
+                              <div className="flex items-center gap-2 mt-2">
+                                {post.featured && (
+                                  <Badge variant="outline" className="text-xs bg-[#FFF8EB] text-[#7C4A03]">
+                                    Featured
+                                  </Badge>
+                                )}
+                                <div className="flex gap-1">
+                                  {post.tags.slice(0, 2).map(tag => (
+                                    <Badge key={tag} variant="outline" className="text-xs">
+                                      {tag}
+                                    </Badge>
+                                  ))}
+                                  {post.tags.length > 2 && (
+                                    <Badge variant="outline" className="text-xs">
+                                      +{post.tags.length - 2}
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <Badge className={getCategoryColorClass(blogCategories.find(c => c.name === post.category)?.color || 'blue')}>
+                            {post.category}
+                          </Badge>
+                        </td>
+                        <td className="p-3">
+                          <Badge className={getStatusBadgeColor(post.status)}>
+                            {post.status.charAt(0).toUpperCase() + post.status.slice(1)}
+                          </Badge>
+                        </td>
+                        <td className="p-3 text-sm">{post.author || 'Unknown'}</td>
+                        <td className="p-3">
+                          <div className="text-sm">
+                            <div className="font-medium">{(post.view_count || 0).toLocaleString()}</div>
+                            <div className="text-gray-500">{post.comments_count || 0} comments</div>
+                          </div>
+                        </td>
+                        <td className="p-3 text-sm">
+                          {post.publishedAt ? format(new Date(post.publishedAt), "MMM dd, yyyy") : 'Not published'}
+                        </td>
+                        <td className="p-3">
+                          <div className="flex gap-1">
+                            <Button variant="ghost" size="sm" onClick={() => handleEditPost(post)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => handlePreviewPost(post)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => {
+                                const slug = post.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                                window.open(`/admin-blog/${slug}`, '_blank');
+                              }}
+                              title="View with Custom Design"
+                            >
+                              <Palette className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => handleDeletePost(post.id)}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="categories" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Blog Categories</h3>
+            <Button onClick={() => setShowCreateCategory(true)} variant="outline">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Category
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {blogCategories.map((category) => (
+              <Card key={category.id} className={`border-l-4 ${getCategoryColorClass(category.color)}`}>
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{category.name}</CardTitle>
+                      <CardDescription className="mt-1">{category.description}</CardDescription>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleDeleteCategory(category.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-gray-600">
+                    {category.postCount} posts
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{blogPosts.length}</div>
+                <p className="text-xs text-muted-foreground">+2 from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Published Posts</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{blogPosts.filter(p => p.status === 'published').length}</div>
+                <p className="text-xs text-muted-foreground">+1 from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{blogPosts.reduce((sum, post) => sum + (post.view_count || 0), 0).toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">+15% from last month</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium">Total Comments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{blogPosts.reduce((sum, post) => sum + (post.comments_count || 0), 0)}</div>
+                <p className="text-xs text-muted-foreground">+8% from last month</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Popular Posts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {blogPosts
+                  .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
+                  .slice(0, 5)
+                  .map((post, index) => (
+                    <div key={post.id} className="flex items-center justify-between p-3 border rounded">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm font-medium">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">{post.title}</div>
+                          <div className="text-xs text-gray-500">{post.category}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium text-sm">{(post.view_count || 0).toLocaleString()}</div>
+                        <div className="text-xs text-gray-500">views</div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Blog Settings</CardTitle>
+              <CardDescription>Configure blog-wide settings and preferences</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => toast({ title: "Auto-Publishing Settings", description: "Configure automatic publishing rules and schedules" })}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Auto-Publishing Settings
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => toast({ title: "SEO Configuration", description: "Set default SEO settings for all blog posts" })}
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  SEO Configuration
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => toast({ title: "Comment Moderation", description: "Manage comment approval and moderation settings" })}
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Comment Moderation
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => toast({ title: "Social Media Integration", description: "Connect social media accounts for auto-sharing" })}
+                >
+                  <Globe className="h-4 w-4 mr-2" />
+                  Social Media Integration
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => toast({ title: "Email Notifications", description: "Configure email alerts for blog activities" })}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Email Notifications
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => toast({ title: "Backup & Export", description: "Export blog content and create backups" })}
+                >
+                  <Archive className="h-4 w-4 mr-2" />
+                  Backup & Export
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Create Post Dialog */}
+      <Dialog open={showCreatePost} onOpenChange={setShowCreatePost}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Blog Post</DialogTitle>
+            <DialogDescription>
+              Create a new blog post with SEO optimization and content management features
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="content" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="content">Content</TabsTrigger>
+              <TabsTrigger value="seo">SEO & Meta</TabsTrigger>
+              <TabsTrigger value="advanced">Advanced Editor</TabsTrigger>
+              <TabsTrigger value="custom">Custom Code</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="content" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="postTitle">Title</Label>
+                    <Input
+                      id="postTitle"
+                      value={newPost.title}
+                      onChange={(e) => setNewPost(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="Enter post title"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="postExcerpt">Excerpt</Label>
+                    <Textarea
+                      id="postExcerpt"
+                      value={newPost.excerpt}
+                      onChange={(e) => setNewPost(prev => ({ ...prev, excerpt: e.target.value }))}
+                      placeholder="Brief description of the post"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="postCategory">Category</Label>
+                    <Select 
+                      value={newPost.categoryId} 
+                      onValueChange={(categoryId) => setNewPost(prev => ({ ...prev, categoryId }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {blogCategories.map(category => (
+                          <SelectItem key={category.id} value={category.id.toString()}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label>Tags</Label>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {newPost.tags.map(tag => (
+                        <Badge key={tag} variant="outline" className="cursor-pointer" onClick={() => removeTag(tag)}>
+                          {tag} ×
+                        </Badge>
+                      ))}
+                    </div>
+                    <Input
+                      placeholder="Add tags (press Enter)"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addTag(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="featuredImage">Featured Image URL</Label>
+                    <Input
+                      id="featuredImage"
+                      value={newPost.featuredImage}
+                      onChange={(e) => setNewPost(prev => ({ ...prev, featuredImage: e.target.value }))}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="postContent">Content</Label>
+                  <AdvancedHTMLEditor
+                    value={newPost.content}
+                    onChange={(content) => setNewPost(prev => ({ ...prev, content }))}
+                  />
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="seo" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="seoTitle">SEO Title</Label>
+                  <Input
+                    id="seoTitle"
+                    value={newPost.seoTitle}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, seoTitle: e.target.value }))}
+                    placeholder="SEO optimized title (60 chars max)"
+                    maxLength={60}
+                  />
+                  <div className="text-xs text-gray-500 mt-1">{newPost.seoTitle.length}/60 characters</div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="focusKeyword">Focus Keyword</Label>
+                  <Input
+                    id="focusKeyword"
+                    value={newPost.focusKeyword}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, focusKeyword: e.target.value }))}
+                    placeholder="Primary keyword for this post"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="metaDescription">Meta Description</Label>
+                <Textarea
+                  id="metaDescription"
+                  value={newPost.metaDescription}
+                  onChange={(e) => setNewPost(prev => ({ ...prev, metaDescription: e.target.value }))}
+                  placeholder="Meta description for search engines (160 chars max)"
+                  rows={3}
+                  maxLength={160}
+                />
+                <div className="text-xs text-gray-500 mt-1">{newPost.metaDescription.length}/160 characters</div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="canonicalUrl">Canonical URL</Label>
+                  <Input
+                    id="canonicalUrl"
+                    value={newPost.canonicalUrl}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, canonicalUrl: e.target.value }))}
+                    placeholder="https://pakistanyp.com/blog/post-slug"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="robots">Robots Meta</Label>
+                  <Select 
+                    value={newPost.robots} 
+                    onValueChange={(robots) => setNewPost(prev => ({ ...prev, robots }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="index, follow">Index, Follow</SelectItem>
+                      <SelectItem value="noindex, follow">No Index, Follow</SelectItem>
+                      <SelectItem value="index, nofollow">Index, No Follow</SelectItem>
+                      <SelectItem value="noindex, nofollow">No Index, No Follow</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="openGraphImage">Open Graph Image</Label>
+                  <Input
+                    id="openGraphImage"
+                    value={newPost.openGraphImage}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, openGraphImage: e.target.value }))}
+                    placeholder="https://example.com/og-homepage.jpg"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="twitterCard">Twitter Card</Label>
+                  <Select 
+                    value={newPost.twitterCard} 
+                    onValueChange={(twitterCard) => setNewPost(prev => ({ ...prev, twitterCard }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="summary">Summary</SelectItem>
+                      <SelectItem value="summary_large_image">Summary Large Image</SelectItem>
+                      <SelectItem value="app">App</SelectItem>
+                      <SelectItem value="player">Player</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="schema">Schema Type</Label>
+                <Select 
+                  value={newPost.schema} 
+                  onValueChange={(schema) => setNewPost(prev => ({ ...prev, schema }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Article">Article</SelectItem>
+                    <SelectItem value="BlogPosting">Blog Posting</SelectItem>
+                    <SelectItem value="NewsArticle">News Article</SelectItem>
+                    <SelectItem value="TechArticle">Tech Article</SelectItem>
+                    <SelectItem value="Recipe">Recipe</SelectItem>
+                    <SelectItem value="Product">Product</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>SEO Keywords</Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {newPost.keywords.map(keyword => (
+                    <Badge key={keyword} variant="outline" className="cursor-pointer" onClick={() => removeKeyword(keyword)}>
+                      {keyword} ×
+                    </Badge>
+                  ))}
+                </div>
+                <Input
+                  placeholder="Add SEO keywords (press Enter)"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addKeyword(e.target.value);
+                      e.target.value = '';
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">SEO Score</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center space-x-3">
+                      <Progress value={newPost.seoScore} className="flex-1" />
+                      <span className="text-2xl font-bold">{newPost.seoScore}%</span>
+                    </div>
+                    <Button variant="outline" size="sm" className="mt-2" onClick={() => setNewPost(prev => ({ ...prev, seoScore: Math.min(100, prev.seoScore + 10) }))}>
+                      Analyze SEO
+                    </Button>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">Readability</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center space-x-3">
+                      <Progress value={newPost.readabilityScore} className="flex-1" />
+                      <span className="text-2xl font-bold">{newPost.readabilityScore}%</span>
+                    </div>
+                    <Button variant="outline" size="sm" className="mt-2" onClick={() => setNewPost(prev => ({ ...prev, readabilityScore: Math.min(100, prev.readabilityScore + 10) }))}>
+                      Check Readability
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="advanced" className="space-y-4">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Rich Text Editor Features</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base">Editor Tools</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <Button variant="outline" size="sm" className="w-full">
+                          <PenTool className="h-4 w-4 mr-2" />
+                          Format Text
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <Image className="h-4 w-4 mr-2" />
+                          Insert Media
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <Layout className="h-4 w-4 mr-2" />
+                          Add Blocks
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <Tags className="h-4 w-4 mr-2" />
+                          Insert Shortcode
+                        </Button>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base">AI Writing Assistant</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <Button variant="outline" size="sm" className="w-full">
+                          <Cpu className="h-4 w-4 mr-2" />
+                          AI Suggestions
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          Rewrite Content
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Grammar Check
+                        </Button>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <TrendingUp className="h-4 w-4 mr-2" />
+                          SEO Optimize
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="advancedContent">Enhanced Content Editor</Label>
+                  <AdvancedHTMLEditor
+                    value={newPost.content}
+                    onChange={(content) => setNewPost(prev => ({ ...prev, content }))}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Content Templates</Label>
+                    <Select onValueChange={(template) => {
+                      const templates = {
+                        'blog-intro': 'Welcome to our comprehensive guide on...\n\nIn this article, we\'ll explore...',
+                        'business-news': 'Breaking: [Business Name] announces...\n\nKey highlights:\n• Point 1\n• Point 2\n• Point 3',
+                        'how-to': 'Step-by-step guide:\n\n1. First, you need to...\n2. Next, you should...\n3. Finally, don\'t forget to...',
+                        'review': 'Product/Service Review:\n\nPros:\n✓ Feature 1\n✓ Feature 2\n\nCons:\n✗ Limitation 1\n✗ Limitation 2'
+                      };
+                      if (templates[template]) {
+                        setNewPost(prev => ({ ...prev, content: templates[template] }));
+                      }
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose a template" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="blog-intro">Blog Introduction</SelectItem>
+                        <SelectItem value="business-news">Business News</SelectItem>
+                        <SelectItem value="how-to">How-to Guide</SelectItem>
+                        <SelectItem value="review">Product Review</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label>Writing Style</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select tone" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="professional">Professional</SelectItem>
+                        <SelectItem value="casual">Casual</SelectItem>
+                        <SelectItem value="academic">Academic</SelectItem>
+                        <SelectItem value="creative">Creative</SelectItem>
+                        <SelectItem value="technical">Technical</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="custom" className="space-y-4">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Custom CSS Styling</h3>
+                  <div>
+                    <Label htmlFor="customCSS">Custom CSS</Label>
+                    <Textarea
+                      id="customCSS"
+                      value={newPost.customCSS}
+                      onChange={(e) => setNewPost(prev => ({ ...prev, customCSS: e.target.value }))}
+                      placeholder="/* Add custom CSS for this post */
+.post-content {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+}
+
+.highlight-box {
+  background: #f0f9ff;
+  border-left: 4px solid #0ea5e9;
+  padding: 1rem;
+  margin: 1rem 0;
+}"
+                      rows={12}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Custom JavaScript</h3>
+                  <div>
+                    <Label htmlFor="customJS">Custom JavaScript</Label>
+                    <Textarea
+                      id="customJS"
+                      value={newPost.customJS}
+                      onChange={(e) => setNewPost(prev => ({ ...prev, customJS: e.target.value }))}
+                      placeholder="// Add custom JavaScript for this post
+document.addEventListener('DOMContentLoaded', function() {
+  // Your custom code here
+  console.log('Post loaded');
+  
+  // Example: Add click tracking
+  document.querySelectorAll('.cta-button').forEach(button => {
+    button.addEventListener('click', function() {
+      // Track click event
+      gtag('event', 'click', {
+        'event_category': 'engagement',
+        'event_label': this.textContent
+      });
+    });
+  });
+});"
+                      rows={12}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">External Libraries</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Add External Libraries</Label>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {newPost.externalLibraries.map((lib, index) => (
+                          <Badge key={index} variant="outline" className="cursor-pointer" onClick={() => {
+                            setNewPost(prev => ({
+                              ...prev,
+                              externalLibraries: prev.externalLibraries.filter((_, i) => i !== index)
+                            }));
+                          }}>
+                            {lib.name} ×
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Input
+                          placeholder="Library name"
+                          id="libName"
+                        />
+                        <Input
+                          placeholder="CDN URL"
+                          id="libUrl"
+                        />
+                        <Button 
+                          variant="outline" 
+                          onClick={() => {
+                            const name = document.getElementById('libName').value;
+                            const url = document.getElementById('libUrl').value;
+                            if (name && url) {
+                              setNewPost(prev => ({
+                                ...prev,
+                                externalLibraries: [...prev.externalLibraries, { name, url }]
+                              }));
+                              document.getElementById('libName').value = '';
+                              document.getElementById('libUrl').value = '';
+                            }
+                          }}
+                        >
+                          Add Library
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Popular Libraries</Label>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        {[
+                          { name: 'Chart.js', url: 'https://cdn.jsdelivr.net/npm/chart.js' },
+                          { name: 'AOS (Animate on Scroll)', url: 'https://unpkg.com/aos@2.3.1/dist/aos.js' },
+                          { name: 'Prism.js (Syntax Highlighting)', url: 'https://unpkg.com/prismjs@1.29.0/components/prism-core.min.js' },
+                          { name: 'Lightbox2', url: 'https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js' },
+                          { name: 'Swiper.js (Slider)', url: 'https://unpkg.com/swiper@11/swiper-bundle.min.js' },
+                          { name: 'GSAP (Animation)', url: 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js' }
+                        ].map((lib) => (
+                          <Button
+                            key={lib.name}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (!newPost.externalLibraries.some(existing => existing.name === lib.name)) {
+                                setNewPost(prev => ({
+                                  ...prev,
+                                  externalLibraries: [...prev.externalLibraries, lib]
+                                }));
+                              }
+                            }}
+                          >
+                            + {lib.name}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Code Preview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-[#F7F8FA] border border-[#E7E9EE] text-[#0A0A0A] p-4 rounded-xl font-mono text-sm">
+                      <div>// Libraries that will be loaded:</div>
+                      {newPost.externalLibraries.map((lib, index) => (
+                        <div key={index}>• {lib.name} - {lib.url}</div>
+                      ))}
+                      {newPost.customCSS && <div>• Custom CSS: {newPost.customCSS.split('\n').length} lines</div>}
+                      {newPost.customJS && <div>• Custom JS: {newPost.customJS.split('\n').length} lines</div>}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="settings" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="postStatus">Status</Label>
+                  <Select 
+                    value={newPost.status} 
+                    onValueChange={(status) => setNewPost(prev => ({ ...prev, status }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="published">Published</SelectItem>
+                      <SelectItem value="archived">Archived</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={newPost.featured}
+                    onCheckedChange={(featured) => setNewPost(prev => ({ ...prev, featured }))}
+                  />
+                  <Label>Featured Post</Label>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreatePost(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreatePost}>
+              Create Post
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Category Dialog */}
+      <Dialog open={showCreateCategory} onOpenChange={setShowCreateCategory}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Category</DialogTitle>
+            <DialogDescription>
+              Add a new blog category to organize your content
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="categoryName">Category Name</Label>
+              <Input
+                id="categoryName"
+                value={newCategory.name}
+                onChange={(e) => setNewCategory(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="e.g., Technology News"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="categoryDescription">Description</Label>
+              <Textarea
+                id="categoryDescription"
+                value={newCategory.description}
+                onChange={(e) => setNewCategory(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Brief description of the category"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="categoryColor">Color</Label>
+              <Select 
+                value={newCategory.color} 
+                onValueChange={(color) => setNewCategory(prev => ({ ...prev, color }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="blue">Blue</SelectItem>
+                  <SelectItem value="green">Green</SelectItem>
+                  <SelectItem value="orange">Orange</SelectItem>
+                  <SelectItem value="purple">Purple</SelectItem>
+                  <SelectItem value="red">Red</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateCategory(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateCategory}>
+              Create Category
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
+
+      {/* Preview Post Dialog */}
+      {showPreviewPost && previewPost && (
+        <Dialog open={showPreviewPost} onOpenChange={setShowPreviewPost}>
+          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Preview Blog Post</DialogTitle>
+              <DialogDescription>
+                Preview how "{previewPost.title}" will appear to readers
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="bg-white rounded-lg p-6 border">
+              {/* Article Header */}
+              <div className="mb-6">
+                {previewPost.featuredImage && (
+                  <img 
+                    src={previewPost.featuredImage} 
+                    alt={previewPost.title}
+                    className="w-full h-64 object-cover rounded-lg mb-4"
+                  />
+                )}
+                <h1 className="text-3xl font-bold mb-2">{previewPost.title}</h1>
+                <p className="text-lg text-gray-600 mb-4">{previewPost.excerpt}</p>
+                
+                <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+                  <span>By {previewPost.author || 'Unknown Author'}</span>
+                  <span>•</span>
+                  <span>{previewPost.publishedAt ? format(new Date(previewPost.publishedAt), "MMMM dd, yyyy") : 'Not published'}</span>
+                  <span>•</span>
+                  <span>{previewPost.readingTime || 5} min read</span>
+                  <span>•</span>
+                  <span>{(previewPost.view_count || 0).toLocaleString()} views</span>
+                </div>
+                
+                <div className="flex gap-2">
+                  {previewPost.tags.map(tag => (
+                    <Badge key={tag} variant="outline" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Article Content */}
+              <div className="prose max-w-none">
+                <div dangerouslySetInnerHTML={{ __html: previewPost.content.replace(/\n/g, '<br>') }} />
+              </div>
+
+              {/* Article Footer */}
+              <div className="mt-8 pt-6 border-t">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <Badge className={getStatusBadgeColor(previewPost.status)}>
+                      {previewPost.status.charAt(0).toUpperCase() + previewPost.status.slice(1)}
+                    </Badge>
+                    {previewPost.featured && (
+                      <Badge variant="outline" className="bg-[#FFF8EB] text-[#7C4A03]">
+                        Featured Post
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Category: {previewPost.category || 'Uncategorized'}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowPreviewPost(false)}>
+                Close Preview
+              </Button>
+              <Button onClick={() => {
+                setShowPreviewPost(false);
+                handleEditPost(previewPost);
+              }}>
+                Edit Post
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}
+
+// Business Growth Analytics Component
+function BusinessGrowthAnalytics({ activeTab }) {
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const [showWizard, setShowWizard] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Query for businesses with analytics
+  const { data: businesses = [], isLoading: businessesLoading } = useQuery({
+    queryKey: ["/api/businesses"],
+    queryFn: () => Promise.resolve([
+      { id: 1, name: "Provinces Steel", category: "Manufacturing", province: "Lahore", status: "active" },
+      { id: 2, name: "Karachi Mall", category: "Retail", province: "Karachi", status: "active" },
+      { id: 3, name: "Islamabad University", category: "Education", province: "Islamabad", status: "active" }
+    ])
+  });
+
+  // Sample analytics data
+  const analyticsData = {
+    growthMetrics: [
+      { month: "Jan", revenue: 45000, visitors: 2400, conversions: 240 },
+      { month: "Feb", revenue: 52000, visitors: 2800, conversions: 280 },
+      { month: "Mar", revenue: 48000, visitors: 2600, conversions: 260 },
+      { month: "Apr", revenue: 61000, visitors: 3200, conversions: 320 },
+      { month: "May", revenue: 55000, visitors: 2900, conversions: 290 },
+      { month: "Jun", revenue: 67000, visitors: 3500, conversions: 350 }
+    ],
+    goals: [
+      { id: 1, title: "Increase Monthly Revenue", target: 70000, current: 67000, progress: 95.7, deadline: "2025-07-31" },
+      { id: 2, title: "Boost Website Traffic", target: 4000, current: 3500, progress: 87.5, deadline: "2025-08-15" },
+      { id: 3, title: "Improve Conversion Rate", target: 400, current: 350, progress: 87.5, deadline: "2025-08-31" }
+    ],
+    recommendations: [
+      { id: 1, type: "Revenue", title: "Optimize Pricing Strategy", impact: "High", description: "Consider dynamic pricing for peak seasons" },
+      { id: 2, type: "Traffic", title: "SEO Enhancement", impact: "Medium", description: "Focus on local Pakistani keywords" },
+      { id: 3, type: "Conversion", title: "User Experience", impact: "High", description: "Simplify checkout process" }
+    ]
+  };
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'growth-dashboard':
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">PKR 328,000</div>
+                  <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Active Businesses</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">1,245</div>
+                  <p className="text-xs text-muted-foreground">+15% from last month</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Growth Rate</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">12.5%</div>
+                  <p className="text-xs text-muted-foreground">+2.5% from last month</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Goals Achieved</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">87%</div>
+                  <p className="text-xs text-muted-foreground">8 of 9 goals met</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Business Growth Trends</CardTitle>
+                <CardDescription>Monthly performance across key metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={analyticsData.growthMetrics}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="revenue" stroke="#8884d8" strokeWidth={2} />
+                    <Line type="monotone" dataKey="visitors" stroke="#82ca9d" strokeWidth={2} />
+                    <Line type="monotone" dataKey="conversions" stroke="#ffc658" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 'business-metrics':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-semibold">Business Metrics Analysis</h3>
+              <div className="flex gap-2">
+                <Button onClick={() => window.open('/business-growth-wizard', '_blank')}>
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Open Full Wizard
+                </Button>
+                <Button onClick={() => setShowWizard(true)} variant="outline">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Quick Launch
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Top Performing Businesses</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {businesses.slice(0, 3).map((business) => (
+                      <div key={business.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <div className="font-medium">{business.name}</div>
+                          <div className="text-sm text-muted-foreground">{business.category} • {business.province}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-semibold text-green-600">+{Math.floor(Math.random() * 30) + 10}%</div>
+                          <div className="text-xs text-muted-foreground">Growth</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Performance by Category</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={[
+                      { category: "Retail", value: 85 },
+                      { category: "Manufacturing", value: 78 },
+                      { category: "Education", value: 92 },
+                      { category: "Healthcare", value: 88 }
+                    ]}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="category" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#8884d8" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+
+      case 'goal-tracking':
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-semibold">Goal Tracking</h3>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add New Goal
+              </Button>
+            </div>
+
+            <div className="grid gap-4">
+              {analyticsData.goals.map((goal) => (
+                <Card key={goal.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h4 className="font-semibold">{goal.title}</h4>
+                        <p className="text-sm text-muted-foreground">Deadline: {goal.deadline}</p>
+                      </div>
+                      <Badge variant={goal.progress > 90 ? "default" : goal.progress > 70 ? "secondary" : "destructive"}>
+                        {goal.progress.toFixed(1)}%
+                      </Badge>
+                    </div>
+                    <Progress value={goal.progress} className="mb-2" />
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Current: {goal.current.toLocaleString()}</span>
+                      <span>Target: {goal.target.toLocaleString()}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'competitor-analysis':
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold">Competitor Analysis</h3>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Market Position Analysis</CardTitle>
+                <CardDescription>Compare your business performance with industry benchmarks</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">Market Leader</div>
+                    <div className="text-sm text-muted-foreground">Top 10% Performance</div>
+                  </div>
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">Strong Position</div>
+                    <div className="text-sm text-muted-foreground">Above Average</div>
+                  </div>
+                  <div className="text-center p-4 bg-[#FFF8EB] rounded-lg">
+                    <div className="text-2xl font-bold text-[#B45309]">Growth Opportunity</div>
+                    <div className="text-sm text-muted-foreground">Room for Improvement</div>
+                  </div>
+                </div>
+
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: "Your Business", value: 35, fill: "#8884d8" },
+                        { name: "Competitor A", value: 25, fill: "#82ca9d" },
+                        { name: "Competitor B", value: 20, fill: "#ffc658" },
+                        { name: "Others", value: 20, fill: "#ff7c7c" }
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      dataKey="value"
+                      label
+                    >
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case 'growth-recommendations':
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold">AI Growth Recommendations</h3>
+            
+            <div className="grid gap-4">
+              {analyticsData.recommendations.map((rec) => (
+                <Card key={rec.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="outline">{rec.type}</Badge>
+                          <Badge variant={rec.impact === "High" ? "destructive" : rec.impact === "Medium" ? "secondary" : "default"}>
+                            {rec.impact} Impact
+                          </Badge>
+                        </div>
+                        <h4 className="font-semibold mb-2">{rec.title}</h4>
+                        <p className="text-muted-foreground">{rec.description}</p>
+                      </div>
+                      <Button size="sm">
+                        Implement
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="text-center py-8">
+            <h3 className="text-xl font-semibold mb-2">Business Growth Analytics</h3>
+            <p className="text-muted-foreground">Select a section from the sidebar to view analytics</p>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {renderTabContent()}
+      
+      {showWizard && (
+        <Dialog open={showWizard} onOpenChange={setShowWizard}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Business Growth Visualization Wizard</DialogTitle>
+              <DialogDescription>
+                Launch the comprehensive business growth wizard for detailed analytics
+              </DialogDescription>
+            </DialogHeader>
+            <div className="p-4">
+              <p className="text-center text-muted-foreground">
+                Business Growth Wizard will be loaded here with full analytics capabilities.
+              </p>
+              <div className="flex justify-center mt-4">
+                <Button onClick={() => setShowWizard(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}
+
+// Roles and Permissions Management Component
+function RolesAndPermissions() {
+  const [activeTab, setActiveTab] = useState("roles");
+  const [showCreateRole, setShowCreateRole] = useState(false);
+  const [showEditRole, setShowEditRole] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [showAssignRole, setShowAssignRole] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Predefined permissions structure
+  const permissionsStructure = {
+    users: {
+      label: "User Management",
+      permissions: [
+        { key: "users.view", label: "View Users", description: "Can view user list and details" },
+        { key: "users.create", label: "Create Users", description: "Can create new user accounts" },
+        { key: "users.edit", label: "Edit Users", description: "Can modify user information" },
+        { key: "users.delete", label: "Delete Users", description: "Can delete user accounts" },
+        { key: "users.manage_roles", label: "Manage User Roles", description: "Can assign and modify user roles" },
+        { key: "users.reset_passwords", label: "Reset Passwords", description: "Can reset user passwords" }
+      ]
+    },
+    businesses: {
+      label: "Business Management",
+      permissions: [
+        { key: "businesses.view", label: "View Businesses", description: "Can view business listings" },
+        { key: "businesses.create", label: "Create Businesses", description: "Can create new business listings" },
+        { key: "businesses.edit", label: "Edit Businesses", description: "Can modify business information" },
+        { key: "businesses.delete", label: "Delete Businesses", description: "Can delete business listings" },
+        { key: "businesses.approve", label: "Approve Businesses", description: "Can approve pending business listings" },
+        { key: "businesses.verify", label: "Verify Businesses", description: "Can verify business authenticity" }
+      ]
+    },
+    content: {
+      label: "Content Management",
+      permissions: [
+        { key: "content.view", label: "View Content", description: "Can view blog posts and articles" },
+        { key: "content.create", label: "Create Content", description: "Can create new content" },
+        { key: "content.edit", label: "Edit Content", description: "Can modify existing content" },
+        { key: "content.delete", label: "Delete Content", description: "Can delete content" },
+        { key: "content.publish", label: "Publish Content", description: "Can publish and unpublish content" },
+        { key: "content.ai_generate", label: "AI Content Generation", description: "Can use AI auto-blogging features" }
+      ]
+    },
+    finance: {
+      label: "Financial Management",
+      permissions: [
+        { key: "finance.view", label: "View Financial Data", description: "Can view revenue and billing information" },
+        { key: "finance.manage_billing", label: "Manage Billing", description: "Can manage user subscriptions and billing" },
+        { key: "finance.generate_reports", label: "Generate Reports", description: "Can generate financial reports" },
+        { key: "finance.process_refunds", label: "Process Refunds", description: "Can process refunds and adjustments" }
+      ]
+    },
+    system: {
+      label: "System Administration",
+      permissions: [
+        { key: "system.settings", label: "System Settings", description: "Can modify system configuration" },
+        { key: "system.backups", label: "Manage Backups", description: "Can create and restore backups" },
+        { key: "system.logs", label: "View System Logs", description: "Can access system and audit logs" },
+        { key: "system.maintenance", label: "Maintenance Mode", description: "Can enable/disable maintenance mode" },
+        { key: "system.api_keys", label: "Manage API Keys", description: "Can manage system API keys" }
+      ]
+    }
+  };
+
+  // Default roles with their permissions
+  const defaultRoles = [
+    {
+      id: 1,
+      name: "Super Admin",
+      description: "Full system access with all permissions",
+      color: "red",
+      userCount: 2,
+      permissions: Object.values(permissionsStructure).flatMap(category => 
+        category.permissions.map(p => p.key)
+      ),
+      isSystemRole: true
+    },
+    {
+      id: 2,
+      name: "Admin",
+      description: "Administrative access with business and user management",
+      color: "orange",
+      userCount: 5,
+      permissions: [
+        "users.view", "users.create", "users.edit", "users.manage_roles",
+        "businesses.view", "businesses.create", "businesses.edit", "businesses.approve", "businesses.verify",
+        "content.view", "content.create", "content.edit", "content.publish",
+        "finance.view", "finance.generate_reports"
+      ],
+      isSystemRole: true
+    },
+    {
+      id: 3,
+      name: "Business Manager",
+      description: "Business-focused management with limited user access",
+      color: "blue",
+      userCount: 12,
+      permissions: [
+        "users.view", "businesses.view", "businesses.create", "businesses.edit", "businesses.approve",
+        "content.view", "content.create", "content.edit"
+      ],
+      isSystemRole: false
+    },
+    {
+      id: 4,
+      name: "Content Editor",
+      description: "Content creation and editing permissions",
+      color: "green",
+      userCount: 8,
+      permissions: [
+        "content.view", "content.create", "content.edit", "content.publish", "content.ai_generate"
+      ],
+      isSystemRole: false
+    },
+    {
+      id: 5,
+      name: "Viewer",
+      description: "Read-only access to most system areas",
+      color: "gray",
+      userCount: 25,
+      permissions: [
+        "users.view", "businesses.view", "content.view", "finance.view"
+      ],
+      isSystemRole: false
+    }
+  ];
+
+  const [roles, setRoles] = useState(defaultRoles);
+  const [newRole, setNewRole] = useState({
+    name: "",
+    description: "",
+    color: "blue",
+    permissions: []
+  });
+
+  const handleCreateRole = () => {
+    if (!newRole.name.trim()) {
+      toast({ title: "Role name is required", variant: "destructive" });
+      return;
+    }
+
+    const role = {
+      id: Date.now(),
+      ...newRole,
+      userCount: 0,
+      isSystemRole: false
+    };
+
+    setRoles(prev => [...prev, role]);
+    setNewRole({ name: "", description: "", color: "blue", permissions: [] });
+    setShowCreateRole(false);
+    toast({ title: "Role created successfully" });
+  };
+
+  const handleEditRole = (role) => {
+    setSelectedRole(role);
+    setNewRole({
+      name: role.name,
+      description: role.description,
+      color: role.color,
+      permissions: [...role.permissions]
+    });
+    setShowEditRole(true);
+  };
+
+  const handleUpdateRole = () => {
+    setRoles(prev => prev.map(role => 
+      role.id === selectedRole.id 
+        ? { ...role, ...newRole }
+        : role
+    ));
+    setShowEditRole(false);
+    setSelectedRole(null);
+    setNewRole({ name: "", description: "", color: "blue", permissions: [] });
+    toast({ title: "Role updated successfully" });
+  };
+
+  const handleDeleteRole = (roleId) => {
+    const role = roles.find(r => r.id === roleId);
+    if (role?.isSystemRole) {
+      toast({ title: "Cannot delete system roles", variant: "destructive" });
+      return;
+    }
+    
+    if (confirm("Are you sure you want to delete this role? This action cannot be undone.")) {
+      setRoles(prev => prev.filter(r => r.id !== roleId));
+      toast({ title: "Role deleted successfully" });
+    }
+  };
+
+  const togglePermission = (permissionKey) => {
+    setNewRole(prev => ({
+      ...prev,
+      permissions: prev.permissions.includes(permissionKey)
+        ? prev.permissions.filter(p => p !== permissionKey)
+        : [...prev.permissions, permissionKey]
+    }));
+  };
+
+  const getRoleColorClass = (color) => {
+    const colorMap = {
+      red: "bg-red-100 text-red-800 border-red-200",
+      orange: "bg-[#FFF4E0] text-[#7C4A03] border-[#FBE3B5]",
+      blue: "bg-blue-100 text-blue-800 border-blue-200",
+      green: "bg-green-100 text-green-800 border-green-200",
+      gray: "bg-gray-100 text-gray-800 border-gray-200",
+      purple: "bg-purple-100 text-purple-800 border-purple-200"
+    };
+    return colorMap[color] || colorMap.blue;
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Roles & Permissions</h2>
+          <p className="text-gray-600 ">
+            Manage user roles and system permissions
+          </p>
+        </div>
+        <Button onClick={() => setShowCreateRole(true)} className="bg-blue-600 hover:bg-blue-700">
+          <Plus className="h-4 w-4 mr-2" />
+          Create Role
+        </Button>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="roles">Roles Overview</TabsTrigger>
+          <TabsTrigger value="permissions">Permission Matrix</TabsTrigger>
+          <TabsTrigger value="users">User Assignments</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="roles" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {roles.map((role) => (
+              <Card key={role.id} className={`border-l-4 ${getRoleColorClass(role.color)}`}>
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{role.name}</CardTitle>
+                      <CardDescription className="mt-1">{role.description}</CardDescription>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleEditRole(role)}
+                        disabled={role.isSystemRole}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDeleteRole(role.id)}
+                        disabled={role.isSystemRole}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Users:</span>
+                      <span className="font-medium">{role.userCount}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Permissions:</span>
+                      <span className="font-medium">{role.permissions.length}</span>
+                    </div>
+                    {role.isSystemRole && (
+                      <Badge variant="outline" className="text-xs">
+                        System Role
+                      </Badge>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="permissions" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Permission Matrix</CardTitle>
+              <CardDescription>
+                View and compare permissions across all roles
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-3 font-medium">Permission</th>
+                      {roles.map(role => (
+                        <th key={role.id} className="text-center p-3 font-medium min-w-[120px]">
+                          <div className={`px-2 py-1 rounded text-xs ${getRoleColorClass(role.color)}`}>
+                            {role.name}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(permissionsStructure).map(([categoryKey, category]) => (
+                      <React.Fragment key={categoryKey}>
+                        <tr className="bg-gray-50 ">
+                          <td colSpan={roles.length + 1} className="p-3 font-semibold text-sm">
+                            {category.label}
+                          </td>
+                        </tr>
+                        {category.permissions.map(permission => (
+                          <tr key={permission.key} className="border-b hover:bg-gray-50 ">
+                            <td className="p-3">
+                              <div>
+                                <div className="font-medium text-sm">{permission.label}</div>
+                                <div className="text-xs text-gray-500">{permission.description}</div>
+                              </div>
+                            </td>
+                            {roles.map(role => (
+                              <td key={role.id} className="p-3 text-center">
+                                {role.permissions.includes(permission.key) ? (
+                                  <CheckCircle className="h-5 w-5 text-green-500 mx-auto" />
+                                ) : (
+                                  <div className="h-5 w-5 rounded-full bg-gray-200 mx-auto"></div>
+                                )}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="users" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                User Role Assignments
+              </CardTitle>
+              <CardDescription>
+                Assign roles to users and manage role-based access
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <Input placeholder="Search users..." className="flex-1" />
+                  <Select>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Filter by role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Roles</SelectItem>
+                      {roles.map(role => (
+                        <SelectItem key={role.id} value={role.name.toLowerCase()}>
+                          {role.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button onClick={() => setShowAssignRole(true)}>
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Assign Role
+                  </Button>
+                </div>
+
+                <div className="border rounded-lg">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b bg-gray-50 ">
+                        <th className="text-left p-3">User</th>
+                        <th className="text-left p-3">Current Role</th>
+                        <th className="text-left p-3">Assigned Date</th>
+                        <th className="text-left p-3">Last Activity</th>
+                        <th className="text-left p-3">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* Sample data - in real implementation, this would come from API */}
+                      {[
+                        { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", assignedDate: "2024-01-15", lastActivity: "2024-07-15" },
+                        { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Business Manager", assignedDate: "2024-02-20", lastActivity: "2024-07-14" },
+                        { id: 3, name: "Mike Johnson", email: "mike@example.com", role: "Content Editor", assignedDate: "2024-03-10", lastActivity: "2024-07-15" }
+                      ].map(user => (
+                        <tr key={user.id} className="border-b hover:bg-gray-50 ">
+                          <td className="p-3">
+                            <div>
+                              <div className="font-medium">{user.name}</div>
+                              <div className="text-sm text-gray-500">{user.email}</div>
+                            </div>
+                          </td>
+                          <td className="p-3">
+                            <Badge className={getRoleColorClass(roles.find(r => r.name === user.role)?.color || 'blue')}>
+                              {user.role}
+                            </Badge>
+                          </td>
+                          <td className="p-3 text-sm text-gray-600">
+                            {format(new Date(user.assignedDate), "MMM dd, yyyy")}
+                          </td>
+                          <td className="p-3 text-sm text-gray-600">
+                            {format(new Date(user.lastActivity), "MMM dd, yyyy")}
+                          </td>
+                          <td className="p-3">
+                            <div className="flex gap-2">
+                              <Button variant="ghost" size="sm">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Create Role Dialog */}
+      <Dialog open={showCreateRole} onOpenChange={setShowCreateRole}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Role</DialogTitle>
+            <DialogDescription>
+              Define a new role with specific permissions for your team
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="roleName">Role Name</Label>
+                <Input
+                  id="roleName"
+                  value={newRole.name}
+                  onChange={(e) => setNewRole(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="e.g., Content Manager"
+                />
+              </div>
+              <div>
+                <Label htmlFor="roleColor">Color</Label>
+                <Select 
+                  value={newRole.color} 
+                  onValueChange={(color) => setNewRole(prev => ({ ...prev, color }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="blue">Blue</SelectItem>
+                    <SelectItem value="green">Green</SelectItem>
+                    <SelectItem value="purple">Purple</SelectItem>
+                    <SelectItem value="orange">Orange</SelectItem>
+                    <SelectItem value="gray">Gray</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="roleDescription">Description</Label>
+              <Textarea
+                id="roleDescription"
+                value={newRole.description}
+                onChange={(e) => setNewRole(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Describe the role's purpose and responsibilities"
+              />
+            </div>
+
+            <div>
+              <Label className="text-lg font-semibold">Permissions</Label>
+              <div className="mt-4 space-y-6">
+                {Object.entries(permissionsStructure).map(([categoryKey, category]) => (
+                  <div key={categoryKey} className="space-y-3">
+                    <h4 className="font-medium text-gray-900 ">{category.label}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {category.permissions.map(permission => (
+                        <div key={permission.key} className="flex items-start space-x-3">
+                          <Switch
+                            checked={newRole.permissions.includes(permission.key)}
+                            onCheckedChange={() => togglePermission(permission.key)}
+                          />
+                          <div className="flex-1">
+                            <div className="text-sm font-medium">{permission.label}</div>
+                            <div className="text-xs text-gray-500">{permission.description}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateRole(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateRole}>
+              Create Role
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Role Dialog */}
+      <Dialog open={showEditRole} onOpenChange={setShowEditRole}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Role: {selectedRole?.name}</DialogTitle>
+            <DialogDescription>
+              Modify role permissions and details
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="editRoleName">Role Name</Label>
+                <Input
+                  id="editRoleName"
+                  value={newRole.name}
+                  onChange={(e) => setNewRole(prev => ({ ...prev, name: e.target.value }))}
+                  disabled={selectedRole?.isSystemRole}
+                />
+              </div>
+              <div>
+                <Label htmlFor="editRoleColor">Color</Label>
+                <Select 
+                  value={newRole.color} 
+                  onValueChange={(color) => setNewRole(prev => ({ ...prev, color }))}
+                  disabled={selectedRole?.isSystemRole}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="blue">Blue</SelectItem>
+                    <SelectItem value="green">Green</SelectItem>
+                    <SelectItem value="purple">Purple</SelectItem>
+                    <SelectItem value="orange">Orange</SelectItem>
+                    <SelectItem value="gray">Gray</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="editRoleDescription">Description</Label>
+              <Textarea
+                id="editRoleDescription"
+                value={newRole.description}
+                onChange={(e) => setNewRole(prev => ({ ...prev, description: e.target.value }))}
+                disabled={selectedRole?.isSystemRole}
+              />
+            </div>
+
+            <div>
+              <Label className="text-lg font-semibold">Permissions</Label>
+              {selectedRole?.isSystemRole && (
+                <p className="text-sm text-[#B45309] mt-1">
+                  System role permissions cannot be modified
+                </p>
+              )}
+              <div className="mt-4 space-y-6">
+                {Object.entries(permissionsStructure).map(([categoryKey, category]) => (
+                  <div key={categoryKey} className="space-y-3">
+                    <h4 className="font-medium text-gray-900 ">{category.label}</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {category.permissions.map(permission => (
+                        <div key={permission.key} className="flex items-start space-x-3">
+                          <Switch
+                            checked={newRole.permissions.includes(permission.key)}
+                            onCheckedChange={() => togglePermission(permission.key)}
+                            disabled={selectedRole?.isSystemRole}
+                          />
+                          <div className="flex-1">
+                            <div className="text-sm font-medium">{permission.label}</div>
+                            <div className="text-xs text-gray-500">{permission.description}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditRole(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateRole} disabled={selectedRole?.isSystemRole}>
+              Update Role
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+// Comprehensive Admin Sidebar Component
+function AdminSidebar({ activeSection, setActiveSection, counts = {} }: { activeSection: string, setActiveSection: (section: string) => void, counts?: Record<string, number | undefined> }) {
+  const [expandedSections, setExpandedSections] = useState<string[]>(['dashboard', 'users', 'business', 'content', 'configuration']);
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => 
+      prev.includes(section) 
+        ? prev.filter(s => s !== section)
+        : [...prev, section]
+    );
+  };
+
+  const menuSections = [
+    {
+      id: 'dashboard',
+      title: 'Overview',
+      icon: Home,
+      items: [
+        { id: 'analytics', title: 'Dashboard', icon: BarChart3 },
+        { id: 'reports', title: 'Advanced Reports', icon: FileText },
+        { id: 'monitoring', title: 'System Monitor', icon: Monitor }
+      ]
+    },
+    {
+      id: 'users',
+      title: 'Users',
+      icon: Users,
+      items: [
+        { id: 'user-list', title: 'All Users', icon: Users },
+        { id: 'user-roles', title: 'Roles & Permissions', icon: Shield },
+        { id: 'user-analytics', title: 'User Analytics', icon: TrendingUp }
+      ]
+    },
+    {
+      id: 'business',
+      title: 'Directory',
+      icon: Building2,
+      items: [
+        { id: 'business-list', title: 'All Businesses', icon: Building2 },
+        { id: 'business-approval', title: 'Pending Approvals', icon: Activity },
+        { id: 'business-categories', title: 'Categories', icon: Tags },
+        { id: 'business-verification', title: 'Verification Queue', icon: Shield }
+      ]
+    },
+    {
+      id: 'growth-analytics',
+      title: 'Business Growth Analytics',
+      icon: TrendingUp,
+      items: [
+        { id: 'growth-dashboard', title: 'Growth Dashboard', icon: BarChart3 },
+        { id: 'business-metrics', title: 'Business Metrics', icon: Activity },
+        { id: 'goal-tracking', title: 'Goal Tracking', icon: Target },
+        { id: 'competitor-analysis', title: 'Competitor Analysis', icon: Search },
+        { id: 'growth-recommendations', title: 'AI Recommendations', icon: Zap }
+      ]
+    },
+    {
+      id: 'content',
+      title: 'Content',
+      icon: FileText,
+      items: [
+        { id: 'blog-posts', title: 'Blog Posts', icon: BookOpen },
+        { id: 'auto-blogging', title: 'AI Auto-Blogging', icon: Cpu },
+        { id: 'social-media-generator', title: 'Social Media Generator', icon: Megaphone },
+        { id: 'news-management', title: 'News Management', icon: Newspaper },
+        { id: 'provinces-management', title: 'Provinces Management', icon: Globe },
+        { id: 'menu-management', title: 'Menu Management', icon: Layout },
+        { id: 'feature-management', title: 'Feature Management', icon: Settings },
+        { id: 'pages', title: 'Static Pages', icon: Layout },
+        { id: 'media-library', title: 'Media Library', icon: Image },
+        { id: 'seo-management', title: 'SEO Management', icon: Search }
+      ]
+    },
+    {
+      id: 'marketing',
+      title: 'Marketing & Ads',
+      icon: Megaphone,
+      items: [
+        { id: 'advertisements', title: 'Advertisement Manager', icon: Megaphone },
+        { id: 'email-campaigns', title: 'Email Campaigns', icon: Mail },
+        { id: 'promotions', title: 'Promotions', icon: Zap },
+        { id: 'analytics-marketing', title: 'Marketing Analytics', icon: TrendingUp }
+      ]
+    },
+    {
+      id: 'financial',
+      title: 'Billing & Finance',
+      icon: DollarSign,
+      items: [
+        { id: 'billing', title: 'Billing Management', icon: CreditCard },
+        { id: 'subscriptions', title: 'Subscriptions', icon: CreditCard },
+        { id: 'invoices', title: 'Invoices', icon: FileText },
+        { id: 'revenue-reports', title: 'Revenue Reports', icon: BarChart3 },
+        { id: 'payment-methods', title: 'Payment Methods', icon: DollarSign }
+      ]
+    },
+    {
+      id: 'communication',
+      title: 'Communications',
+      icon: Mail,
+      items: [
+        { id: 'email-templates', title: 'Email Templates', icon: Mail },
+        { id: 'notifications', title: 'Push Notifications', icon: Activity },
+        { id: 'support-tickets', title: 'Support Tickets', icon: Phone },
+        { id: 'announcements', title: 'Announcements', icon: Megaphone }
+      ]
+    },
+    {
+      id: 'technical',
+      title: 'Technical',
+      icon: Settings,
+      items: [
+        { id: 'seo-technical', title: 'SEO Technical Settings', icon: Globe },
+        { id: 'database', title: 'Database Management', icon: Database },
+        { id: 'api-keys', title: 'API Keys', icon: Key },
+        { id: 'workflows', title: 'Automated Workflows', icon: Workflow },
+        { id: 'backups', title: 'Backups & Archives', icon: Archive },
+        { id: 'security-logs', title: 'Security & Audit Logs', icon: Shield }
+      ]
+    },
+    {
+      id: 'configuration',
+      title: 'System',
+      icon: Settings,
+      items: [
+        { id: 'general-settings', title: 'General Settings', icon: Settings },
+        { id: 'regional-themes', title: 'Regional Themes', icon: Palette },
+        { id: 'integrations', title: 'Third-party Integrations', icon: Globe },
+        { id: 'maintenance', title: 'Maintenance Mode', icon: Activity },
+        { id: 'system-info', title: 'System Information', icon: Monitor }
+      ]
+    }
+  ];
+
+  return (
+    <>
+      {menuSections.map((section) => {
+        const open = expandedSections.includes(section.id) || section.items.some((i) => i.id === activeSection);
+        return (
+          <div key={section.id} className="flex flex-col gap-0.5">
+            <button
+              type="button"
+              onClick={() => toggleSection(section.id)}
+              aria-expanded={open}
+              className="yp-label flex items-center justify-between px-3 pt-[18px] pb-1.5 text-left hover:text-[#0A0A0A]"
+            >
+              <span>{section.title}</span>
+              {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+            </button>
+            {open && section.items.map((item) => (
+              <AdminSideLink
+                key={item.id}
+                icon={item.icon}
+                label={item.title}
+                active={activeSection === item.id}
+                count={counts[item.id]}
+                onClick={() => setActiveSection(item.id)}
+              />
+            ))}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+// Main Component
+export default function SuperAdminDashboard() {
+  const [activeSection, setActiveSection] = useState("analytics");
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Fetch real statistics for dashboard overview - NO DEMO DATA
+  const { data: realStats, isLoading: statsLoading } = useQuery({
+    queryKey: ["/api/admin/real-stats"],
+    queryFn: async () => {
+      const response = await fetch("/api/admin/real-stats", {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch real statistics');
+      }
+      return response.json();
+    }
+  });
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'analytics':
+        return <AnalyticsDashboard onNavigate={setActiveSection} />;
+      case 'reports':
+        return <AdvancedReporting />;
+      case 'monitoring':
+        return <SystemMonitor />;
+      case 'user-analytics':
+        return <UserAnalytics />;
+      case 'user-list':
+        return <UserManagement />;
+      case 'user-roles':
+        return <RolesAndPermissions />;
+      case 'subscriptions':
+        return <SubscriptionManagement />;
+      case 'business-list':
+        return <BusinessManagement />;
+      case 'blog-posts':
+        return <BlogPostManagement />;
+      case 'auto-blogging':
+        return <AIAutoBloggingManagement />;
+      case 'social-media-generator':
+        return <SocialMediaPreviewGenerator />;
+      case 'news-management':
+        return <AdminNewsManagement />;
+      case 'menu-management':
+        return <MenuManagement />;
+      case 'provinces-management':
+        return <ProvincesManagement />;
+      case 'feature-management':
+        return <FeatureManagement userId={userId} />;
+      case 'growth-dashboard':
+      case 'business-metrics':
+      case 'goal-tracking':
+      case 'competitor-analysis':
+      case 'growth-recommendations':
+        return <BusinessGrowthAnalytics activeTab={activeSection} />;
+      case 'general-settings':
+        return <SystemSettings />;
+      case 'business-approval':
+        return (
+          <div className="p-2">
+            <h2 className="text-xl font-semibold mb-2">Business approvals</h2>
+            <p className="text-gray-600 mb-4">Review pending listings, fix their category, and approve or reject one by one or in bulk. Owners are emailed automatically.</p>
+            <a href="/admin/approvals" className="yp-btn yp-btn-primary">Open approvals</a>
+          </div>
+        );
+      case 'business-categories':
+        return <BusinessCategories />;
+      case 'business-verification':
+        return <BusinessVerification />;
+      case 'pages':
+        return <PagesManagement />;
+      case 'email-templates':
+        return <EmailTemplates />;
+      case 'seo-settings':
+        return <SEOSettings />;
+      case 'seo-technical':
+        return <SeoTechnicalSettings />;
+      case 'media-library':
+        return <MediaLibrary />;
+      case 'business-management':
+        return <AdvancedBusinessManagement />;
+      case 'regional-themes':
+        return <ThemeCustomizer />;
+      default:
+        return (
+          <div className="p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">Feature In Development</h2>
+            <p className="text-gray-600 ">
+              The {activeSection} feature is currently being built. Please check back soon.
+            </p>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <AdminShell
+      nav={
+        <AdminSidebar
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          counts={{ 'business-approval': realStats?.pendingBusinesses }}
+        />
+      }
+    >
+      {activeSection === 'analytics' ? (
+        renderContent()
+      ) : (
+        <>
+          <AdminPageHeader
+            title="Super admin"
+            subtitle={`Directory administration · ${statsLoading ? '…' : `${realStats?.totalBusinesses || 0} businesses · ${realStats?.totalUsers || 0} users · ${realStats?.pendingBusinesses || 0} pending`}`}
+            actions={<span className="text-[13px] text-[#5B6475]">Updated {format(new Date(), 'MMM dd, yyyy HH:mm')}</span>}
+          />
+          {/* Main Content Area */}
+          <div className="yp-card min-h-[600px] min-w-0 overflow-hidden p-4 sm:p-6">
+            {renderContent()}
+          </div>
+        </>
+      )}
+    </AdminShell>
+  );
+}

@@ -1,0 +1,21 @@
+# robots.txt for PakistanYP - Pakistani Business Directory
+# Allow all search engines to crawl everything
+
+User-agent: *
+Allow: /
+
+# Block URLs with lang parameter to prevent duplicate content issues
+# These URLs are not properly translated and cause "Crawled - not indexed" errors
+Disallow: /*?lang=
+Disallow: /*?*lang=
+
+# Sitemaps
+Sitemap: https://pakistanyp.com/sitemap.xml
+Sitemap: https://pakistanyp.com/sitemap-static.xml
+Sitemap: https://pakistanyp.com/sitemap-businesses.xml
+Sitemap: https://pakistanyp.com/sitemap-categories.xml
+Sitemap: https://pakistanyp.com/sitemap-provinces.xml
+Sitemap: https://pakistanyp.com/sitemap-localities.xml
+
+# Crawl delay (optional - adjust if needed)
+# Crawl-delay: 1
