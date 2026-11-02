@@ -18,8 +18,8 @@ const MARK_WEBP = country.logo.markWebp || country.logo.mark;
 const MARK_PNG = country.logo.markPng || country.logo.mark;
 export const LOGO_ALT = `${country.domain} — ${country.tagline}`;
 /** Header rendition (mark + wordmark, no tagline): 688x104 */
-const LOGO_RATIO = 688 / 104;
-const MARK_RATIO = 131 / 104;
+const LOGO_RATIO = (country.logo.width104 || 688) / 104;
+const MARK_RATIO = (country.logo.markWidth104 || 131) / 104;
 
 /**
  * Full logo (pin mark + "pakistanyp.com" + "Pakistani BUSINESS DIRECTORY").

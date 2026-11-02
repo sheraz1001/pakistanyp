@@ -226,7 +226,7 @@ export default function ProvincesManagement() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Provinces Management</h2>
           <p className="text-muted-foreground">
-            Manage all 7 Pakistani provinces with complete control over content and images
+            Manage all Pakistani provinces with complete control over content and images
           </p>
         </div>
         

@@ -1,0 +1,111 @@
+{
+  "code": "sa",
+  "brand": "SaudiYP",
+  "slug": "saudiyp",
+  "domain": "saudiyp.com",
+  "repo": "sheraz1001/saudiyp",
+  "country": "Saudi Arabia",
+  "countrySlug": "saudi-arabia",
+  "countryPossessive": "Saudi Arabia's",
+  "adjective": "Saudi",
+  "directoryName": "Saudi Arabia Yellow Pages",
+  "currency": "SAR",
+  "phonePrefix": "+966",
+  "timezone": "Asia/Riyadh",
+  "locale": "en-SA",
+  "language": "Arabic",
+  "font": "Noto Kufi Arabic",
+  "regionTerm": [
+    "Region",
+    "Regions"
+  ],
+  "regionsPhrase": [
+    "Regions",
+    "regions"
+  ],
+  "localityTerm": "District",
+  "capitalCity": "Riyadh",
+  "tagline": "SAUDI BUSINESS DIRECTORY",
+  "colors": {
+    "#0B6B2E": "#006C35",
+    "#05501F": "#004D26",
+    "#E8F4EC": "#E6F2EC",
+    "#CFE8D8": "#CCE5D7",
+    "#F2F9F4": "#F1F8F4"
+  },
+  "ogCities": [
+    "Riyadh",
+    "Jeddah",
+    "Makkah",
+    "Madinah",
+    "Dammam",
+    "Khobar",
+    "Abha"
+  ],
+  "replace": [
+    [
+      "Islamabad, Pakistan",
+      "Riyadh, Saudi Arabia"
+    ],
+    [
+      "Registering a Company with the SECP",
+      "Registering a Company in Saudi Arabia"
+    ],
+    [
+      "SECP registration",
+      "commercial registration"
+    ]
+  ],
+  "covers": {
+    "news-saudiyp-launch": [
+      "News",
+      "SaudiYP is live",
+      "A free business directory for every region, city and district of Saudi Arabia."
+    ],
+    "news-verified-badges": [
+      "Product update",
+      "Verified business badges",
+      "Earn a badge with your CR, VAT certificate, MISA licence or other documents."
+    ],
+    "blog-how-to-list": [
+      "Guide",
+      "How to list your business",
+      "A step-by-step guide to a free listing on SaudiYP."
+    ],
+    "blog-verification": [
+      "Guide",
+      "Getting the verified badge",
+      "Which documents SaudiYP accepts and how to get approved quickly."
+    ],
+    "blog-find-local": [
+      "Guide",
+      "Find trusted local services",
+      "Search by region, city and district, compare and request quotes."
+    ],
+    "blog-listing-tips": [
+      "Tips",
+      "10 ways to stand out",
+      "Practical ways to get more calls from your business listing."
+    ]
+  },
+  "placeMap": {
+    "Karachi": "Riyadh",
+    "Lahore": "Jeddah",
+    "Islamabad": "Dammam",
+    "Rawalpindi": "Makkah",
+    "Faisalabad": "Madinah",
+    "Peshawar": "Khobar",
+    "Multan": "Taif",
+    "Quetta": "Abha",
+    "Hyderabad": "Buraidah",
+    "Clifton": "Olaya",
+    "DHA": "Al Malqa",
+    "Gulberg": "Al Nakheel",
+    "Johar Town": "Al Rawdah",
+    "Blue Area": "KAFD",
+    "F-7": "Al Hamra",
+    "G-11": "Al Shati",
+    "Saddar": "Al Aziziyah",
+    "Hayatabad": "Al Aqrabiyah"
+  }
+}

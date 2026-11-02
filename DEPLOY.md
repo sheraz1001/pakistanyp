@@ -5,7 +5,7 @@ standalone, single-site codebase.
 
 - Site settings (brand, domain, phone code +92, PKR, colours, logo files, verification documents): `shared/country.ts`
 - Provinces & territories, cities and localities: `shared/countries/places.ts`
-- Category tree (22 sectors, about 1,570 categories): `shared/countries/categories.ts`
+- Category tree: `shared/countries/categories.ts`
 
 ---
 
@@ -19,9 +19,9 @@ standalone, single-site codebase.
 That's all. On its **first start against the empty database** the app creates every table and loads
 the reference data from `server/sql/init.sql` (no terminal needed):
 
-- 7 provinces and territories with Urdu names
-- 463 cities and towns, plus 821 localities (Clifton, DHA, Gulberg, Johar Town, F-7, G-11, Blue Area, Hayatabad…)
-- about 1,570 categories
+- every province and territory, with Urdu names
+- the cities and towns, and the localities of the big cities
+- the full category tree (main categories and sub-categories)
 
 It contains no businesses or users. Later starts skip this step.
 
@@ -69,11 +69,11 @@ longer while the database is set up.
 - [ ] **Prices**: plan and advertising prices are placeholder numbers labelled PKR (pricing, advertise-with-us,
       upgrade-premium, subscribe, my-plan). Set real Pakistani prices; Stripe is set to PKR.
 - [ ] **Legal review** of terms, privacy and guidelines under Pakistani law: governing law and courts, the
-      company's SECP registration and address, PECA 2016, and data protection.
+      company's registration details and address, and electronic-crime and data-protection law.
 - [ ] **Contact details**: real address (now "Islamabad, Pakistan") and phone; social media links in
       `social` in `shared/country.ts` (empty for now, so the icons are hidden).
-- [ ] **Verification documents** list (`licenceAuthorities` in `shared/country.ts`): NTN (FBR), STRN, SECP,
-      Chamber of Commerce, trade/municipal licence, food authority licence, PMDC/PEC/Bar Council, Other.
+- [ ] **Verification documents** list (`licenceAuthorities` in `shared/country.ts`): check that the
+      registrations and licences listed match what local businesses can provide.
 - [ ] Optional: hero images and descriptions per province.
 
 ## 5. After launch

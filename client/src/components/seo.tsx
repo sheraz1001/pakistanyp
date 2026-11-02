@@ -284,7 +284,7 @@ export const SEOConfigs = {
   // Provinces page schema
   provinces: {
     title: "Pakistani Provinces Business Directory | All Provinces & Territories | PakistanYP",
-    description: "Comprehensive business listings across all 7 Pakistani provinces. Find companies in Karachi, Lahore, Islamabad, Rawalpindi, Peshawar, Faisalabad & Multan with detailed profiles.",
+    description: "Comprehensive business listings across all Pakistani provinces. Find companies in Karachi, Lahore, Islamabad, Rawalpindi, Peshawar, Faisalabad & Multan with detailed profiles.",
     keywords: "Pakistani provinces businesses, Karachi companies, Lahore businesses, Islamabad directory, all provinces Pakistan, Pakistan business locations",
     canonical: `${country.origin}${country.regionsPath}`,
     structuredData: [{

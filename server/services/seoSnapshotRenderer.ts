@@ -138,7 +138,7 @@ export async function renderCategoriesSnapshot(): Promise<string> {
         <a href="/">Home</a><span>/</span><span>Categories</span>
       </div>
       <h1>Pakistani Business Categories</h1>
-      <p class="subtitle">Browse ${categories.length} business categories across all 7 Pakistani provinces. Find companies by industry.</p>
+      <p class="subtitle">Browse ${categories.length} business categories across all Pakistani provinces. Find companies by industry.</p>
       <div class="grid">
         ${categoryCards}
       </div>
@@ -176,7 +176,7 @@ export async function renderBusinessesSnapshot(): Promise<string> {
         <a href="/">Home</a><span>/</span><span>Businesses</span>
       </div>
       <h1>Pakistani Business Directory</h1>
-      <p class="subtitle">Discover ${businesses.length} verified businesses across all 7 Pakistani provinces.</p>
+      <p class="subtitle">Discover ${businesses.length} verified businesses across all Pakistani provinces.</p>
       <div class="grid">
         ${businessCards}
       </div>

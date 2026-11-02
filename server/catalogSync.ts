@@ -20,8 +20,8 @@ const regionPart = (name: string) => name.toLowerCase().trim().replace(/\s+/g, "
 async function syncPlaces(): Promise<{ provinces: number; places: number; linked: number }> {
   let provincesAdded = 0, placesAdded = 0;
   const provinces = (await pool.query("select id, name from provinces")).rows as { id: number; name: string }[];
-  const existing = new Map<string, { id: number; parent_id: number | null }>(
-    (await pool.query("select id, slug, parent_id from localities")).rows.map((r: any) => [r.slug, { id: r.id, parent_id: r.parent_id }]),
+  const existing = new Map<string, { id: number; parent_id: number | null; is_main_area?: boolean | null }>(
+    (await pool.query("select id, slug, parent_id, is_main_area from localities")).rows.map((r: any) => [r.slug, { id: r.id, parent_id: r.parent_id, is_main_area: r.is_main_area }]),
   );
   for (const [i, r] of country.regions.entries()) {
     let province = provinces.find((p) => p.name.toLowerCase() === r.name.toLowerCase());
@@ -44,7 +44,14 @@ async function syncPlaces(): Promise<{ provinces: number; places: number; linked
       const parentId = cityName ? cityIds.get(cityName) ?? null : null;
       const found = existing.get(slug);
       if (found) {
-        if (!c.locality) cityIds.set(c.name, found.id);
+        if (!c.locality) {
+          cityIds.set(c.name, found.id);
+          // older databases stored some cities as plain areas: make them cities
+          if (found.is_main_area !== true || found.parent_id) {
+            await pool.query("update localities set is_main_area = true, parent_id = null where id = $1", [found.id]);
+            found.is_main_area = true; found.parent_id = null; placesAdded++;
+          }
+        }
         else if (parentId && !found.parent_id) await pool.query("update localities set parent_id = $2 where id = $1", [found.id, parentId]);
         continue;
       }

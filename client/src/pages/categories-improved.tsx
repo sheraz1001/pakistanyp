@@ -78,7 +78,7 @@ export default function CategoriesImproved() {
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A]">
       <SEO 
         title="Business Categories in Pakistan | Complete Directory | PakistanYP"
-        description="Browse comprehensive business categories across Pakistan. Find companies in Business Services, Finance, Construction, Automotive, Food, Health, Technology, Retail and more across all 7 Pakistani provinces."
+        description="Browse comprehensive business categories across Pakistan. Find companies in Business Services, Finance, Construction, Automotive, Food, Health, Technology, Retail and more across all Pakistani provinces."
         keywords="Pakistani business categories, Karachi companies, Lahore businesses, business directory Pakistan, company categories provinces"
         canonical="https://pakistanyp.com/categories"
       />

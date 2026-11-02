@@ -1,0 +1,109 @@
+{
+  "code": "in",
+  "brand": "IndiaYP",
+  "slug": "indiayp",
+  "domain": "indiayp.com",
+  "repo": "sheraz1001/indiayp",
+  "country": "India",
+  "countrySlug": "india",
+  "countryPossessive": "India's",
+  "adjective": "Indian",
+  "directoryName": "India Yellow Pages",
+  "currency": "INR",
+  "phonePrefix": "+91",
+  "timezone": "Asia/Kolkata",
+  "locale": "en-IN",
+  "language": "Hindi",
+  "font": "Noto Sans Devanagari",
+  "regionTerm": [
+    "State",
+    "States"
+  ],
+  "regionsPhrase": [
+    "States & UTs",
+    "states and union territories"
+  ],
+  "localityTerm": "Locality",
+  "capitalCity": "New Delhi",
+  "tagline": "INDIA BUSINESS DIRECTORY",
+  "colors": {
+    "#0B6B2E": "#138808",
+    "#05501F": "#0B5E05",
+    "#E3A82B": "#FF9933"
+  },
+  "ogCities": [
+    "Mumbai",
+    "Delhi",
+    "Bengaluru",
+    "Hyderabad",
+    "Chennai",
+    "Kolkata",
+    "Pune"
+  ],
+  "replace": [
+    [
+      "Islamabad, Pakistan",
+      "New Delhi, India"
+    ],
+    [
+      "Registering a Company with the SECP",
+      "Registering a Company with the MCA"
+    ],
+    [
+      "SECP registration",
+      "MCA registration"
+    ]
+  ],
+  "covers": {
+    "news-indiayp-launch": [
+      "News",
+      "IndiaYP is live",
+      "A free business directory for every state, city and locality of India."
+    ],
+    "news-verified-badges": [
+      "Product update",
+      "Verified business badges",
+      "Earn a badge with your GSTIN, Udyam, FSSAI or other registration documents."
+    ],
+    "blog-how-to-list": [
+      "Guide",
+      "How to list your business",
+      "A step-by-step guide to a free listing on IndiaYP."
+    ],
+    "blog-verification": [
+      "Guide",
+      "Getting the verified badge",
+      "Which documents IndiaYP accepts and how to get approved quickly."
+    ],
+    "blog-find-local": [
+      "Guide",
+      "Find trusted local services",
+      "Search by state, city and locality, compare and request quotes."
+    ],
+    "blog-listing-tips": [
+      "Tips",
+      "10 ways to stand out",
+      "Practical ways to get more calls from your business listing."
+    ]
+  },
+  "placeMap": {
+    "Karachi": "Mumbai",
+    "Lahore": "Delhi",
+    "Islamabad": "Bengaluru",
+    "Rawalpindi": "Hyderabad",
+    "Faisalabad": "Chennai",
+    "Peshawar": "Kolkata",
+    "Multan": "Pune",
+    "Quetta": "Jaipur",
+    "Hyderabad": "Ahmedabad",
+    "Clifton": "Bandra",
+    "DHA": "Koramangala",
+    "Gulberg": "Connaught Place",
+    "Johar Town": "Indiranagar",
+    "Blue Area": "Nariman Point",
+    "F-7": "Lajpat Nagar",
+    "G-11": "Salt Lake",
+    "Saddar": "T. Nagar",
+    "Hayatabad": "Banjara Hills"
+  }
+}

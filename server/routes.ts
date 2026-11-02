@@ -8952,7 +8952,7 @@ Each section should be 1-2 sentences that can be spoken naturally within the tim
 
       // Generate SEO meta tags for provinces listing page
       const title = "Pakistani Provinces Business Directory | Browse All Provinces & Territories | PakistanYP";
-      const description = "Explore business directories for all 7 Pakistani Provinces: Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Peshawar, and Multan. Find verified businesses across every province.";
+      const description = "Explore business directories for all Pakistani Provinces: Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Peshawar, and Multan. Find verified businesses across every province.";
       const keywords = "Pakistani provinces, Karachi businesses, Lahore companies, Islamabad directory, Rawalpindi businesses, Faisalabad, Peshawar, Multan, Pakistan business directory, province wise businesses";
       const canonicalUrl = "https://pakistanyp.com/provinces";
       const ogTitle = "Pakistani Provinces Business Directory - All Provinces & Territories";

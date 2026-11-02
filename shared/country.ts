@@ -27,7 +27,7 @@ export interface Region {
 export interface CountryConfig {
   code: CountryCode;
   /** ISO 3166-1 alpha-2 */
-  iso: "PK";
+  iso: string;
   /** Short name used in running copy */
   name: string;
   /** Name for sentences: "in Pakistan" */
@@ -57,7 +57,8 @@ export interface CountryConfig {
   geo: { lat: number; lng: number };
   /** Top header stripe, left to right (flex weights) */
   flagStripe: { color: string; weight: number }[];
-  logo: { full: string; fullWebp?: string; fullPng?: string; mark: string; markWebp?: string; markPng?: string; width: number; height: number };
+  /** width104 / markWidth104: widths of the 104px-tall header renditions */
+  logo: { full: string; fullWebp?: string; fullPng?: string; mark: string; markWebp?: string; markPng?: string; width: number; height: number; width104?: number; markWidth104?: number };
   ogImage: string;
   social: { name: string; href: string }[];
   contact: { email: string; address: string };
@@ -112,6 +113,8 @@ const SITE: CountryConfig = {
     markPng: "/logo/pakistanyp-mark-104.png",
     width: 1773,
     height: 366,
+    width104: 688,
+    markWidth104: 131,
   },
   ogImage: "/og-homepage.jpg",
   social: [],
