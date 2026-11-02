@@ -791,6 +791,7 @@ export class DatabaseStorage implements IStorage {
           l.arabic_name as "arabicName",
           l.slug,
           l.province_id as "provinceId",
+          l.parent_id as "parentId",
           l.is_main_area as "isMainArea",
           l.description,
           l.population,
@@ -1135,7 +1136,8 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(businesses.provinceId, filters.provinceId));
     }
     if (filters?.localityId) {
-      conditions.push(eq(businesses.localityId, filters.localityId));
+      // A city includes the businesses in all of its localities
+      conditions.push(sql`${businesses.localityId} IN (SELECT id FROM localities WHERE id = ${filters.localityId} OR parent_id = ${filters.localityId})`);
     }
     if (filters?.query) {
       conditions.push(

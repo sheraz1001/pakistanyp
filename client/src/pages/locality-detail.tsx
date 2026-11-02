@@ -9,12 +9,16 @@ import Footer from "@/components/footer";
 import { breadcrumbLd, provinceSlug, geoFrom } from "@/lib/structured-data";
 import "./localities.css";
 import { country, localize, regionUrl } from "@shared/country";
+import { usePlaces, buildCityTree, shortPlaceName, plural } from "@/lib/places";
+import { useState } from "react";
 
 interface Locality {
   id: number;
   name: string;
   slug: string;
   provinceId: number;
+  parentId?: number | null;
+  isMainArea?: boolean;
   description: string;
   businessCount: number;
   metaTitle: string;
@@ -56,6 +60,21 @@ export default function LocalityDetail() {
   const province = provinces?.find(item => item.id === localityData?.provinceId);
   const provinceLabel = province?.name || (country.name);
   const businessList = businessesQuery.data?.businesses || [];
+  // Province > City > Locality
+  const [placeSearch, setPlaceSearch] = useState("");
+  const [showAllChildren, setShowAllChildren] = useState(false);
+  const placesQuery = usePlaces(localityData?.provinceId || null);
+  const { cities } = buildCityTree(placesQuery.data || []);
+  const isCity = !!localityData && !localityData.parentId && !!localityData.isMainArea;
+  const cityNode = isCity ? cities.find(c => c.id === localityData!.id) : undefined;
+  const childLocalities = cityNode?.localities || [];
+  const parentCity = localityData?.parentId ? cities.find(c => c.id === localityData.parentId) : undefined;
+  const singleCityProvince = cities.length === 1;
+  const displayName = localityData ? shortPlaceName(localityData, parentCity) : "";
+  const childQuery = placeSearch.trim().toLowerCase();
+  const matchingChildren = childQuery ? childLocalities.filter(l => l.name.toLowerCase().includes(childQuery)) : childLocalities;
+  const CHILD_PREVIEW = 24;
+  const visibleChildren = childQuery || showAllChildren ? matchingChildren : matchingChildren.slice(0, CHILD_PREVIEW);
   const total = businessesQuery.data?.total ?? businessList.length;
 
   if (localityQuery.isLoading) {
@@ -82,7 +101,8 @@ export default function LocalityDetail() {
     url: `${country.origin}${pagePath}`,
     address: { "@type": "PostalAddress", addressLocality: localityData.name, addressRegion: province?.name || undefined, addressCountry: country.iso },
     geo: geoFrom(localityData.coordinates),
-    containedInPlace: province?.name ? { "@type": "AdministrativeArea", name: province.name } : undefined,
+    containedInPlace: parentCity ? { "@type": "City", name: parentCity.name, containedInPlace: province?.name ? { "@type": "AdministrativeArea", name: province.name } : undefined }
+      : province?.name ? { "@type": "AdministrativeArea", name: province.name } : undefined,
   };
   const hasCoordinates = localityData.coordinates && Number.isFinite(Number(localityData.coordinates.lat)) && Number.isFinite(Number(localityData.coordinates.lng));
 
@@ -104,9 +124,9 @@ export default function LocalityDetail() {
           localityData.schemaMarkup || structuredData,
           breadcrumbLd([
             { name: "Home", path: "/" },
-            { name: "Localities", path: "/localities" },
             province ? { name: province.name, path: `/${provinceSlug(province.name)}` } : null,
-            { name: localityData.name, path: pagePath },
+            parentCity && !singleCityProvince ? { name: parentCity.name, path: `/localities/${parentCity.slug}` } : null,
+            { name: displayName, path: pagePath },
           ].filter(Boolean) as any),
         ]}
       />
@@ -116,24 +136,54 @@ export default function LocalityDetail() {
           <div className="locality-shell">
             <nav className="locality-breadcrumb" aria-label="Breadcrumb">
               <Link href="/">Home</Link><ChevronRight aria-hidden="true" />
-              <Link href="/localities">Localities</Link><ChevronRight aria-hidden="true" />
-              {province && <><Link href={`/${province.name.toLowerCase().replace(/\s+/g, "-")}`}>{province.name}</Link><ChevronRight aria-hidden="true" /></>}
-              <span aria-current="page">{localityData.name}</span>
+              {province && <><Link href={regionUrl(province.name)}>{province.name}</Link><ChevronRight aria-hidden="true" /></>}
+              {parentCity && !singleCityProvince && <><Link href={`/localities/${parentCity.slug}`}>{parentCity.name}</Link><ChevronRight aria-hidden="true" /></>}
+              <span aria-current="page">{displayName}</span>
             </nav>
-            <p className="locality-eyebrow"><MapPin aria-hidden="true" />{provinceLabel} neighborhood directory</p>
-            <h1>{localityData.name}</h1>
+            <p className="locality-eyebrow"><MapPin aria-hidden="true" />{isCity ? `City in ${provinceLabel}` : parentCity ? `Locality in ${singleCityProvince ? provinceLabel : `${parentCity.name}, ${provinceLabel}`}` : `${provinceLabel} neighborhood directory`}</p>
+            <h1>{displayName}</h1>
             <p className="locality-lead">{description || `Find businesses and local services in ${localityData.name}, ${provinceLabel}. Browse listings for contact details, locations and customer reviews where available.`}</p>
             <div className="locality-meta">
-              <span><MapPin aria-hidden="true" />{provinceLabel}{`, ${country.name}`}</span>
+              <span><MapPin aria-hidden="true" />{parentCity && !singleCityProvince ? `${parentCity.name}, ` : ""}{provinceLabel}{`, ${country.name}`}</span>
+              {isCity && childLocalities.length > 0 && <span>{plural(childLocalities.length, "locality", "localities")}</span>}
               {!businessesQuery.isLoading && !businessesQuery.isError && <span><Building2 aria-hidden="true" />{total.toLocaleString()} {total === 1 ? "business" : "businesses"} listed</span>}
             </div>
           </div>
         </section>
         <div className="locality-shell locality-content locality-columns">
           <div className="locality-primary">
+            {isCity && childLocalities.length > 0 && (
+              <section aria-labelledby="city-localities-heading" className="locality-children">
+                <div className="locality-section-heading">
+                  <h2 id="city-localities-heading">Localities in {localityData.name}</h2>
+                  <p role="status">{childQuery ? `${plural(matchingChildren.length, "locality", "localities")} match your search` : plural(childLocalities.length, "locality", "localities")}</p>
+                </div>
+                {childLocalities.length > 12 && (
+                  <div className="locality-search locality-children-search">
+                    <input type="search" aria-label={`Search localities in ${localityData.name}`} placeholder={`Search localities in ${localityData.name}…`} value={placeSearch} onChange={event => setPlaceSearch(event.target.value)} />
+                  </div>
+                )}
+                <ul className="locality-children-grid">
+                  {visibleChildren.map(child => (
+                    <li key={child.id}>
+                      <Link href={`/localities/${child.slug}`} className="locality-child">
+                        <MapPin aria-hidden="true" />
+                        <span><span className="locality-place-name">{shortPlaceName(child, localityData)}</span><span className="locality-place-count">{plural(child.businessCount, "business", "businesses")}</span></span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                {!visibleChildren.length && <p className="locality-children-empty">No localities match your search.</p>}
+                {!childQuery && childLocalities.length > CHILD_PREVIEW && (
+                  <button type="button" className="locality-text-link locality-children-more" aria-expanded={showAllChildren} onClick={() => setShowAllChildren(v => !v)}>
+                    {showAllChildren ? "Show fewer" : `Show all ${plural(childLocalities.length, "locality", "localities")}`}
+                  </button>
+                )}
+              </section>
+            )}
             <section aria-labelledby="locality-business-heading">
               <div className="locality-section-heading">
-                <h2 id="locality-business-heading">Businesses in {localityData.name}</h2>
+                <h2 id="locality-business-heading">Businesses in {displayName}</h2>
                 {!businessesQuery.isLoading && !businessesQuery.isError && <p>{businessList.length === total ? `${total.toLocaleString()} ${total === 1 ? "listing" : "listings"}` : `Showing ${businessList.length} of ${total.toLocaleString()} listings`}</p>}
               </div>
               {businessesQuery.isError ? (
@@ -159,12 +209,15 @@ export default function LocalityDetail() {
             <section className="locality-panel">
               <h2>Area at a glance</h2>
               <dl>
-                <div><dt>Locality</dt><dd>{localityData.name}</dd></div>
+                <div><dt>{isCity ? "City" : "Locality"}</dt><dd>{displayName}</dd></div>
+                {parentCity && !singleCityProvince && <div><dt>City</dt><dd><Link href={`/localities/${parentCity.slug}`}>{parentCity.name}</Link></dd></div>}
+                {isCity && childLocalities.length > 0 && <div><dt>Localities</dt><dd>{childLocalities.length.toLocaleString()}</dd></div>}
                 <div><dt>{country.regionTerm.singular}</dt><dd>{provinceLabel}</dd></div>
                 {!businessesQuery.isLoading && !businessesQuery.isError && <div><dt>Businesses</dt><dd>{total.toLocaleString()}</dd></div>}
                 {Number(localityData.population) > 0 && <div><dt>Population</dt><dd>{Number(localityData.population).toLocaleString()}</dd></div>}
               </dl>
               {hasCoordinates && <a href={`https://www.google.com/maps/@${localityData.coordinates.lat},${localityData.coordinates.lng},15z`} target="_blank" rel="noopener noreferrer" className="locality-button locality-button-outline"><Navigation aria-hidden="true" />View area on map<ArrowUpRight aria-hidden="true" /></a>}
+              {parentCity && !singleCityProvince && <Link href={`/localities/${parentCity.slug}`} className="locality-text-link">All of {parentCity.name}<ChevronRight size={15} aria-hidden="true" /></Link>}
               {province && <Link href={regionUrl(province.name)} className="locality-text-link">Explore {province.name}<ChevronRight size={15} aria-hidden="true" /></Link>}
             </section>
             <section className="locality-panel locality-owner">

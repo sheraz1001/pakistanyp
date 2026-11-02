@@ -43,12 +43,10 @@ export function DropdownCategorySelector({
 
   // Handle category selection
   const handleMainSelect = (value: string) => {
+    // A main category only opens its sub-categories; it can't be selected on its own.
     setSelectedMainId(value);
     setSelectedSubId("");
     setSelectedSpecId("");
-    if (value) {
-      addCategory(parseInt(value));
-    }
   };
 
   const handleSubSelect = (value: string) => {
@@ -122,7 +120,7 @@ export function DropdownCategorySelector({
       {/* Level 1 - Main Categories */}
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
-          Level 1 - Main Category
+          Level 1 - Main Category (opens its sub-categories)
         </label>
         <Select value={selectedMainId} onValueChange={handleMainSelect}>
           <SelectTrigger>

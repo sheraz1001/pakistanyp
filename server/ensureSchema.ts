@@ -15,6 +15,12 @@ const FILES = ["scripts/create-missing-tables.sql", "scripts/add-missing-columns
 const FIXES: Record<string, string> = {
   // Islamabad (3) and Multan (7) were switched off, so their 57 localities and listings were invisible
   "2026-10-29-activate-all-provinces": "update provinces set is_active = true, is_published = true where is_active = false or is_published = false",
+  // Province > City > Locality: link each "<Locality>, <City>" row to its city in the same province
+  "2026-11-02-locality-parent-city": `update localities l set parent_id = c.id
+    from localities c
+    where l.parent_id is null and coalesce(l.is_main_area, false) = false
+      and c.is_main_area = true and c.province_id = l.province_id and c.id <> l.id
+      and right(l.name, length(c.name) + 2) = ', ' || c.name`,
 };
 
 async function applyOnce(): Promise<void> {

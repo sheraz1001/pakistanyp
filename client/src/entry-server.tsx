@@ -107,7 +107,7 @@ function primaryApiPatterns(pathname: string): RegExp[] {
   return [];
 }
 
-const LIGHT_KEYS = new Set(["id","name","slug","arabicName","nameAr","parentId","level","provinceId","province","provinceName","provinceSlug","localityId","categoryId","businessCount","subcategoryCount","count","icon","color","sortOrder","isActive","isFeatured","isPopular","isVerified","image","imageUrl","logoUrl","rating","ratingAverage","type","path","fullPath"]);
+const LIGHT_KEYS = new Set(["id","name","slug","arabicName","nameAr","parentId","isMainArea","level","provinceId","province","provinceName","provinceSlug","localityId","categoryId","businessCount","subcategoryCount","count","icon","color","sortOrder","isActive","isFeatured","isPopular","isVerified","image","imageUrl","logoUrl","rating","ratingAverage","type","path","fullPath"]);
 const HEAVY_KEYS = /^(description|content|seoContent|seo_content|metaDescription|metaTitle|keywords|faq|faqs|longDescription|introContent|aboutContent|generatedContent|aiContent|customCSS|customJS)$/i;
 
 function slimItem(item: any) {

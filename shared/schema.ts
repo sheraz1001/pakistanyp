@@ -494,7 +494,9 @@ export const localities = pgTable("localities", {
   arabicName: varchar("arabic_name", { length: 200 }),
   slug: varchar("slug", { length: 200 }).notNull().unique(),
   provinceId: integer("province_id").references(() => provinces.id).notNull(),
-  isMainArea: boolean("is_main_area").default(false), // Main area of the province
+  /** City this locality belongs to (null for a city itself) */
+  parentId: integer("parent_id"),
+  isMainArea: boolean("is_main_area").default(false), // true = a city/town; false = a locality inside a city
   description: text("description"),
   population: integer("population"),
   coordinates: jsonb("coordinates"), // {lat, lng}

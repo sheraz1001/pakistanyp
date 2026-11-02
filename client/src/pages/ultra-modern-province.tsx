@@ -17,6 +17,7 @@ import {
 import { breadcrumbLd, provinceSlug } from "@/lib/structured-data";
 import { provinceDirectory } from "@shared/province-directory";
 import { localLang, localDir, country, localize, regionSlug } from "@shared/country";
+import { usePlaces, buildCityTree, singleCityOf, shortPlaceName, plural } from "@/lib/places";
 
 interface Province {
   id: number;
@@ -50,7 +51,8 @@ export default function UltraModernProvincePage() {
   const [, navigate] = useLocation();
   const [viewMode, setViewMode] = useState<'compact' | 'expanded'>('compact');
   const [filter, setFilter] = useState<'all' | 'featured' | 'verified'>('all');
-  const [localitySearch, setLocalitySearch] = useState("");
+  const [placeSearch, setPlaceSearch] = useState("");
+  const [showAllPlaces, setShowAllPlaces] = useState(false);
 
   // Extract province from current path
   const segments = location.split('/').filter(Boolean);
@@ -85,22 +87,25 @@ export default function UltraModernProvincePage() {
         }
       : identity ? { ...identity, id: 0, arabicName: region?.nameAr || "", description: regionFallbackDescription(identity.name), metaTitle: "", metaDescription: "" } : undefined);
 
-  // Get business counts by province
-  const { data: localities = [], isLoading: localitiesLoading, error: localitiesError, refetch: retryLocalities } = useQuery<Array<{ id: number; name: string; slug: string }>>({
-    queryKey: [`/api/localities?provinceId=${currentProvince?.id}`],
-    enabled: !!currentProvince?.id,
-  });
-  const visibleLocalities = localities
-    .filter(item => item.name.toLowerCase().includes(localitySearch.toLowerCase().trim()))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  // Province > City > Locality
+  const { data: places = [], isLoading: placesLoading, error: placesError, refetch: retryPlaces } = usePlaces(currentProvince?.id || null);
+  const { cities } = buildCityTree(places);
+  // Islamabad Capital Territory has one city: list its localities directly
+  const onlyCity = singleCityOf(cities);
+  const placeItems = onlyCity
+    ? onlyCity.localities.map(l => ({ id: l.id, slug: l.slug, name: shortPlaceName(l, onlyCity), detail: plural(l.businessCount, "business", "businesses"), busy: l.businessCount }))
+    : cities.map(c => ({ id: c.id, slug: c.slug, name: c.name, detail: [c.localities.length ? plural(c.localities.length, "locality", "localities") : "", plural(c.totalBusinesses, "business", "businesses")].filter(Boolean).join(" · "), busy: c.totalBusinesses * 1000 + c.localities.length }));
+  const placeQuery = placeSearch.trim().toLowerCase();
+  const matchingPlaces = placeQuery ? placeItems.filter(item => item.name.toLowerCase().includes(placeQuery)) : placeItems;
+  // Busiest cities first, then by name; show a first screenful until "Show all"
+  const orderedPlaces = placeQuery || onlyCity ? matchingPlaces : [...matchingPlaces].sort((a, b) => b.busy - a.busy || a.name.localeCompare(b.name));
+  const PLACE_PREVIEW = 24;
+  const shownPlaces = showAllPlaces || placeQuery ? orderedPlaces : orderedPlaces.slice(0, PLACE_PREVIEW);
+  const placeNoun = onlyCity ? { one: "locality", many: "localities", title: "Localities" } : { one: "city", many: "cities", title: "Cities" };
+  const localityTotal = places.filter(p => !(p.isMainArea && !p.parentId)).length;
 
   const { data: businessCounts = [] } = useQuery({
     queryKey: ['/api/businesses/count-by-province'],
-  });
-
-  // Get locality counts by province
-  const { data: localityCounts = [] } = useQuery({
-    queryKey: ['/api/localities/count-by-province'],
   });
 
   // Get businesses for this province
@@ -128,10 +133,6 @@ export default function UltraModernProvincePage() {
   // Find stats for current province
   const businessStats = (businessCounts as any[]).find((bc: any) => 
     bc.provinceId === currentProvince?.id
-  );
-  
-  const localityStats = (localityCounts as any[]).find((lc: any) => 
-    lc.provinceId === currentProvince?.id
   );
 
   const heroImage = savedProvince?.headerImage || savedProvince?.homepageImage || '';
@@ -233,7 +234,9 @@ export default function UltraModernProvincePage() {
               {[
                 { value: businessStats?.businessCount || 0, label: "Businesses" },
                 { value: featuredCount, label: "Featured" },
-                { value: localityStats?.localityCount || 0, label: "Localities" },
+                onlyCity
+                  ? { value: onlyCity.localities.length, label: "Localities" }
+                  : { value: cities.length, label: "Cities" },
               ].map((stat) => (
                 <div key={stat.label} className="yp-card px-4 py-4">
                   <dd className="text-2xl font-bold tracking-[-0.03em]">{stat.value}</dd>
@@ -306,34 +309,55 @@ export default function UltraModernProvincePage() {
             </div>
           </div>
 
-          <section aria-labelledby="localities-heading" className="yp-card p-6">
-            <h2 id="localities-heading" className="text-base font-semibold">Explore localities in {currentProvince.name}</h2>
-            <p className="mt-1 text-sm text-[#5B6475]">Choose an area to find local businesses and services.</p>
-            <label htmlFor="locality-search" className="yp-label mt-4 mb-2 block">Search localities</label>
-            <input id="locality-search" type="search" value={localitySearch} onChange={event => setLocalitySearch(event.target.value)}
-              placeholder={`Search areas in ${currentProvince.name}`}
-              className="yp-input mb-3 text-[15px]" />
-            {localitiesLoading ? <p role="status" className="text-sm text-[#5B6475]">Loading localities…</p> : localitiesError ? (
-              <div role="alert" className="text-sm text-[#3A4354]">Localities could not be loaded. <Button variant="outline" className="mt-2" onClick={() => retryLocalities()}>Try again</Button></div>
-            ) : (
-              <>
-                <p className="mb-2 text-[13px] text-[#5B6475]" role="status">{visibleLocalities.length} localities{localitySearch ? " matching your search" : ""}</p>
-                <div className="-mx-2 flex max-h-80 flex-col overflow-y-auto" aria-label="Locality links">
-                  {visibleLocalities.map(item => (
-                    <Link key={item.id} href={`/localities/${item.slug}`} className="flex min-h-[40px] items-center gap-2 rounded-[10px] px-2 text-sm font-medium text-[#3A4354] hover:bg-[#F1F2F6] hover:text-[#0A0A0A] focus-visible:outline focus-visible:outline-2">
-                      <MapPin className="h-4 w-4 shrink-0 text-[#0B6B2E]" aria-hidden="true" />{item.name}
-                    </Link>
-                  ))}
-                  {!visibleLocalities.length && <p className="p-2 text-sm text-[#5B6475]">{localitySearch ? "No localities match your search." : localize("No localities are currently available for this Province.")}</p>}
-                </div>
-              </>
-            )}
-            <Link href="/localities" className="mt-4 inline-block text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{localize("View all Pakistani localities →")}</Link>
-          </section>
         </aside>
 
         {/* Businesses Section */}
-        <section className="flex min-w-0 flex-[999_1_560px] flex-col gap-4" aria-label="Results">
+        <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-8">
+        <section aria-labelledby="places-heading" className="yp-card p-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 id="places-heading" className="text-[22px] font-semibold tracking-[-0.02em]">{placeNoun.title} in {currentProvince.name}</h2>
+              <p className="mt-1 text-sm text-[#5B6475]" role="status">
+                {placesLoading ? "Loading…" : placeQuery ? `${plural(matchingPlaces.length, placeNoun.one, placeNoun.many)} match “${placeSearch.trim()}”` : onlyCity ? plural(placeItems.length, "locality", "localities") : `${plural(cities.length, "city", "cities")} · ${plural(localityTotal, "locality", "localities")}`}
+              </p>
+            </div>
+            <div className="w-full sm:w-72">
+              <label htmlFor="place-search" className="sr-only">Search {placeNoun.many}</label>
+              <input id="place-search" type="search" value={placeSearch} onChange={event => setPlaceSearch(event.target.value)}
+                placeholder={`Search ${placeNoun.many} in ${currentProvince.name}`} className="yp-input text-[15px]" />
+            </div>
+          </div>
+          {placesLoading ? (
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" aria-hidden="true">
+              {Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-14 animate-pulse rounded-[12px] bg-[#EEF0F4]" />)}
+            </div>
+          ) : placesError ? (
+            <div role="alert" className="mt-4 text-sm text-[#3A4354]">{placeNoun.title} could not be loaded. <Button variant="outline" className="ml-2" onClick={() => retryPlaces()}>Try again</Button></div>
+          ) : shownPlaces.length ? (
+            <ul className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" aria-label={`${placeNoun.title} in ${currentProvince.name}`}>
+              {shownPlaces.map(item => (
+                <li key={item.id} className="min-w-0">
+                  <Link href={`/localities/${item.slug}`} className="flex h-full min-h-[56px] items-start gap-2 rounded-[12px] border border-[#E7E9EE] bg-white px-3 py-2.5 hover:border-[#9FD3B3] hover:bg-[#F2F9F4] focus-visible:outline focus-visible:outline-2">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0B6B2E]" aria-hidden="true" />
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-[#0A0A0A] [overflow-wrap:anywhere]">{item.name}</span>
+                      <span className="block text-xs text-[#5B6475]">{item.detail}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-4 text-sm text-[#5B6475]">{placeQuery ? `No ${placeNoun.many} match your search.` : `No ${placeNoun.many} are listed for ${currentProvince.name} yet.`}</p>
+          )}
+          {!placeQuery && orderedPlaces.length > PLACE_PREVIEW && (
+            <button type="button" onClick={() => setShowAllPlaces(v => !v)} className="mt-4 text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]" aria-expanded={showAllPlaces}>
+              {showAllPlaces ? "Show fewer" : `Show all ${plural(orderedPlaces.length, placeNoun.one, placeNoun.many)}`}
+            </button>
+          )}
+        </section>
+
+        <section className="flex min-w-0 flex-col gap-4" aria-label="Results">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
               <h2 className="text-[22px] font-semibold tracking-[-0.02em]">Businesses in {currentProvince.name}</h2>
@@ -370,6 +394,7 @@ export default function UltraModernProvincePage() {
             <BusinessListing businesses={businesses} layout={viewMode === 'compact' ? 'grid' : 'list'} province={currentProvince} />
           )}
         </section>
+        </div>
       </div>
 
       <Footer />

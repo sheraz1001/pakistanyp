@@ -137,8 +137,18 @@ export const country: CountryConfig = PAKISTAN;
 export const localLang = country.localLanguage?.code || "ur";
 export const localDir: "rtl" | "ltr" = country.localLanguage?.dir || "rtl";
 
-/** Slug for a region name, matching how pages build region URLs. */
-export const regionSlug = (name?: string) => (name || "").toLowerCase().trim().replace(/\s+/g, "-");
+const slugifyName = (name?: string) => (name || "").toLowerCase().trim().replace(/\s+/g, "-");
+
+/**
+ * URL slug of a province/territory, from its name or slug. Returns the configured slug,
+ * so "Islamabad Capital Territory" -> "islamabad" and "Azad Jammu and Kashmir" -> "azad-kashmir".
+ * Unknown names fall back to a plain slug.
+ */
+export const regionSlug = (name?: string) => {
+  const s = slugifyName(name);
+  const region = country.regions.find((r) => r.slug === s || slugifyName(r.name) === s);
+  return region ? region.slug : s;
+};
 
 /** Public URL of a province page: top-level slug (/punjab, /sindh). */
 export const regionUrl = (name?: string) => `/${regionSlug(name)}`;

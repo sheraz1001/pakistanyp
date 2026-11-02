@@ -12,7 +12,7 @@
  * on its first start (server/bootstrapDatabase.ts).
  */
 import pg from "pg";
-import { country, regionSlug } from "../shared/country";
+import { country } from "../shared/country";
 import { parseCategoryTree } from "../shared/countries/pakistan-categories";
 
 const slug = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-");
@@ -57,18 +57,28 @@ async function main() {
     }
     console.log(`Provinces & territories: ${country.regions.length} total, ${provincesAdded} added`);
 
-    // ---- cities and localities
+    // ---- cities, then localities (each locality linked to its city: Province > City > Locality)
     let placesAdded = 0;
     for (const r of country.regions) {
-      for (const c of r.cities || []) {
-        const s = `${regionSlug(r.name)}/${slug(c.name)}`;
+      const cityIds = new Map<string, number>();
+      // cities first so localities can point to them
+      for (const c of [...(r.cities || [])].sort((a, b) => Number(!!a.locality) - Number(!!b.locality))) {
+        // Locality slugs use the full province name ("islamabad-capital-territory/f-7-islamabad"), as stored
+        const s = `${r.name.toLowerCase().trim().replace(/\s+/g, "-")}/${slug(c.name)}`;
+        const cityName = c.locality ? c.name.slice(c.name.lastIndexOf(", ") + 2) : null;
+        const parentId = cityName ? cityIds.get(cityName) ?? null : null;
         const found = await db.query("select id from localities where slug = $1", [s]);
-        if (found.rows[0]) continue;
-        await db.query(
-          `insert into localities (name, arabic_name, province_id, is_main_area, slug, description, is_active)
-           values ($1,$2,$3,$4,$5,$6,true)`,
-          [c.name, c.nameAr || null, provinceIds.get(r.slug), !c.locality, s, `Businesses and services in ${c.name}, ${r.name}.`],
+        if (found.rows[0]) {
+          if (!c.locality) cityIds.set(c.name, found.rows[0].id);
+          else if (parentId) await db.query("update localities set parent_id = $2 where id = $1 and parent_id is null", [found.rows[0].id, parentId]);
+          continue;
+        }
+        const ins = await db.query(
+          `insert into localities (name, arabic_name, province_id, parent_id, is_main_area, slug, description, is_active)
+           values ($1,$2,$3,$4,$5,$6,$7,true) returning id`,
+          [c.name, c.nameAr || null, provinceIds.get(r.slug), parentId, !c.locality, s, `Businesses and services in ${c.name}, ${r.name}.`],
         );
+        if (!c.locality) cityIds.set(c.name, ins.rows[0].id);
         placesAdded++;
       }
     }

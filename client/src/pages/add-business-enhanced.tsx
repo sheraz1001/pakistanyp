@@ -32,6 +32,7 @@ const homeFlag = country.iso.replace(/./g, (c) => String.fromCodePoint(127397 + 
 const aRegion = `a ${country.regionTerm.singular.toLowerCase()}`;
 import BusinessProfilePreview from "@/components/business-profile-preview";
 import DropdownCategorySelector from "@/components/dropdown-category-selector";
+import { LocationPicker } from "@/components/location-picker";
 import ImageCropDialog from "@/components/image-crop-dialog";
 
 
@@ -44,6 +45,7 @@ const businessFormSchema = z.object({
   categoryId: z.string().min(1, "Please select at least one category"),
   additionalCategoryIds: z.array(z.string()).min(0, "Invalid category selection"),
   provinceId: z.string().min(1, `Please select ${aRegion}`),
+  cityId: z.string().min(1, "Please select a city"),
   localityId: z.string().min(1, "Please select a locality"),
   
   // Contact Information
@@ -129,7 +131,7 @@ export default function AddBusinessEnhanced() {
   // Calculate form completion progress
   const calculateProgress = () => {
     const watchedValues = form.watch();
-    const requiredFields = ['name', 'description', 'categoryId', 'provinceId', 'localityId', 'phone', 'email', 'address', 'workingHours'];
+    const requiredFields = ['name', 'description', 'categoryId', 'provinceId', 'cityId', 'localityId', 'phone', 'email', 'address', 'workingHours'];
     const completedRequired = requiredFields.filter(field => watchedValues[field] && watchedValues[field].toString().trim().length > 0).length;
     
     const optionalFields = ['website', 'services', 'products', 'facebook', 'instagram', 'twitter', 'linkedin'];
@@ -155,7 +157,7 @@ export default function AddBusinessEnhanced() {
       case 'contact-info':
         return !!(values.phone && values.email && values.workingHours);
       case 'location-info':
-        return !!(values.provinceId && values.localityId && values.address);
+        return !!(values.provinceId && values.cityId && values.localityId && values.address);
       case 'business-details':
         return !!(values.establishedYear || values.employeeCount || values.legalForm);
       case 'services-content':
@@ -258,6 +260,7 @@ export default function AddBusinessEnhanced() {
       categoryId: "",
       additionalCategoryIds: [],
       provinceId: "",
+      cityId: "",
       localityId: "",
       phone: "",
       whatsapp: "",
@@ -351,6 +354,7 @@ export default function AddBusinessEnhanced() {
         categoryId: existingBusiness.categoryId?.toString() || "",
         additionalCategoryIds: existingBusiness.additionalCategoryIds?.map(id => id.toString()) || [],
         provinceId: existingBusiness.provinceId?.toString() || "",
+        cityId: "",
         localityId: existingBusiness.localityId?.toString() || "",
         phone: existingBusiness.phone || "",
         whatsapp: existingBusiness.whatsapp || "",
@@ -423,6 +427,7 @@ export default function AddBusinessEnhanced() {
           categoryId: "",
           additionalCategoryIds: [],
           provinceId: province?.id.toString() || "",
+          cityId: "",
           localityId: "",
           whatsapp: "",
           locality: "",
@@ -1236,69 +1241,7 @@ export default function AddBusinessEnhanced() {
                         <span className="text-red-500">*</span>
                       </div>
                       <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="provinceId"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{`${country.regionTerm.singular} *`}</FormLabel>
-                                <Select onValueChange={(value) => {
-                                  field.onChange(value);
-                                  setSelectedProvinceId(value);
-                                  form.setValue("localityId", "");
-                                }} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder={localize("Select province")} />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {provinces.map((province) => (
-                                      <SelectItem key={province.id} value={province.id.toString()}>
-                                        {province.name}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="localityId"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Locality *</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select locality" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {localities.filter(locality => !selectedProvinceId || locality.provinceId.toString() === selectedProvinceId).length === 0 ? (
-                                      <SelectItem value="no-localities" disabled>
-                                        {selectedProvinceId ? localize("No localities available for selected province") : `Please select ${aRegion} first`}
-                                      </SelectItem>
-                                    ) : (
-                                      localities
-                                        .filter(locality => !selectedProvinceId || locality.provinceId.toString() === selectedProvinceId)
-                                        .map((locality) => (
-                                          <SelectItem key={locality.id} value={locality.id.toString()}>
-                                            {locality.name}
-                                          </SelectItem>
-                                        ))
-                                    )}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
+                        <LocationPicker form={form} provinces={provinces} onProvinceChange={setSelectedProvinceId} idPrefix="enhanced-1" />
 
                         <FormField
                           control={form.control}
@@ -1367,7 +1310,7 @@ export default function AddBusinessEnhanced() {
                                 Business Categories * 
                                 {!isPremiumUser(userMembership) && (
                                   <Badge variant="outline" className="text-xs">
-                                    Free: 1 main + 3 second level + unlimited 3rd level
+                                    Free: 3 sub-categories + unlimited 3rd level
                                   </Badge>
                                 )}
                                 {isPremiumUser(userMembership) && (
@@ -1728,68 +1671,7 @@ export default function AddBusinessEnhanced() {
                         <span className="text-red-500">*</span>
                       </div>
                       <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="provinceId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{`${country.regionTerm.singular} *`}</FormLabel>
-                            <Select onValueChange={(value) => {
-                              field.onChange(value);
-                              setSelectedProvinceId(value);
-                              form.setValue("localityId", "");
-                            }} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder={localize("Select province")} />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {provinces.map((province) => (
-                                  <SelectItem key={province.id} value={province.id.toString()}>
-                                    {province.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="localityId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Locality *</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select locality" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {localities
-                                  .filter(locality => !selectedProvinceId || locality.provinceId.toString() === selectedProvinceId)
-                                  .map((locality) => (
-                                  <SelectItem key={locality.id} value={locality.id.toString()}>
-                                    {locality.name}
-                                  </SelectItem>
-                                ))}
-                                {localities.filter(locality => !selectedProvinceId || locality.provinceId.toString() === selectedProvinceId).length === 0 && (
-                                  <SelectItem value="no-localities" disabled>
-                                    {selectedProvinceId ? localize("No localities found for this province") : `Please select ${aRegion} first`}
-                                  </SelectItem>
-                                )}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                    <LocationPicker form={form} provinces={provinces} onProvinceChange={setSelectedProvinceId} idPrefix="enhanced-2" />
 
                     <FormField
                       control={form.control}

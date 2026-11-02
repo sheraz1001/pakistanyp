@@ -7,6 +7,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { publicProvince } from "../shared/province-directory";
 import { db } from "./db";
+import { checkBusinessPlacement } from "./businessPlacement";
 import fetch from "node-fetch";
 // Removed Google OAuth - using email/password authentication only
 import { authService } from "./authService";
@@ -2146,7 +2147,10 @@ Return JSON format: {"suggestions": [...], "insights": "helpful insights about t
   app.post('/api/businesses', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
-      const businessData = { ...req.body, ownerId: userId };
+      const placementError = await checkBusinessPlacement(req.body);
+      if (placementError) return res.status(400).json({ message: placementError });
+      const { cityId: _cityId, ...body } = req.body || {};
+      const businessData = { ...body, ownerId: userId };
       const business = await storage.createBusiness(businessData);
       res.status(201).json(business);
     } catch (error) {
@@ -2514,6 +2518,9 @@ Return JSON format: {"suggestions": [...], "insights": "helpful insights about t
       if (!business || business.ownerId !== userId) {
         return res.status(403).json({ message: "Not authorized to update this business" });
       }
+      const placementError = await checkBusinessPlacement(businessData, business as any);
+      if (placementError) return res.status(400).json({ message: placementError });
+      delete (businessData as any).cityId;
       
       const updatedBusiness = await storage.updateBusiness(parseInt(id), businessData);
       res.json(updatedBusiness);
@@ -4082,6 +4089,32 @@ Instructions:
     }
   });
 
+  // Province > City > Locality tree (lean): every place with its city, Urdu name and listed-business count.
+  // ?provinceId= limits it to one province. Cities: isMainArea = true, parentId = null.
+  app.get('/api/places', async (req, res) => {
+    try {
+      const provinceId = req.query.provinceId ? parseInt(req.query.provinceId as string) : null;
+      if (req.query.provinceId && !Number.isFinite(provinceId)) return res.status(400).json({ message: "Invalid provinceId" });
+      const result = await db.execute(sql`
+        SELECT l.id, l.name, l.arabic_name AS "arabicName", l.slug, l.province_id AS "provinceId",
+               l.parent_id AS "parentId", COALESCE(l.is_main_area, false) AS "isMainArea",
+               COALESCE(bc.n, 0)::int AS "businessCount"
+        FROM localities l
+        LEFT JOIN (
+          SELECT locality_id, COUNT(*)::int AS n FROM businesses
+          WHERE is_active = true AND (admin_approved = true OR admin_approved IS NULL) AND locality_id IS NOT NULL
+          GROUP BY locality_id
+        ) bc ON bc.locality_id = l.id
+        WHERE COALESCE(l.is_active, true) = true ${provinceId ? sql`AND l.province_id = ${provinceId}` : sql``}
+        ORDER BY l.name`);
+      res.set('Cache-Control', 'public, max-age=300');
+      res.json((result as any).rows ?? result);
+    } catch (error) {
+      console.error("Error fetching places:", error);
+      res.status(500).json({ message: "Failed to fetch places" });
+    }
+  });
+
   app.get('/api/localities/with-stats', disableCache, async (req, res) => {
     try {
       const { provinceId } = req.query;
@@ -4388,6 +4421,8 @@ Instructions:
 
   app.post('/api/businesses', isAuthenticated, async (req: any, res) => {
     try {
+      const placementError = await checkBusinessPlacement(req.body);
+      if (placementError) return res.status(400).json({ message: placementError });
       const userId = req.user.id;
       const data = insertBusinessSchema.parse(req.body);
       

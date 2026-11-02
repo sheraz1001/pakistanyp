@@ -27,4 +27,7 @@ ALTER TABLE "theme_settings" ADD COLUMN IF NOT EXISTS "cultural_elements" jsonb 
 ALTER TABLE "theme_settings" ADD COLUMN IF NOT EXISTS "is_system_default" boolean DEFAULT false;
 ALTER TABLE "theme_settings" ADD COLUMN IF NOT EXISTS "created_by" varchar;
 ALTER TABLE "theme_settings" ADD COLUMN IF NOT EXISTS "updated_by" varchar;
+-- Province > City > Locality: each locality points to its city
+ALTER TABLE "localities" ADD COLUMN IF NOT EXISTS "parent_id" integer REFERENCES "localities"("id") ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS "localities_parent_id_idx" ON "localities" ("parent_id");
 COMMIT;

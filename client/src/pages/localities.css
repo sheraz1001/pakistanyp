@@ -97,3 +97,29 @@
   .locality-columns { gap: 1.5rem; }
   .locality-panel { padding: 1.25rem; }
 }
+
+/* Province > City > Locality */
+.locality-children { margin-bottom: 2.5rem; }
+.locality-children-search { width: 100%; margin: .25rem 0 1rem; }
+.locality-children-search input { padding-left: 1rem; }
+.locality-children-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.locality-child { display: flex; align-items: flex-start; gap: .55rem; min-height: 56px; padding: .65rem .8rem; border: 1px solid var(--locality-line); border-radius: 12px; background: #FFFFFF; }
+.locality-child > svg { width: 16px; height: 16px; margin-top: .15rem; flex-shrink: 0; color: var(--locality-green); }
+.locality-child > span { min-width: 0; }
+.locality-child .locality-place-count { margin-top: .1rem; }
+.locality-child:hover { border-color: #9FD3B3; background: #F2F9F4; }
+.locality-children-empty { font-size: .875rem; color: var(--locality-muted); }
+.locality-city { border-bottom: 1px solid #EEF0F4; padding: 1rem 1.5rem; }
+.locality-city:last-child { border-bottom: 0; }
+.locality-city-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.locality-city-head a { font-size: 1rem; font-weight: 700; color: var(--locality-ink); }
+.locality-city-head a:hover { color: var(--locality-green); }
+.locality-city-head span { font-size: .8rem; color: var(--locality-muted); }
+.locality-chips { list-style: none; margin: .6rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
+.locality-chips a { display: inline-block; padding: .3rem .65rem; border: 1px solid var(--locality-line); border-radius: 999px; font-size: .8rem; color: #3A4354; background: #FFFFFF; }
+.locality-chips a:hover { border-color: #9FD3B3; color: var(--locality-green); }
+.locality-towns { padding: 1rem 1.5rem 1.25rem; }
+.locality-towns h3 { font-size: .8rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--locality-muted); margin-bottom: .6rem; }
+@media (max-width: 900px) { .locality-children-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .locality-children-grid { grid-template-columns: minmax(0, 1fr); } .locality-city, .locality-towns { padding-inline: 1rem; } }
+.locality-children-more { margin-top: 1rem; background: none; border: 0; padding: 0; cursor: pointer; }

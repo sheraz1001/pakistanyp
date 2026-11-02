@@ -22,6 +22,7 @@ import Footer from "@/components/footer";
 import { SubscriptionPlansShowcase } from "@/components/subscription-plans-showcase";
 import { country, localize } from "@shared/country";
 import { ProfessionalCategorySelector } from "@/components/professional-category-selector";
+import { LocationPicker } from "@/components/location-picker";
 import { 
   Building, 
   MapPin, 
@@ -45,8 +46,9 @@ const businessFormSchema = z.object({
   arabicName: z.string().max(200, "Local-language name cannot exceed 200 characters").optional(),
   description: z.string().min(10, "Description must be at least 10 characters"),
   shortDescription: z.string().max(500, "Short description cannot exceed 500 characters").optional(),
-  categories: z.array(z.number()).min(1, "Please select at least one category"),
+  categories: z.array(z.number()).min(1, "Please select at least one sub-category (a main category on its own is not enough)"),
   provinceId: z.string().min(1, `Please select a ${country.regionTerm.singular.toLowerCase()}`),
+  cityId: z.string().min(1, "Please select a city"),
   localityId: z.string().min(1, "Please select a locality"),
   
   // Contact Information
@@ -95,6 +97,7 @@ export default function AddBusinessProfessional() {
       shortDescription: "",
       categories: [],
       provinceId: "",
+      cityId: "",
       localityId: "",
       phone: "",
       whatsapp: "",
@@ -126,8 +129,9 @@ export default function AddBusinessProfessional() {
 
   const createBusinessMutation = useMutation({
     mutationFn: (data: BusinessFormData) => {
+      const { cityId: _cityId, ...rest } = data; // the city is derived from the locality on the server
       const formData = {
-        ...data,
+        ...rest,
         categoryId: data.categories[0]?.toString() || "",
         additionalCategoryIds: data.categories.slice(1).map(id => id.toString()),
         workingHours: JSON.stringify({ general: data.workingHours })
@@ -181,7 +185,7 @@ export default function AddBusinessProfessional() {
       case 'basic': return ['name', 'arabicName', 'description', 'shortDescription'];
       case 'categories': return ['categories'];
       case 'contact': return ['phone', 'whatsapp', 'email', 'website'];
-      case 'location': return ['provinceId', 'localityId', 'address', 'poBox'];
+      case 'location': return ['provinceId', 'cityId', 'localityId', 'address', 'poBox'];
       case 'details': return ['workingHours', 'establishedYear', 'services', 'logo'];
       default: return [];
     }
@@ -355,56 +359,7 @@ export default function AddBusinessProfessional() {
       case 'location':
         return (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="provinceId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{`${country.regionTerm.singular} *`}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder={localize("Select Province")} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {provinces.map((province: any) => (
-                          <SelectItem key={province.id} value={province.id.toString()}>
-                            {province.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="localityId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Locality *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Locality" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {localities.map((locality: any) => (
-                          <SelectItem key={locality.id} value={locality.id.toString()}>
-                            {locality.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <LocationPicker form={form} provinces={provinces as Array<{ id: number; name: string }>} idPrefix="add-business" />
             <FormField
               control={form.control}
               name="address"

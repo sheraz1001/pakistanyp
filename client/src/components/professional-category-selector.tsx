@@ -79,9 +79,15 @@ export function ProfessionalCategorySelector({
     const isSubCategory = category.parentId !== null && 
       categories.find((c: Category) => c.id === category.parentId)?.parentId === null;
 
+    // A main (top-level) category can't be chosen on its own: open it and pick a sub-category.
+    if (isMainCategory) {
+      setSelectedMain(categoryId);
+      setActiveLevel('sub');
+      return;
+    }
+
     // Check limits for free users
     if (!isPremium) {
-      if (isMainCategory && !canAddMain) return;
       if (isSubCategory && !canAddSub) return;
     }
 
@@ -93,11 +99,6 @@ export function ProfessionalCategorySelector({
       onCategoryChange([...selectedCategories, categoryId]);
     }
 
-    // Auto-navigate to next level when selecting main category
-    if (isMainCategory && !selectedCategories.includes(categoryId)) {
-      setSelectedMain(categoryId);
-      setActiveLevel('sub');
-    }
   };
 
   const handleRemoveCategory = (categoryId: number) => {
@@ -161,6 +162,10 @@ export function ProfessionalCategorySelector({
         </Card>
       )}
 
+      <p className="rounded-[12px] border border-[#CFE8D8] bg-[#F2F9F4] px-4 py-3 text-sm text-[#05501F]">
+        Choose a main category to open it, then select the sub-category that describes your business. Main categories can't be selected on their own.
+      </p>
+
       {/* Limits Display for Free Users */}
       {!isPremium && (
         <Card className="border-[#F5DDB0] bg-[#FFF4E0]">
@@ -170,12 +175,6 @@ export function ProfessionalCategorySelector({
               <h3 className="font-semibold text-[#B45309]">Free Plan Limits</h3>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="flex justify-between">
-                <span>Main Categories:</span>
-                <span className={mainCategoriesCount >= 1 ? 'text-red-600 font-semibold' : 'text-green-600'}>
-                  {mainCategoriesCount}/1
-                </span>
-              </div>
               <div className="flex justify-between">
                 <span>Sub Categories:</span>
                 <span className={subCategoriesCount >= 3 ? 'text-red-600 font-semibold' : 'text-green-600'}>
@@ -250,7 +249,7 @@ export function ProfessionalCategorySelector({
             {activeLevel === 'main' && filterCategories(mainCategories).map((category) => {
               const isSelected = selectedCategories.includes(category.id);
               const IconComponent = getCategoryIcon(category.name);
-              const canSelect = isPremium || canAddMain || isSelected;
+              const canSelect = true; // opens the sub-categories
               
               return (
                 <Card
