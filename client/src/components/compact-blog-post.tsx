@@ -157,7 +157,7 @@ export function BlogPostCard({
   const date = formatPostDate(post?.publishedAt);
   const meta = [categoryName, `${getReadingTime(post)} min read`].filter(Boolean).join(" · ");
   return (
-    <Link href={`/blog/${post.slug}`} className="group flex flex-col gap-3.5 text-[#0A0A0A] hover:text-[#0A0A0A]">
+    <Link href={`/blogs/${post.slug}`} className="group flex flex-col gap-3.5 text-[#0A0A0A] hover:text-[#0A0A0A]">
       <PostCover post={post} className="aspect-[16/10] rounded-[20px]" />
       <span className="yp-label">{meta}</span>
       <h3 className={`m-0 ${titleSize} font-semibold leading-[1.3] tracking-[-0.025em] transition-colors group-hover:text-[#0B6B2E]`}>
@@ -503,7 +503,7 @@ export default function CompactBlogPost({ post, onBack, categoryName, related = 
               {tags.map((tag: string, index: number) => (
                 <Link
                   key={index}
-                  href={`/blog/search?q=${encodeURIComponent(tag)}`}
+                  href={`/blogs?q=${encodeURIComponent(tag)}`}
                   className="rounded-full bg-[#F1F2F6] px-3 py-2 text-sm text-[#3A4354] hover:bg-[#E8F4EC] hover:text-[#05501F]"
                 >
                   #{tag}

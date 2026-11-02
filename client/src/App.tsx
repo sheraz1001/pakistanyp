@@ -102,7 +102,8 @@ const Dashboard = lazy(() => import("@/pages/dashboard"), "pages/dashboard");
 const UserDashboard = lazy(() => import("@/pages/user-dashboard"), "pages/user-dashboard");
 const News = lazy(() => import("@/pages/news"), "pages/news");
 const NewsDetail = lazy(() => import("@/pages/news-detail"), "pages/news-detail");
-const Blog = lazy(() => import("@/pages/blog"), "pages/blog");
+const Blogs = lazy(() => import("@/pages/blogs"), "pages/blogs");
+const BlogArticle = lazy(() => import("@/pages/blog-article"), "pages/blog-article");
 const AdminBlogPost = lazy(() => import("@/pages/admin-blog-post"), "pages/admin-blog-post");
 const AddBusinessEnhanced = lazy(() => import("@/pages/add-business-enhanced"), "pages/add-business-enhanced");
 const AddBusinessProfessional = lazy(() => import("@/pages/add-business-professional"), "pages/add-business-professional");
@@ -154,7 +155,6 @@ const LocalityDetail = lazy(() => import("@/pages/locality-detail"), "pages/loca
 const Cities = lazy(() => import("@/pages/cities"), "pages/cities");
 const CityDetail = lazy(() => import("@/pages/city-detail"), "pages/city-detail");
 const IndividualProvincePage = lazy(() => import("@/pages/individual-province"), "pages/individual-province");
-const BlogSearch = lazy(() => import("@/pages/blog-search"), "pages/blog-search");
 const BusinessClaim = lazy(() => import("@/pages/business-claim"), "pages/business-claim");
 const BusinessClaimAuth = lazy(() => import("@/pages/business-claim-auth"), "pages/business-claim-auth");
 const DashboardBusinessClaims = lazy(() => import("@/pages/dashboard-business-claims"), "pages/dashboard-business-claims");
@@ -236,13 +236,16 @@ function Router() {
       <Route path="/admin/sponsorships">{() => <RequireAuth><AdminSponsorships /></RequireAuth>}</Route>
 
       {/* Blog routes - must come before wildcard routes to avoid conflicts */}
-      <Route path="/blog" component={Blog} />
-      <Route path="/blog/search" component={BlogSearch} />
-      <Route path="/blog/:slug" component={Blog} />
+      <Route path="/blogs" component={Blogs} />
+      <Route path="/blogs/category/:category" component={Blogs} />
+      <Route path="/blogs/tag/:tag" component={Blogs} />
+      <Route path="/blogs/:slug" component={BlogArticle} />
       <Route path="/admin-blog/:slug" component={AdminBlogPost} />
 
       {/* News routes - must come before wildcard routes to avoid conflicts */}
       <Route path="/news" component={News} />
+      <Route path="/news/category/:category" component={News} />
+      <Route path="/news/tag/:tag" component={News} />
       <Route path="/news/:slug" component={NewsDetail} />
 
       {/* Newsletter routes - must come before dynamic routes to avoid conflicts */}

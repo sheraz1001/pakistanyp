@@ -875,3 +875,12 @@ html, body { overflow-x: clip; }
 
 /* Wide PakistanYP wordmark: smaller header logo on phones */
 @media (max-width: 480px) { .yp-logo-img { height: 36px !important; } }
+
+/* Home news ticker: two identical rows scroll left; pauses on hover/focus; static for reduced motion */
+@keyframes yp-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-track { animation: yp-ticker linear infinite; will-change: transform; }
+.ticker-viewport:hover .ticker-track, .ticker-viewport:focus-within .ticker-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+  .ticker-viewport { overflow-x: auto; }
+}

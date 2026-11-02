@@ -541,7 +541,7 @@ export default function EnhancedSEOPanel({ seoData, onSEODataChange, className }
                   <Input
                     value={seoData.canonicalUrl}
                     onChange={(e) => onSEODataChange({ canonicalUrl: e.target.value })}
-                    placeholder="https://pakistanyp.com/blog/your-post"
+                    placeholder="https://pakistanyp.com/blogs/your-post"
                   />
                 </div>
 

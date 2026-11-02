@@ -122,7 +122,7 @@ function Footer() {
       { name: localize("All Provinces"), href: country.regionsPath },
       { name: "Localities", href: "/localities" },
       { name: "Featured Businesses", href: "/categories?featured=true" },
-      { name: "Business Blog", href: "/blog" },
+      { name: "Blogs", href: "/blogs" },
       { name: "Add Your Business", href: "/add-business-enhanced" },
       { name: "About Us", href: "/about" },
     ],

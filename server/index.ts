@@ -145,6 +145,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// The blog moved to /blogs: /blog -> /blogs, /blog/search?q= -> /blogs?q=, /blog/<slug> -> /blogs/<slug>
+app.use((req, res, next) => {
+  const m = req.path.match(/^\/blog(?:\/(.*?))?\/?$/);
+  if (!m) return next();
+  const q = req.originalUrl.indexOf('?');
+  const query = q >= 0 ? req.originalUrl.slice(q) : '';
+  const rest = m[1] || '';
+  return res.redirect(301, rest && rest !== 'search' ? `/blogs/${rest}${query}` : `/blogs${query}`);
+});
+
 // Cities have their own pages: /localities/<province>/<city> -> 301 /cities/<city>
 app.get('/localities/:province/:locality', async (req, res, next) => {
   try {

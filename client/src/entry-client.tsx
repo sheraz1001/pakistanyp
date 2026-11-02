@@ -7,6 +7,7 @@ import { hydrateRoot, createRoot } from "react-dom/client";
 import { QueryClientProvider, HydrationBoundary } from "@tanstack/react-query";
 import { HelmetProvider } from "@/lib/helmet-compat";
 import App, { preloadRoutes } from "./App";
+import { Router as WouterRouter } from "wouter";
 import "./index.css";
 
 // Declare global window properties for SSR data
@@ -36,7 +37,10 @@ const AppElement = (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <HydrationBoundary state={dehydratedState}>
-        <App />
+        {/* useSearch() returns the router's ssrSearch while hydrating: pass the real query so it matches the server HTML */}
+        <WouterRouter ssrSearch={window.location.search.replace(/^\?/, "")}>
+          <App />
+        </WouterRouter>
       </HydrationBoundary>
     </QueryClientProvider>
   </HelmetProvider>

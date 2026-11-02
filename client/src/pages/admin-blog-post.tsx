@@ -357,7 +357,7 @@ export default function AdminBlogPost() {
           <div className="yp-label">PakistanYP Insights</div>
           <h1 className="yp-h2 mt-3 mb-3 text-[#0A0A0A]">Blog Post Not Found</h1>
           <p className="text-[#5B6475] mb-8">The blog post you're looking for doesn't exist or has been moved.</p>
-          <Link href="/blog" className="yp-btn yp-btn-primary">
+          <Link href="/blogs" className="yp-btn yp-btn-primary">
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Back to Blog
           </Link>
@@ -375,7 +375,7 @@ export default function AdminBlogPost() {
       {/* Header */}
       <div className="yp-wrap max-w-[860px] pt-10 sm:pt-14">
         <div className="mb-8 flex justify-center">
-          <Link href="/blog" className="inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-[#3A4354] hover:text-[#0B6B2E]">
+          <Link href="/blogs" className="inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-[#3A4354] hover:text-[#0B6B2E]">
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Back to Blog
           </Link>

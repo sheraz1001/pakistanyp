@@ -102,7 +102,8 @@ function primaryApiPatterns(pathname: string): RegExp[] {
   if (seg[0] === "categories" && last && seg.length > 1) return [new RegExp(`^/api/categories/(by-slug/)?${esc(last)}$`)];
   if (seg[0] === "cities" && seg[1]) return [new RegExp(`^/api/cities/slug/${esc(seg[1])}$`)];
   if (seg[0] === "localities" && seg.length === 3) return [new RegExp(`^/api/localities/.*${esc(last)}$`)];
-  if (seg[0] === "blog" && seg[1]) return [new RegExp(`^/api/blog/${esc(seg[1])}$`)];
+  if (seg[0] === "blogs" && seg[1] && !["category", "tag"].includes(seg[1])) return [new RegExp(`^/api/editorial/blogs/${esc(seg[1])}$`)];
+  if (seg[0] === "news" && seg[1] && !["category", "tag"].includes(seg[1])) return [new RegExp(`^/api/editorial/news/${esc(seg[1])}$`)];
   if (seg[0] === "news" && seg[1]) return [new RegExp(`^/api/news/(slug/)?${esc(seg[1])}$`)];
   if (seg[0] === "top" && seg[1]) return [new RegExp(`^/api/rankings/${esc(seg[1])}$`)];
   return [];
@@ -148,7 +149,9 @@ function slimForHydration(state: any) {
 export async function render(url: string): Promise<SSRRenderResult> {
   const queryClient = createSSRQueryClient();
   // Browser location hooks expose pathname only; including ?q=... would select NotFound.
-  const pathname = new URL(url, "http://ssr.internal").pathname;
+  const parsedUrl = new URL(url, "http://ssr.internal");
+  const pathname = parsedUrl.pathname;
+  const ssrSearch = parsedUrl.search.replace(/^\?/, "");
   const useStaticLocation = createStaticLocationHook(pathname);
   const fetchLog: FetchLog = Object.assign([], { routes: new Set<string>() });
 
@@ -157,7 +160,7 @@ export async function render(url: string): Promise<SSRRenderResult> {
     const tree = (
       <HelmetProvider context={helmetContext}>
         <QueryClientProvider client={queryClient}>
-          <WouterRouter hook={useStaticLocation}>
+          <WouterRouter hook={useStaticLocation} ssrSearch={ssrSearch}>
             {notFoundPage ? <NotFound /> : <App />}
           </WouterRouter>
         </QueryClientProvider>

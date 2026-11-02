@@ -84,7 +84,7 @@ export default function Header() {
     { name: 'Cities', href: '/cities', icon: Building2, external: false, badge: null },
     { name: 'Localities', href: '/localities', icon: Map, external: false, badge: null },
     { name: 'Businesses', href: '/businesses', icon: Building2, external: false, badge: null },
-    { name: 'Blog', href: '/blog', icon: FileText, external: false, badge: null },
+    { name: 'Blogs', href: '/blogs', icon: FileText, external: false, badge: null },
     { name: 'News', href: '/news', icon: Newspaper, external: false, badge: null },
   ];
 

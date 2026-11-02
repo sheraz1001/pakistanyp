@@ -8,6 +8,7 @@ import { storage } from "./storage";
 import { publicProvince } from "../shared/province-directory";
 import { db } from "./db";
 import { checkBusinessPlacement } from "./businessPlacement";
+import { registerEditorialRoutes } from "./editorialRoutes";
 import fetch from "node-fetch";
 // Removed Google OAuth - using email/password authentication only
 import { authService } from "./authService";
@@ -4088,6 +4089,8 @@ Instructions:
       res.status(500).json({ message: "Failed to fetch localities" });
     }
   });
+
+  registerEditorialRoutes(app);
 
   // A city page's record, by its URL slug (/cities/karachi -> locality "sindh/karachi")
   app.get('/api/cities/slug/:slug', async (req, res) => {

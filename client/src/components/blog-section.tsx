@@ -17,7 +17,7 @@ function Heading({ showLink }: { showLink?: boolean }) {
         <h2 className="yp-h2 mt-2 text-[#0A0A0A]">From the blog</h2>
       </div>
       {showLink && (
-        <Link href="/blog" className="text-[15px] font-semibold text-[#0B6B2E] hover:text-[#05501F]">
+        <Link href="/blogs" className="text-[15px] font-semibold text-[#0B6B2E] hover:text-[#05501F]">
           All articles →
         </Link>
       )}
@@ -98,7 +98,7 @@ export default function BlogSection() {
           return (
             <Link
               key={post.id}
-              href={`/blog/${post.slug}`}
+              href={`/blogs/${post.slug}`}
               className="home-blog-card group flex flex-col gap-3.5 text-[#0A0A0A] hover:text-[#0A0A0A]"
             >
               <div

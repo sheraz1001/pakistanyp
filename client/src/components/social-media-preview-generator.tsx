@@ -407,7 +407,7 @@ export function SocialMediaPreviewGenerator({ post }: SocialMediaPreviewProps) {
   };
 
   const shareToSocial = (platform: string) => {
-    const url = `https://pakistanyp.com/blog/${post?.slug || 'pakistanyp'}`;
+    const url = `https://pakistanyp.com/blogs/${post?.slug || 'pakistanyp'}`;
     const text = customTitle;
     
     const shareUrls = {

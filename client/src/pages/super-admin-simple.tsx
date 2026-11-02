@@ -3753,7 +3753,7 @@ function BlogPostManagement() {
                     id="canonicalUrl"
                     value={newPost.canonicalUrl}
                     onChange={(e) => setNewPost(prev => ({ ...prev, canonicalUrl: e.target.value }))}
-                    placeholder="https://pakistanyp.com/blog/post-slug"
+                    placeholder="https://pakistanyp.com/blogs/post-slug"
                   />
                 </div>
                 

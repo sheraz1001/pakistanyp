@@ -53,7 +53,7 @@ export async function changedUrlsSince(since: Date): Promise<string[]> {
       and coalesce(status, 'published') = 'published' and greatest(updated_at, published_at, created_at) > $1 limit 2000`)) urls.add(`/news/${r.slug}`);
   for (const r of await q(`select slug from blog_posts where slug is not null and published_at is not null
       and (status = 'published' or (status is null and coalesce(is_published, true)))
-      and greatest(updated_at, published_at, created_at) > $1 limit 2000`)) urls.add(`/blog/${r.slug}`);
+      and greatest(updated_at, published_at, created_at) > $1 limit 2000`)) urls.add(`/blogs/${r.slug}`);
   for (const r of await q(`select slug from categories where slug is not null and coalesce(is_active, true)
       and greatest(updated_at, created_at) > $1 limit 2000`)) urls.add(`/categories/${r.slug}`);
   for (const r of await q(`select slug, (is_main_area and parent_id is null) as is_city from localities

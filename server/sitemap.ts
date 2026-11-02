@@ -122,7 +122,7 @@ export async function generateStaticSitemap() {
     { url: '/cities', changefreq: 'weekly', priority: '0.9' },
     { url: '/localities', changefreq: 'weekly', priority: '0.9' },
     { url: '/news', changefreq: 'daily', priority: '0.8' },
-    { url: '/blog', changefreq: 'daily', priority: '0.8' },
+    { url: '/blogs', changefreq: 'daily', priority: '0.8' },
     // Pakistani-only tools (other countries serve a noindex "not available" page)
     ...([]),
     { url: '/category-hierarchy', changefreq: 'weekly', priority: '0.7' },
@@ -303,7 +303,7 @@ export async function generatePagesSitemap() {
         const published = post.status ? post.status === 'published' : post.isPublished !== false;
         if (post.slug && post.publishedAt && published) {
           publicPages.push({
-            url: `/blog/${post.slug}`,
+            url: `/blogs/${post.slug}`,
             changefreq: 'weekly',
             priority: '0.6',
             lastmod: day(post.updatedAt || post.publishedAt)
