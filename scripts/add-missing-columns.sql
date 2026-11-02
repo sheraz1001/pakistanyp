@@ -30,4 +30,6 @@ ALTER TABLE "theme_settings" ADD COLUMN IF NOT EXISTS "updated_by" varchar;
 -- Province > City > Locality: each locality points to its city
 ALTER TABLE "localities" ADD COLUMN IF NOT EXISTS "parent_id" integer REFERENCES "localities"("id") ON DELETE SET NULL;
 CREATE INDEX IF NOT EXISTS "localities_parent_id_idx" ON "localities" ("parent_id");
+-- Long city guide (Markdown)
+ALTER TABLE "localities" ADD COLUMN IF NOT EXISTS "detailed_description" text;
 COMMIT;

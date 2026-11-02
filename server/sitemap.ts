@@ -94,11 +94,12 @@ export async function generateSitemapIndex() {
   const sections: Array<[string, string]> = [
     ['sitemap-static.xml', d.static],
     ['sitemap-provinces.xml', d.provinces],
+    ['sitemap-cities.xml', d.localities],
     ['sitemap-localities.xml', d.localities],
     ['sitemap-categories.xml', d.categories],
     ['sitemap-businesses.xml', d.businesses],
     ['sitemap-top.xml', d.top],
-    ['sitemap-pages.xml', d.pages],
+    ['sitemap-blog.xml', d.pages],
     ['sitemap-news.xml', d.news],
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -224,49 +225,62 @@ export async function generateProvinceSitemap() {
   return generateSitemapXML(baseUrl, provincePages);
 }
 
-// Localities Sitemap
+/** Cities and localities with what makes their pages indexable. */
+async function placeRows() {
+  const counts = await localityBusinessCounts();
+  const all: any[] = (await pool.query(`
+    select id, slug, parent_id as "parentId", coalesce(is_main_area, false) as "isMainArea",
+           coalesce(is_active, true) as "isActive", nullif(trim(coalesce(detailed_description, '')), '') is not null as "hasGuide",
+           greatest(updated_at, created_at) as "changedAt"
+    from localities where slug like '%/%' order by id`)).rows;
+  const cityTotals = new Map<number, number>();
+  const childCount = new Map<number, number>();
+  for (const l of all) {
+    const cityId = l.parentId ? Number(l.parentId) : Number(l.id);
+    cityTotals.set(cityId, (cityTotals.get(cityId) || 0) + (counts.get(Number(l.id)) || 0));
+    if (l.parentId) childCount.set(Number(l.parentId), (childCount.get(Number(l.parentId)) || 0) + 1);
+  }
+  return { all, counts, cityTotals, childCount };
+}
+
+// Cities Sitemap: every city page that lists businesses, localities or has a city guide
+export async function generateCitiesSitemap() {
+  const baseUrl = country.origin;
+  try {
+    const { all, cityTotals, childCount } = await placeRows();
+    const cities = all.filter((l) => l.isActive && l.isMainArea && !l.parentId &&
+      ((cityTotals.get(Number(l.id)) || 0) > 0 || (childCount.get(Number(l.id)) || 0) > 0 || l.hasGuide));
+    const seen = new Set<string>();
+    const pages: SitemapUrl[] = [];
+    for (const c of cities) {
+      const slug = String(c.slug).split('/')[1];
+      if (!slug || seen.has(slug)) continue;
+      seen.add(slug);
+      const total = cityTotals.get(Number(c.id)) || 0;
+      pages.push({ url: `/cities/${slug}`, changefreq: 'weekly', priority: total > 0 || c.hasGuide ? '0.8' : '0.6', lastmod: day(c.changedAt) });
+    }
+    return generateSitemapXML(baseUrl, pages);
+  } catch (error) {
+    console.error('Error generating cities sitemap:', error);
+    return generateSitemapXML(baseUrl, []);
+  }
+}
+
+// Localities Sitemap: localities inside a city that list at least one business (others are noindex)
 export async function generateLocalitiesSitemap() {
   const baseUrl = country.origin;
-  
   try {
-    const counts = await localityBusinessCounts();
-    // Only localities that list at least one active business (others are noindex)
-    const all: any[] = await storage.getLocalities();
-    // A city counts the businesses in its localities too
-    const cityTotals = new Map<number, number>();
+    const { all, counts } = await placeRows();
+    const seen = new Set<string>();
+    const pages: SitemapUrl[] = [];
     for (const l of all) {
-      const n = counts.get(Number(l.id)) || 0;
-      const cityId = l.parentId ? Number(l.parentId) : Number(l.id);
-      cityTotals.set(cityId, (cityTotals.get(cityId) || 0) + n);
+      if (!l.isActive || (l.isMainArea && !l.parentId) || (counts.get(Number(l.id)) || 0) === 0) continue;
+      const slug = String(l.slug);
+      if (slug.split('/').length !== 2 || seen.has(slug)) continue;
+      seen.add(slug);
+      pages.push({ url: `/localities/${slug}`, changefreq: 'weekly', priority: '0.7', lastmod: day(l.changedAt) });
     }
-    const isCity = (l: any) => !!l.isMainArea && !l.parentId;
-    const hasLocalities = new Set(all.filter((l: any) => l.parentId).map((l: any) => Number(l.parentId)));
-    // Cities: when they list businesses or have localities (their page lists them); localities: when they list businesses
-    const localities = all.filter((l: any) => l.isActive !== false && (isCity(l)
-      ? (cityTotals.get(Number(l.id)) || 0) > 0 || hasLocalities.has(Number(l.id))
-      : (counts.get(Number(l.id)) || 0) > 0));
-    
-    const seenLocality = new Set<string>();
-    const seenSlug = new Set<string>();
-    const uniqueLocalities = [...localities]
-      .sort((a: any, b: any) => (a.id ?? 0) - (b.id ?? 0))
-      .filter((l: any) => {
-        if (!l.slug || String(l.slug).split('/').length !== 2) return false; // "<province>/<locality>" only
-        if (/-\d+$/.test(l.slug) && localities.some((o: any) => o.slug === String(l.slug).replace(/-\d+$/, ''))) return false;
-        const key = `${l.provinceId}|${String(l.name || '').trim().toLowerCase()}`;
-        if (seenLocality.has(key) || seenSlug.has(l.slug)) return false;
-        seenLocality.add(key);
-        seenSlug.add(l.slug);
-        return true;
-      });
-    const localityPages: SitemapUrl[] = uniqueLocalities.map(locality => ({
-      url: isCity(locality) ? `/cities/${String(locality.slug).split('/')[1]}` : `/localities/${locality.slug}`,
-      changefreq: 'weekly',
-      priority: '0.7',
-      lastmod: locality.updatedAt ? new Date(locality.updatedAt).toISOString().split('T')[0] : undefined
-    }));
-
-    return generateSitemapXML(baseUrl, localityPages);
+    return generateSitemapXML(baseUrl, pages);
   } catch (error) {
     console.error('Error generating localities sitemap:', error);
     return generateSitemapXML(baseUrl, []);

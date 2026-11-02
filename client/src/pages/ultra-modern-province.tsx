@@ -18,6 +18,7 @@ import { breadcrumbLd, provinceSlug } from "@/lib/structured-data";
 import { provinceDirectory } from "@shared/province-directory";
 import { localLang, localDir, country, localize, regionSlug } from "@shared/country";
 import { usePlaces, buildCityTree, singleCityOf, shortPlaceName, plural, cityUrl } from "@/lib/places";
+import { parseGuide, PlaceGuide, GuideFacts, guideFaqLd } from "@/components/place-guide";
 
 interface Province {
   id: number;
@@ -132,6 +133,8 @@ export default function UltraModernProvincePage() {
     bc.provinceId === currentProvince?.id
   );
 
+  const guide = parseGuide(savedProvince?.detailedDescription);
+  const faqLd = guideFaqLd(guide);
   const heroImage = savedProvince?.headerImage || savedProvince?.homepageImage || '';
   const shareImage = heroImage || country.ogImage;
 
@@ -193,6 +196,7 @@ export default function UltraModernProvincePage() {
           { name: country.regionTerm.plural, path: country.regionsPath },
           { name: currentProvince.name, path: `/${provinceSlug(currentProvince.name)}` },
         ]))}</script>
+        {faqLd && <script type="application/ld+json">{JSON.stringify(faqLd)}</script>}
       </Helmet>
 
       <Header />
@@ -283,6 +287,7 @@ export default function UltraModernProvincePage() {
             )}
             <Link href={onlyCity ? cityUrl(onlyCity) : "/cities"} className="mt-3 inline-block text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{onlyCity ? `All of ${onlyCity.name} →` : "All cities in Pakistan →"}</Link>
           </section>
+          <GuideFacts guide={guide} title={`${currentProvince.name} at a glance`} />
 
           <div className="yp-card flex flex-col gap-5 p-6">
             <span className="text-base font-semibold">Filters</span>
@@ -380,6 +385,7 @@ export default function UltraModernProvincePage() {
             <BusinessListing businesses={businesses} layout={viewMode === 'compact' ? 'grid' : 'list'} province={currentProvince} />
           )}
         </section>
+        <PlaceGuide guide={guide} placeName={currentProvince.name} />
         </div>
       </div>
 

@@ -112,7 +112,7 @@ export default function Blog() {
     return (
       <div className="min-h-screen bg-white">
         <SEO 
-          title={`${blogPost.title} | PakistanYP Blog`}
+          title={blogPost.metaTitle || `${blogPost.title} | PakistanYP Blog`}
           description={blogPost.metaDescription || blogPost.excerpt || `Read ${blogPost.title} on PakistanYP Business Directory blog. Insights, tips, and news about Pakistani business landscape.`}
           keywords={`${blogPost.title}, Pakistan business blog, ${blogPost.category || 'business insights'}, PakistanYP`}
           canonical={`https://pakistanyp.com/blog/${params.slug}`}

@@ -4095,7 +4095,8 @@ Instructions:
       const slug = String(req.params.slug || '').toLowerCase();
       const result: any = await db.execute(sql`
         SELECT l.id, l.name, l.arabic_name AS "arabicName", l.slug, l.province_id AS "provinceId",
-               l.description, l.population, l.coordinates, l.meta_title AS "metaTitle", l.meta_description AS "metaDescription",
+               l.description, l.detailed_description AS "detailedDescription", l.population, l.coordinates,
+               l.meta_title AS "metaTitle", l.meta_description AS "metaDescription",
                p.name AS "provinceName"
         FROM localities l JOIN provinces p ON p.id = l.province_id
         WHERE l.is_main_area = true AND l.parent_id IS NULL AND split_part(l.slug, '/', 2) = ${slug}
@@ -6220,6 +6221,29 @@ Instructions:
   });
 
   // Localities Sitemap
+  app.get('/sitemap-cities.xml', async (req, res) => {
+    try {
+      const { generateCitiesSitemap } = await import('./sitemap');
+      res.set('Content-Type', 'application/xml');
+      res.send(await generateCitiesSitemap());
+    } catch (error) {
+      console.error('Error generating cities sitemap:', error);
+      res.status(500).send('Error generating cities sitemap');
+    }
+  });
+
+  // Blog posts (sitemap-pages.xml kept as an alias for older submissions)
+  app.get('/sitemap-blog.xml', async (req, res) => {
+    try {
+      const { generatePagesSitemap } = await import('./sitemap');
+      res.set('Content-Type', 'application/xml');
+      res.send(await generatePagesSitemap());
+    } catch (error) {
+      console.error('Error generating blog sitemap:', error);
+      res.status(500).send('Error generating blog sitemap');
+    }
+  });
+
   app.get('/sitemap-localities.xml', async (req, res) => {
     try {
       const { generateLocalitiesSitemap } = await import('./sitemap');
@@ -6324,10 +6348,7 @@ Allow: /blog/
 Crawl-delay: 1
 
 # Sitemap location - Always use production URL
-Sitemap: ${productionUrl}/sitemap.xml
-Sitemap: ${productionUrl}/sitemap-businesses.xml
-Sitemap: ${productionUrl}/sitemap-categories.xml
-Sitemap: ${productionUrl}/sitemap-localities.xml`;
+Sitemap: ${productionUrl}/sitemap.xml`;
 
       if (settings && settings.robotsTxt) {
         // Use stored settings but ensure sitemap URLs are correct

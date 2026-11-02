@@ -498,6 +498,8 @@ export const localities = pgTable("localities", {
   parentId: integer("parent_id"),
   isMainArea: boolean("is_main_area").default(false), // true = a city/town; false = a locality inside a city
   description: text("description"),
+  /** Long guide (Markdown) shown on city pages */
+  detailedDescription: text("detailed_description"),
   population: integer("population"),
   coordinates: jsonb("coordinates"), // {lat, lng}
   businessCount: integer("business_count").default(0),

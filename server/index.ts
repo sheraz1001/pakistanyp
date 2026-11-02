@@ -1,4 +1,6 @@
 import { ensureSchema } from "./ensureSchema";
+import { syncPlaceGuides } from "./placeGuides";
+import { publishContent } from "./contentPublisher";
 import { registerIndexNowKeyRoute, startSitemapWatcher } from "./indexNow";
 import { bootstrapDatabase } from "./bootstrapDatabase";
 import compression from "compression";
@@ -286,7 +288,8 @@ function escapeJsonForScript(json: string): string {
       const { emailTemplateService } = await import("./emailTemplateService");
       await emailTemplateService.initializeDefaultTemplates();
     }
-    void ensureSchema(); // background, with retries – never blocks the health check
+    // background, with retries – never blocks the health check; then load province/city guides
+    void ensureSchema().then(() => syncPlaceGuides()).then(() => publishContent());
     registerIndexNowKeyRoute(app);
     const server = await registerRoutes(app);
     console.log('Routes registered successfully');

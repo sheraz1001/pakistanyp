@@ -9,6 +9,7 @@ import { PageSEO } from "@/components/page-seo";
 import { Button } from "@/components/ui/button";
 import { breadcrumbLd } from "@/lib/structured-data";
 import { usePlaces, buildCityTree, shortPlaceName, plural, cityUrl } from "@/lib/places";
+import { parseGuide, PlaceGuide, GuideFacts, guideFaqLd } from "@/components/place-guide";
 import { country, localDir, localLang, regionUrl } from "@shared/country";
 
 interface CityRecord {
@@ -21,6 +22,7 @@ interface CityRecord {
   description?: string | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
+  detailedDescription?: string | null;
 }
 
 /** City page: Province > City, with the city's localities (sidebar) and all of its businesses. */
@@ -77,6 +79,8 @@ export default function CityDetail() {
   }
 
   const path = cityUrl(city);
+  const guide = parseGuide(city.detailedDescription);
+  const faqLd = guideFaqLd(guide);
   const provinceHref = regionUrl(city.provinceName);
   const title = city.metaTitle && !/undefined|null/.test(city.metaTitle) ? city.metaTitle : `${city.name} Business Directory – Businesses in ${city.name}, ${city.provinceName} | ${country.brand}`;
   const description = city.metaDescription || `Find businesses in ${city.name}, ${city.provinceName}${localities.length ? ` across ${localities.length} localities` : ""}. Contact details, addresses and reviews on ${country.brand}.`;
@@ -102,6 +106,7 @@ export default function CityDetail() {
             { name: "Cities", path: "/cities" },
             { name: city.name, path },
           ]),
+          ...(faqLd ? [faqLd] : []),
         ]}
       />
       <Header />
@@ -169,6 +174,8 @@ export default function CityDetail() {
             )}
           </section>
 
+          <GuideFacts guide={guide} title={`${city.name} at a glance`} />
+
           {otherCities.length > 0 && (
             <section className="yp-card p-5" aria-labelledby="other-cities-heading">
               <h2 id="other-cities-heading" className="text-base font-semibold">Other cities in {city.provinceName}</h2>
@@ -187,7 +194,8 @@ export default function CityDetail() {
           )}
         </aside>
 
-        {/* Businesses in the city */}
+        {/* Businesses in the city, then the city guide */}
+        <div className="flex min-w-0 flex-col gap-8">
         <section className="flex min-w-0 flex-col gap-4" aria-labelledby="city-businesses-heading">
           <div>
             <h2 id="city-businesses-heading" className="text-[22px] font-semibold tracking-[-0.02em]">Businesses in {city.name}</h2>
@@ -209,6 +217,8 @@ export default function CityDetail() {
             </div>
           )}
         </section>
+        <PlaceGuide guide={guide} placeName={city.name} />
+        </div>
       </div>
       <Footer />
     </div>
