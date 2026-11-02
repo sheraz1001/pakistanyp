@@ -6,7 +6,7 @@
  *   import { country } from "@shared/country";
  */
 
-import { PAKISTAN_REGIONS } from "./countries/pakistan-places";
+import { REGIONS } from "./countries/places";
 
 export type CountryCode = "pk";
 
@@ -88,7 +88,7 @@ const PAKISTAN: CountryConfig = {
   tagline: "Pakistan Business Directory",
   regionTerm: { singular: "Province", plural: "Provinces" },
   regionsPath: "/provinces",
-  regions: PAKISTAN_REGIONS,
+  regions: REGIONS,
   phonePrefix: "+92",
   phonePlaceholder: "300 1234567",
   currency: "PKR",

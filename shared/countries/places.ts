@@ -263,7 +263,7 @@ const STATES: StateDef[] = [
 ];
 
 /** Regions for the country config: cities first (main areas), then "<Locality>, <City>" entries. */
-export const PAKISTAN_REGIONS: Region[] = STATES.map((s) => ({
+export const REGIONS: Region[] = STATES.map((s) => ({
   slug: s.slug,
   code: s.code,
   name: s.name,
@@ -275,4 +275,4 @@ export const PAKISTAN_REGIONS: Region[] = STATES.map((s) => ({
   ],
 }));
 
-export const PAKISTAN_TERRITORIES = new Set(STATES.filter((s) => s.territory).map((s) => s.slug));
+export const TERRITORIES = new Set(STATES.filter((s) => s.territory).map((s) => s.slug));

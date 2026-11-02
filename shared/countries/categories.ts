@@ -4,7 +4,7 @@
  * Format: one sector per block; "# Sector" lines followed by "## Group: item; item; item" lines.
  * Parsed by parseCategoryTree() into rows with slug, level and parent.
  */
-export const PAKISTAN_CATEGORY_TREE = `
+export const CATEGORY_TREE = `
 # Property & Construction
 ## Property Dealers & Estate Agents: Property Dealers; Real Estate Agents; Real Estate Consultants; Commercial Property Dealers; Farmhouse Dealers; Property Investment Advisors; Property Portals & Listing Offices; Property Auctioneers
 ## Housing Societies & Plots: Housing Societies; Gated Communities; Residential Plots; Commercial Plots; Plot Files & Allotment Letters; Overseas Plot Booking; Society Offices; Installment Plots
@@ -227,7 +227,7 @@ const slugify = (s: string) =>
   s.toLowerCase().normalize("NFKD").replace(/[()&'.,/]+/g, " ").replace(/[^a-z0-9\s-]/g, "").trim().replace(/[\s-]+/g, "-");
 
 /** Parse the tree into rows with globally unique slugs. */
-export function parseCategoryTree(tree = PAKISTAN_CATEGORY_TREE): CategoryRow[] {
+export function parseCategoryTree(tree = CATEGORY_TREE): CategoryRow[] {
   const rows: CategoryRow[] = [];
   const used = new Set<string>();
   const unique = (base: string, parent?: string) => {

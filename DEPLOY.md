@@ -4,8 +4,8 @@ This repository is the Pakistan directory (pakistanyp.com, brand **PakistanYP**)
 standalone, single-site codebase.
 
 - Site settings (brand, domain, phone code +92, PKR, colours, logo files, verification documents): `shared/country.ts`
-- Provinces & territories, cities and localities: `shared/countries/pakistan-places.ts`
-- Category tree (22 sectors, about 1,570 categories): `shared/countries/pakistan-categories.ts`
+- Provinces & territories, cities and localities: `shared/countries/places.ts`
+- Category tree (22 sectors, about 1,570 categories): `shared/countries/categories.ts`
 
 ---
 

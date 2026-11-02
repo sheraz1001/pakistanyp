@@ -7,8 +7,8 @@ React + Vite + Express with server-side rendering, on PostgreSQL (Neon).
 - Deploy guide: [DEPLOY.md](DEPLOY.md)
 - Brand guidelines: [BRAND.md](BRAND.md)
 - Site settings (brand, domain, +92, PKR, colours, logo files): `shared/country.ts`
-- Places: `shared/countries/pakistan-places.ts`
-- Categories: `shared/countries/pakistan-categories.ts`
+- Places: `shared/countries/places.ts`
+- Categories: `shared/countries/categories.ts`
 
 ```bash
 npm install
