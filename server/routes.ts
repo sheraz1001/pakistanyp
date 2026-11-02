@@ -4089,6 +4089,26 @@ Instructions:
     }
   });
 
+  // A city page's record, by its URL slug (/cities/karachi -> locality "sindh/karachi")
+  app.get('/api/cities/slug/:slug', async (req, res) => {
+    try {
+      const slug = String(req.params.slug || '').toLowerCase();
+      const result: any = await db.execute(sql`
+        SELECT l.id, l.name, l.arabic_name AS "arabicName", l.slug, l.province_id AS "provinceId",
+               l.description, l.population, l.coordinates, l.meta_title AS "metaTitle", l.meta_description AS "metaDescription",
+               p.name AS "provinceName"
+        FROM localities l JOIN provinces p ON p.id = l.province_id
+        WHERE l.is_main_area = true AND l.parent_id IS NULL AND split_part(l.slug, '/', 2) = ${slug}
+        ORDER BY l.id LIMIT 1`);
+      const city = (result.rows ?? result)[0];
+      if (!city) return res.status(404).json({ message: "City not found" });
+      res.json(city);
+    } catch (error) {
+      console.error("Error fetching city:", error);
+      res.status(500).json({ message: "Failed to fetch city" });
+    }
+  });
+
   // Province > City > Locality tree (lean): every place with its city, Urdu name and listed-business count.
   // ?provinceId= limits it to one province. Cities: isMainArea = true, parentId = null.
   app.get('/api/places', async (req, res) => {

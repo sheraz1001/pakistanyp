@@ -142,6 +142,19 @@ app.use((req, res, next) => {
   next();
 });
 
+// Cities have their own pages: /localities/<province>/<city> -> 301 /cities/<city>
+app.get('/localities/:province/:locality', async (req, res, next) => {
+  try {
+    const { pool } = await import('./db');
+    const found = await pool.query(
+      "select 1 from localities where slug = $1 and is_main_area = true and parent_id is null limit 1",
+      [`${req.params.province}/${req.params.locality}`],
+    );
+    if (found.rows.length) return res.redirect(301, `/cities/${encodeURIComponent(req.params.locality)}`);
+  } catch { /* fall through to the page */ }
+  next();
+});
+
 // Disabled 2026-10: bots and users now get the same SSR HTML (see ssrPage.ts)
 
 // app.use(dynamicRenderingMiddleware);

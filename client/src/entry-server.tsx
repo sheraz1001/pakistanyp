@@ -100,6 +100,7 @@ function primaryApiPatterns(pathname: string): RegExp[] {
   if (seg[0] === "business" && seg[1]) return [new RegExp(`^/api/businesses/(slug/)?${esc(seg[1])}$`)];
   if (seg[0] === "business-profile" && seg[1]) return [new RegExp(`^/api/businesses/(slug/)?${esc(seg[1])}$`)];
   if (seg[0] === "categories" && last && seg.length > 1) return [new RegExp(`^/api/categories/(by-slug/)?${esc(last)}$`)];
+  if (seg[0] === "cities" && seg[1]) return [new RegExp(`^/api/cities/slug/${esc(seg[1])}$`)];
   if (seg[0] === "localities" && seg.length === 3) return [new RegExp(`^/api/localities/.*${esc(last)}$`)];
   if (seg[0] === "blog" && seg[1]) return [new RegExp(`^/api/blog/${esc(seg[1])}$`)];
   if (seg[0] === "news" && seg[1]) return [new RegExp(`^/api/news/(slug/)?${esc(seg[1])}$`)];

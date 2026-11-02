@@ -151,6 +151,8 @@ const CacheControl = lazy(() => import("@/pages/cache-control"), "pages/cache-co
 const CategoryHierarchyPage = lazy(() => import("@/pages/category-hierarchy"), "pages/category-hierarchy");
 const Localities = lazy(() => import("@/pages/localities"), "pages/localities");
 const LocalityDetail = lazy(() => import("@/pages/locality-detail"), "pages/locality-detail");
+const Cities = lazy(() => import("@/pages/cities"), "pages/cities");
+const CityDetail = lazy(() => import("@/pages/city-detail"), "pages/city-detail");
 const IndividualProvincePage = lazy(() => import("@/pages/individual-province"), "pages/individual-province");
 const BlogSearch = lazy(() => import("@/pages/blog-search"), "pages/blog-search");
 const BusinessClaim = lazy(() => import("@/pages/business-claim"), "pages/business-claim");
@@ -209,6 +211,8 @@ function Router() {
       <Route path="/categories/:category/:subcategory" component={CategoryDetail} />
       <Route path="/categories/:category/:subcategory/:subsubcategory" component={CategoryDetail} />
       <Route path={country.regionsPath} component={Provinces} />
+      <Route path="/cities" component={Cities} />
+      <Route path="/cities/:city" component={CityDetail} />
       <Route path="/localities" component={Localities} />
       <Route path="/localities/:province/:locality" component={LocalityDetail} />
       <Route path="/voice-search" component={VoiceSearchPage} />

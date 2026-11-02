@@ -120,7 +120,7 @@ export function DropdownCategorySelector({
       {/* Level 1 - Main Categories */}
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
-          Level 1 - Main Category (opens its sub-categories)
+          Main category <span className="text-red-600">*</span>
         </label>
         <Select value={selectedMainId} onValueChange={handleMainSelect}>
           <SelectTrigger>
@@ -142,15 +142,15 @@ export function DropdownCategorySelector({
         </Select>
       </div>
 
-      {/* Level 2 - Sub Categories */}
-      {selectedMainId && (
+      {/* Level 2 - Sub Categories (required; enabled once a main category is chosen) */}
+      {(
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Level 2 - Sub Category
+            Sub-category <span className="text-red-600">*</span>
           </label>
-          <Select value={selectedSubId} onValueChange={handleSubSelect}>
+          <Select value={selectedSubId} onValueChange={handleSubSelect} disabled={!selectedMainId}>
             <SelectTrigger>
-              <SelectValue placeholder="Select sub category..." />
+              <SelectValue placeholder={selectedMainId ? "Select sub-category..." : "Choose a main category first"} />
             </SelectTrigger>
             <SelectContent>
               {subCategories.map((category: Category) => {
@@ -166,6 +166,9 @@ export function DropdownCategorySelector({
               })}
             </SelectContent>
           </Select>
+          {selectedMainId && selectedCategories.length === 0 && (
+            <p className="text-sm font-medium text-[#B45309]" role="status">Now choose a sub-category. Both a main category and a sub-category are required.</p>
+          )}
         </div>
       )}
 
@@ -173,7 +176,7 @@ export function DropdownCategorySelector({
       {selectedSubId && specializedCategories.length > 0 && (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Level 3 - Specialized Category
+            Specialisation (optional)
           </label>
           <Select value={selectedSpecId} onValueChange={handleSpecSelect}>
             <SelectTrigger>

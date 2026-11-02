@@ -42,7 +42,7 @@ const businessFormSchema = z.object({
   arabicName: z.string().max(200, "Local-language name cannot exceed 200 characters").optional(),
   description: z.string().min(10, "Description must be at least 10 characters"),
   shortDescription: z.string().max(500, "Short description cannot exceed 500 characters").optional(),
-  categoryId: z.string().min(1, "Please select at least one category"),
+  categoryId: z.string().min(1, "Please select a main category and a sub-category"),
   additionalCategoryIds: z.array(z.string()).min(0, "Invalid category selection"),
   provinceId: z.string().min(1, `Please select ${aRegion}`),
   cityId: z.string().min(1, "Please select a city"),

@@ -79,9 +79,9 @@ export default function Header() {
   // Default navigation shown when no admin menu is configured (e.g. fresh
   // production database). Admin-configured menu items always take precedence.
   const defaultNavigation = [
-    { name: 'Home', href: '/', icon: Home, external: false, badge: null },
     { name: 'Categories', href: '/categories', icon: Grid3X3, external: false, badge: null },
     { name: country.regionTerm.plural, href: country.regionsPath, icon: MapPin, external: false, badge: null },
+    { name: 'Cities', href: '/cities', icon: Building2, external: false, badge: null },
     { name: 'Localities', href: '/localities', icon: Map, external: false, badge: null },
     { name: 'Businesses', href: '/businesses', icon: Building2, external: false, badge: null },
     { name: 'Blog', href: '/blog', icon: FileText, external: false, badge: null },
@@ -89,7 +89,13 @@ export default function Header() {
   ];
 
   const navItems = navigation.length > 0 ? [...navigation] : [...defaultNavigation];
-  // Keep the locality directory discoverable even with older saved menus.
+  // Keep the city and locality directories discoverable even with older saved menus.
+  if (!navItems.some((item) => item.href.replace(/\/+$/, '') === '/cities')) {
+    const provincesAt = navItems.findIndex((item) => item.href === country.regionsPath);
+    navItems.splice(provincesAt >= 0 ? provincesAt + 1 : navItems.length, 0, {
+      name: 'Cities', href: '/cities', icon: Building2, external: false, badge: null,
+    });
+  }
   if (!navItems.some((item) => item.href.replace(/\/+$/, '') === '/localities')) {
     const provincesIndex = navItems.findIndex((item) => item.href === country.regionsPath);
     navItems.splice(provincesIndex >= 0 ? provincesIndex + 1 : navItems.length, 0, {
@@ -183,7 +189,7 @@ export default function Header() {
         <PakistanypLogo href="/" onClick={go("/")} />
 
         {/* Desktop navigation — admin-configured menu when available */}
-        <nav aria-label="Main navigation" className="site-nav hidden lg:flex items-center gap-0.5">
+        <nav aria-label="Main navigation" className="site-nav hidden xl:flex items-center gap-0.5">
           {navItems.map((item) => (
             <a
               key={item.name}
@@ -272,7 +278,7 @@ export default function Header() {
             <SheetTrigger asChild>
               <button
                 type="button"
-                className="yp-btn yp-btn-ghost w-11 px-0 lg:hidden"
+                className="yp-btn yp-btn-ghost w-11 px-0 xl:hidden"
                 aria-label="Open navigation menu"
               >
                 <Menu className="h-5 w-5" />

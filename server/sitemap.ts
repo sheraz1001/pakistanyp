@@ -97,6 +97,7 @@ export async function generateStaticSitemap() {
     { url: '/', changefreq: 'daily', priority: '1.0' },
     { url: '/categories', changefreq: 'weekly', priority: '0.9' },
     { url: country.regionsPath, changefreq: 'weekly', priority: '0.9' },
+    { url: '/cities', changefreq: 'weekly', priority: '0.9' },
     { url: '/localities', changefreq: 'weekly', priority: '0.9' },
     { url: '/news', changefreq: 'daily', priority: '0.8' },
     { url: '/blog', changefreq: 'daily', priority: '0.8' },
@@ -218,7 +219,16 @@ export async function generateLocalitiesSitemap() {
   try {
     const counts = await localityBusinessCounts();
     // Only localities that list at least one active business (others are noindex)
-    const localities = (await storage.getLocalities()).filter((l: any) => (counts.get(Number(l.id)) || 0) > 0);
+    const all: any[] = await storage.getLocalities();
+    // A city counts the businesses in its localities too
+    const cityTotals = new Map<number, number>();
+    for (const l of all) {
+      const n = counts.get(Number(l.id)) || 0;
+      const cityId = l.parentId ? Number(l.parentId) : Number(l.id);
+      cityTotals.set(cityId, (cityTotals.get(cityId) || 0) + n);
+    }
+    const isCity = (l: any) => !!l.isMainArea && !l.parentId;
+    const localities = all.filter((l: any) => (isCity(l) ? cityTotals.get(Number(l.id)) || 0 : counts.get(Number(l.id)) || 0) > 0);
     
     const seenLocality = new Set<string>();
     const seenSlug = new Set<string>();
@@ -234,7 +244,7 @@ export async function generateLocalitiesSitemap() {
         return true;
       });
     const localityPages: SitemapUrl[] = uniqueLocalities.map(locality => ({
-      url: `/localities/${locality.slug}`,
+      url: isCity(locality) ? `/cities/${String(locality.slug).split('/')[1]}` : `/localities/${locality.slug}`,
       changefreq: 'weekly',
       priority: '0.7',
       lastmod: locality.updatedAt ? new Date(locality.updatedAt).toISOString().split('T')[0] : undefined

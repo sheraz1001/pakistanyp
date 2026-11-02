@@ -17,7 +17,7 @@ import {
 import { breadcrumbLd, provinceSlug } from "@/lib/structured-data";
 import { provinceDirectory } from "@shared/province-directory";
 import { localLang, localDir, country, localize, regionSlug } from "@shared/country";
-import { usePlaces, buildCityTree, singleCityOf, shortPlaceName, plural } from "@/lib/places";
+import { usePlaces, buildCityTree, singleCityOf, shortPlaceName, plural, cityUrl } from "@/lib/places";
 
 interface Province {
   id: number;
@@ -52,7 +52,6 @@ export default function UltraModernProvincePage() {
   const [viewMode, setViewMode] = useState<'compact' | 'expanded'>('compact');
   const [filter, setFilter] = useState<'all' | 'featured' | 'verified'>('all');
   const [placeSearch, setPlaceSearch] = useState("");
-  const [showAllPlaces, setShowAllPlaces] = useState(false);
 
   // Extract province from current path
   const segments = location.split('/').filter(Boolean);
@@ -93,14 +92,12 @@ export default function UltraModernProvincePage() {
   // Islamabad Capital Territory has one city: list its localities directly
   const onlyCity = singleCityOf(cities);
   const placeItems = onlyCity
-    ? onlyCity.localities.map(l => ({ id: l.id, slug: l.slug, name: shortPlaceName(l, onlyCity), detail: plural(l.businessCount, "business", "businesses"), busy: l.businessCount }))
-    : cities.map(c => ({ id: c.id, slug: c.slug, name: c.name, detail: [c.localities.length ? plural(c.localities.length, "locality", "localities") : "", plural(c.totalBusinesses, "business", "businesses")].filter(Boolean).join(" · "), busy: c.totalBusinesses * 1000 + c.localities.length }));
+    ? onlyCity.localities.map(l => ({ id: l.id, href: `/localities/${l.slug}`, name: shortPlaceName(l, onlyCity), sub: "", count: l.businessCount, busy: l.businessCount }))
+    : cities.map(c => ({ id: c.id, href: cityUrl(c), name: c.name, sub: c.localities.length ? `${c.localities.length} areas` : "", count: c.totalBusinesses, busy: c.totalBusinesses * 1000 + c.localities.length }));
   const placeQuery = placeSearch.trim().toLowerCase();
   const matchingPlaces = placeQuery ? placeItems.filter(item => item.name.toLowerCase().includes(placeQuery)) : placeItems;
   // Busiest cities first, then by name; show a first screenful until "Show all"
   const orderedPlaces = placeQuery || onlyCity ? matchingPlaces : [...matchingPlaces].sort((a, b) => b.busy - a.busy || a.name.localeCompare(b.name));
-  const PLACE_PREVIEW = 24;
-  const shownPlaces = showAllPlaces || placeQuery ? orderedPlaces : orderedPlaces.slice(0, PLACE_PREVIEW);
   const placeNoun = onlyCity ? { one: "locality", many: "localities", title: "Localities" } : { one: "city", many: "cities", title: "Cities" };
   const localityTotal = places.filter(p => !(p.isMainArea && !p.parentId)).length;
 
@@ -254,6 +251,39 @@ export default function UltraModernProvincePage() {
       <div className="yp-wrap-wide flex flex-wrap items-start gap-6 pt-8 pb-20">
         {/* Filters + localities */}
         <aside className="flex w-full flex-col gap-4 lg:w-[320px] lg:flex-none" aria-label="Filters">
+          <section aria-labelledby="places-heading" className="yp-card p-5">
+            <h2 id="places-heading" className="text-base font-semibold">{placeNoun.title} in {currentProvince.name}</h2>
+            <p className="mt-1 text-sm text-[#5B6475]" role="status">
+              {placesLoading ? "Loading…" : placeQuery ? `${plural(matchingPlaces.length, placeNoun.one, placeNoun.many)} match your search` : onlyCity ? plural(placeItems.length, "locality", "localities") : `${plural(cities.length, "city", "cities")} · ${plural(localityTotal, "locality", "localities")}`}
+            </p>
+            <div className="relative mt-3">
+              <label htmlFor="place-search" className="sr-only">Search {placeNoun.many}</label>
+              <input id="place-search" type="search" value={placeSearch} onChange={event => setPlaceSearch(event.target.value)}
+                placeholder={`Search ${placeNoun.many}`} className="yp-input text-[15px]" />
+            </div>
+            <div className="mt-3 flex items-center justify-between px-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5B6475]" aria-hidden="true">
+              <span>{onlyCity ? "Locality" : "City"}</span><span>Businesses</span>
+            </div>
+            {placesLoading ? (
+              <div className="mt-2 flex flex-col gap-2" aria-hidden="true">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-8 animate-pulse rounded-[8px] bg-[#EEF0F4]" />)}</div>
+            ) : placesError ? (
+              <div role="alert" className="mt-3 text-sm text-[#3A4354]">{placeNoun.title} could not be loaded. <Button variant="outline" className="mt-2" onClick={() => retryPlaces()}>Try again</Button></div>
+            ) : (
+              <ul className="-mx-2 mt-1 flex max-h-[620px] flex-col overflow-y-auto" aria-label={`${placeNoun.title} in ${currentProvince.name}`}>
+                {orderedPlaces.map(item => (
+                  <li key={item.id}>
+                    <Link href={item.href} className="flex min-h-[40px] items-center justify-between gap-2 rounded-[10px] px-2 text-sm font-medium text-[#3A4354] hover:bg-[#F1F2F6] hover:text-[#0A0A0A] focus-visible:outline focus-visible:outline-2">
+                      <span className="flex min-w-0 items-center gap-2"><MapPin className="h-4 w-4 shrink-0 text-[#0B6B2E]" aria-hidden="true" /><span className="truncate">{item.name}</span>{item.sub && <span className="hidden shrink-0 text-xs text-[#8A93A3] sm:inline">{item.sub}</span>}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ${item.count ? "bg-[#E8F4EC] text-[#05501F]" : "bg-[#F1F2F6] text-[#5B6475]"}`}>{item.count.toLocaleString()}</span>
+                    </Link>
+                  </li>
+                ))}
+                {!orderedPlaces.length && <li className="px-2 py-2 text-sm text-[#5B6475]">{placeQuery ? `No ${placeNoun.many} match your search.` : `No ${placeNoun.many} are listed yet.`}</li>}
+              </ul>
+            )}
+            <Link href={onlyCity ? cityUrl(onlyCity) : "/cities"} className="mt-3 inline-block text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{onlyCity ? `All of ${onlyCity.name} →` : "All cities in Pakistan →"}</Link>
+          </section>
+
           <div className="yp-card flex flex-col gap-5 p-6">
             <span className="text-base font-semibold">Filters</span>
             <fieldset className="flex flex-col gap-2">
@@ -313,50 +343,6 @@ export default function UltraModernProvincePage() {
 
         {/* Businesses Section */}
         <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-8">
-        <section aria-labelledby="places-heading" className="yp-card p-6">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2 id="places-heading" className="text-[22px] font-semibold tracking-[-0.02em]">{placeNoun.title} in {currentProvince.name}</h2>
-              <p className="mt-1 text-sm text-[#5B6475]" role="status">
-                {placesLoading ? "Loading…" : placeQuery ? `${plural(matchingPlaces.length, placeNoun.one, placeNoun.many)} match “${placeSearch.trim()}”` : onlyCity ? plural(placeItems.length, "locality", "localities") : `${plural(cities.length, "city", "cities")} · ${plural(localityTotal, "locality", "localities")}`}
-              </p>
-            </div>
-            <div className="w-full sm:w-72">
-              <label htmlFor="place-search" className="sr-only">Search {placeNoun.many}</label>
-              <input id="place-search" type="search" value={placeSearch} onChange={event => setPlaceSearch(event.target.value)}
-                placeholder={`Search ${placeNoun.many} in ${currentProvince.name}`} className="yp-input text-[15px]" />
-            </div>
-          </div>
-          {placesLoading ? (
-            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" aria-hidden="true">
-              {Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-14 animate-pulse rounded-[12px] bg-[#EEF0F4]" />)}
-            </div>
-          ) : placesError ? (
-            <div role="alert" className="mt-4 text-sm text-[#3A4354]">{placeNoun.title} could not be loaded. <Button variant="outline" className="ml-2" onClick={() => retryPlaces()}>Try again</Button></div>
-          ) : shownPlaces.length ? (
-            <ul className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" aria-label={`${placeNoun.title} in ${currentProvince.name}`}>
-              {shownPlaces.map(item => (
-                <li key={item.id} className="min-w-0">
-                  <Link href={`/localities/${item.slug}`} className="flex h-full min-h-[56px] items-start gap-2 rounded-[12px] border border-[#E7E9EE] bg-white px-3 py-2.5 hover:border-[#9FD3B3] hover:bg-[#F2F9F4] focus-visible:outline focus-visible:outline-2">
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#0B6B2E]" aria-hidden="true" />
-                    <span className="min-w-0">
-                      <span className="block text-sm font-semibold text-[#0A0A0A] [overflow-wrap:anywhere]">{item.name}</span>
-                      <span className="block text-xs text-[#5B6475]">{item.detail}</span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-4 text-sm text-[#5B6475]">{placeQuery ? `No ${placeNoun.many} match your search.` : `No ${placeNoun.many} are listed for ${currentProvince.name} yet.`}</p>
-          )}
-          {!placeQuery && orderedPlaces.length > PLACE_PREVIEW && (
-            <button type="button" onClick={() => setShowAllPlaces(v => !v)} className="mt-4 text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]" aria-expanded={showAllPlaces}>
-              {showAllPlaces ? "Show fewer" : `Show all ${plural(orderedPlaces.length, placeNoun.one, placeNoun.many)}`}
-            </button>
-          )}
-        </section>
-
         <section className="flex min-w-0 flex-col gap-4" aria-label="Results">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>

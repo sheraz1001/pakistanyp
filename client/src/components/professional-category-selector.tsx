@@ -163,7 +163,7 @@ export function ProfessionalCategorySelector({
       )}
 
       <p className="rounded-[12px] border border-[#CFE8D8] bg-[#F2F9F4] px-4 py-3 text-sm text-[#05501F]">
-        Choose a main category to open it, then select the sub-category that describes your business. Main categories can't be selected on their own.
+        Both are required: choose a main category, then the sub-category that describes your business.
       </p>
 
       {/* Limits Display for Free Users */}

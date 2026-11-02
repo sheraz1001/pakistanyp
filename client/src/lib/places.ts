@@ -72,3 +72,10 @@ export function singleCityOf(cities: CityNode[]): CityNode | null {
 }
 
 export const plural = (n: number, one: string, many: string) => `${n.toLocaleString()} ${n === 1 ? one : many}`;
+
+/** A city's own page: "sindh/karachi" -> "/cities/karachi". */
+export const cityUrl = (city: Pick<Place, "slug">) => `/cities/${city.slug.split("/").pop()}`;
+
+/** Page of any place: cities at /cities/<city>, localities at /localities/<province>/<locality>. */
+export const placeUrl = (place: Pick<Place, "slug" | "isMainArea" | "parentId">) =>
+  place.isMainArea && !place.parentId ? cityUrl(place) : `/localities/${place.slug}`;

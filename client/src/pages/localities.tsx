@@ -8,7 +8,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import "./localities.css";
 import { localLang, localDir, country, localize, regionSlug } from "@shared/country";
-import { usePlaces, buildCityTree, shortPlaceName, plural } from "@/lib/places";
+import { usePlaces, buildCityTree, shortPlaceName, plural, cityUrl } from "@/lib/places";
 
 interface Locality {
   id: number;
@@ -125,7 +125,7 @@ export default function Localities() {
                   </div>
                   {group.citiesWithAreas.map(city => (
                     <div key={city.id} className="locality-city">
-                      {!group.singleCity && <div className="locality-city-head"><Link href={`/localities/${city.slug}`}>{city.name}</Link><span>{plural(city.localities.length, "locality", "localities")} · {plural(city.totalBusinesses, "business", "businesses")}</span></div>}
+                      {!group.singleCity && <div className="locality-city-head"><Link href={cityUrl(city)}>{city.name}</Link><span>{plural(city.localities.length, "locality", "localities")} · {plural(city.totalBusinesses, "business", "businesses")}</span></div>}
                       <ul className="locality-chips">
                         {city.localities.map(locality => (
                           <li key={locality.id}><Link href={`/localities/${locality.slug}`}>{shortPlaceName(locality, city)}</Link></li>
@@ -138,7 +138,7 @@ export default function Localities() {
                       <h3>{group.citiesWithAreas.length ? "Other cities and towns" : "Cities and towns"}</h3>
                       <ul className="locality-chips">
                         {group.towns.map(town => (
-                          <li key={town.id}><Link href={`/localities/${town.slug}`}>{town.name}</Link></li>
+                          <li key={town.id}><Link href={cityUrl(town)}>{town.name}</Link></li>
                         ))}
                       </ul>
                     </div>
