@@ -30,6 +30,8 @@ import {
   Zap
 } from "lucide-react";
 import { format } from "date-fns";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface BusinessHoverCardProps {
   businessId: number;
@@ -197,7 +199,7 @@ export default function BusinessHoverCard({
         {isLoading ? (
           <div className="p-6">
             <div className="animate-pulse space-y-4">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 rtl:space-x-reverse">
                 <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
                 <div className="flex-1 space-y-2">
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -215,7 +217,7 @@ export default function BusinessHoverCard({
             {/* Header */}
             <div className="bg-[#F2F9F4] border-b border-[#CFE8D8] p-4 text-[#0A0A0A]">
               <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 rtl:space-x-reverse">
                   <Avatar className="w-12 h-12 rounded-[14px] border-2 border-white">
                     <AvatarImage src={businessDetails.logo} alt={businessDetails.name} />
                     <AvatarFallback className="rounded-[12px] bg-[#0B6B2E] text-white font-bold">
@@ -223,7 +225,7 @@ export default function BusinessHoverCard({
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <h3 className="font-bold text-lg truncate">{businessDetails.name}</h3>
                       {businessDetails.isVerified && (
                         <CheckCircle className="w-4 h-4 text-[#0B6B2E]" />
@@ -242,14 +244,14 @@ export default function BusinessHoverCard({
             <div className="p-4 space-y-4">
               {/* Rating and status */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                  <div className="flex items-center space-x-1 rtl:space-x-reverse">
                     {renderStars(businessDetails.rating)}
                   </div>
                   <span className="text-sm font-medium">{businessDetails.rating}</span>
-                  <span className="text-sm text-gray-500">({businessDetails.reviewCount} reviews)</span>
+                  <span className="text-sm text-gray-500">{tj("({0} reviews)", businessDetails.reviewCount)}</span>
                 </div>
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 rtl:space-x-reverse">
                   <Clock className="w-4 h-4 text-gray-400" />
                   <span className={`text-sm font-medium ${getCurrentStatus().color}`}>
                     {getCurrentStatus().status}
@@ -264,18 +266,18 @@ export default function BusinessHoverCard({
 
               {/* Key info */}
               <div className="space-y-2">
-                <div className="flex items-center space-x-2 text-sm">
+                <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
                   <MapPin className="w-4 h-4 text-gray-400" />
                   <span className="text-gray-600 truncate">
                     {businessDetails.locality}, {businessDetails.province}
                   </span>
                 </div>
-                <div className="flex items-center space-x-2 text-sm">
+                <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
                   <Phone className="w-4 h-4 text-gray-400" />
                   <span className="text-gray-600">{businessDetails.phone}</span>
                 </div>
                 {businessDetails.website && (
-                  <div className="flex items-center space-x-2 text-sm">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
                     <Globe className="w-4 h-4 text-gray-400" />
                     <span className="text-blue-600 truncate">
                       {businessDetails.website.replace('https://', '').replace('http://', '')}
@@ -294,9 +296,7 @@ export default function BusinessHoverCard({
                       </Badge>
                     ))}
                     {businessDetails.features.length > 4 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{businessDetails.features.length - 4} more
-                      </Badge>
+                      <Badge variant="outline" className="text-xs">{tj("+{0} more", businessDetails.features.length - 4)}</Badge>
                     )}
                   </div>
                 </div>
@@ -304,11 +304,11 @@ export default function BusinessHoverCard({
 
               {/* Working hours preview */}
               <div className="space-y-2">
-                <div className="flex items-center space-x-2 text-sm">
+                <div className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
                   <Clock className="w-4 h-4 text-gray-400" />
                   <span className="text-gray-600">
                     {getCurrentStatus().status === "Open" 
-                      ? `Open until ${businessDetails.workingHours.monday?.close || "late"}`
+                      ? tx("Open until {0}", businessDetails.workingHours.monday?.close || "late")
                       : getNextOpenTime()
                     }
                   </span>
@@ -319,17 +319,17 @@ export default function BusinessHoverCard({
 
               {/* Action buttons */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 rtl:space-x-reverse">
                   <Button size="sm" variant="outline" className="text-xs">
-                    <MessageCircle className="w-3 h-3 mr-1" />
+                    <MessageCircle className="w-3 h-3 me-1" />
                     Contact
                   </Button>
                   <Button size="sm" variant="outline" className="text-xs">
-                    <Heart className="w-3 h-3 mr-1" />
+                    <Heart className="w-3 h-3 me-1" />
                     Save
                   </Button>
                 </div>
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 rtl:space-x-reverse">
                   <Button size="sm" variant="ghost" className="text-xs p-1">
                     <Share2 className="w-3 h-3" />
                   </Button>

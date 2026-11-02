@@ -7,6 +7,7 @@ import { Business } from '@shared/schema';
 import { MobileSwipeActions } from './mobile-swipe-actions';
 import { useLocation } from 'wouter';
 import { AnimatedCard } from '@/components/ui/animated-card';
+import { tj } from "@/i18n-jsx/tj";
 
 interface MobileBusinessCardProps {
   business: Business;
@@ -122,9 +123,7 @@ export function MobileBusinessCard({
                     <Star className="h-4 w-4 fill-[#F59E0B] text-[#F59E0B]" />
                     <span className="text-sm font-medium">{business.rating}</span>
                   </div>
-                  <span className="text-sm text-gray-500">
-                    ({business.totalReviews || 0} reviews)
-                  </span>
+                  <span className="text-sm text-gray-500">{tj("({0} reviews)", business.totalReviews || 0)}</span>
                 </div>
               )}
 
@@ -135,7 +134,7 @@ export function MobileBusinessCard({
                 </Badge>
                 {business.isOpen && (
                   <Badge variant="default" className="text-xs bg-green-100 text-green-800">
-                    <Clock className="h-3 w-3 mr-1" />
+                    <Clock className="h-3 w-3 me-1" />
                     Open
                   </Badge>
                 )}

@@ -27,6 +27,7 @@ import Footer from '@/components/footer';
 import { useMobile } from '@/hooks/use-mobile';
 import MobileHeader from '@/components/mobile-header';
 import { useToast } from '@/hooks/use-toast';
+import { tj } from "@/i18n-jsx/tj";
 
 export default function BusinessClaimAuth() {
   const [, params] = useRoute('/business/:id/claim-auth');
@@ -189,15 +190,13 @@ export default function BusinessClaimAuth() {
           <div className="mb-8">
             <Link href={`/business/${business.slug || businessId}`}>
               <Button variant="ghost" className="mb-4">
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                <ArrowLeft className="h-4 w-4 me-2" />
                 Back to Business
               </Button>
             </Link>
             <div className="yp-label !text-[#0B6B2E] mb-3">Claim a listing</div>
             <h1 className="yp-h2 text-[#0A0A0A] m-0">Claim Your Business</h1>
-            <p className="yp-lead mt-3 mb-0">
-              Authenticate to proceed with claiming {business.name}
-            </p>
+            <p className="yp-lead mt-3 mb-0">{tj("Authenticate to proceed with claiming {0}", business.name)}</p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
@@ -230,7 +229,7 @@ export default function BusinessClaimAuth() {
                       className="w-full h-12 rounded-xl text-[15px]"
                       size="lg"
                     >
-                      <LogIn className="h-4 w-4 mr-2" />
+                      <LogIn className="h-4 w-4 me-2" />
                       Log In to Claim Business
                     </Button>
 
@@ -244,7 +243,7 @@ export default function BusinessClaimAuth() {
                       className="w-full h-12 rounded-xl text-[15px]"
                       size="lg"
                     >
-                      <UserPlus className="h-4 w-4 mr-2" />
+                      <UserPlus className="h-4 w-4 me-2" />
                       Create Account & Claim
                     </Button>
                   </div>
@@ -330,9 +329,7 @@ export default function BusinessClaimAuth() {
                     {business.averageRating && (
                       <div className="flex items-center gap-3">
                         <Star className="h-4 w-4 fill-[#F59E0B] text-[#F59E0B] flex-shrink-0" />
-                        <span className="text-sm text-[#3A4354]">
-                          {business.averageRating} stars ({business.reviewCount || 0} reviews)
-                        </span>
+                        <span className="text-sm text-[#3A4354]">{tj("{0} stars ({1} reviews)", business.averageRating, business.reviewCount || 0)}</span>
                       </div>
                     )}
                   </div>
@@ -362,9 +359,7 @@ export default function BusinessClaimAuth() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Log In to Claim Business</DialogTitle>
-            <DialogDescription>
-              Sign in to your account to proceed with claiming {business.name}
-            </DialogDescription>
+            <DialogDescription>{tj("Sign in to your account to proceed with claiming {0}", business.name)}</DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleLogin} className="space-y-4">
@@ -432,9 +427,7 @@ export default function BusinessClaimAuth() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Create Account & Claim Business</DialogTitle>
-            <DialogDescription>
-              Create your account to claim {business.name}
-            </DialogDescription>
+            <DialogDescription>{tj("Create your account to claim {0}", business.name)}</DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleRegister} className="space-y-4">

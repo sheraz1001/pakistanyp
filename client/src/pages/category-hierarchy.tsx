@@ -5,6 +5,7 @@ import Footer from '@/components/footer';
 import InteractiveCategoryHierarchy from '@/components/interactive-category-hierarchy';
 import { CategoryRequestForm } from '@/components/category-request-form';
 import { country, localize } from '@shared/country';
+import { t as tx } from "@shared/i18n";
 
 export default function CategoryHierarchyPage() {
   useEffect(() => {
@@ -140,7 +141,7 @@ export default function CategoryHierarchyPage() {
         {/* Breadcrumb Navigation for SEO */}
         <nav aria-label="Breadcrumb" className="bg-white border-b border-gray-200">
           <div className="container mx-auto px-4 py-3">
-            <ol className="flex items-center space-x-2 text-sm">
+            <ol className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
               <li>
                 <a href="/" className="text-blue-600 hover:text-blue-800">Home</a>
               </li>
@@ -165,7 +166,7 @@ export default function CategoryHierarchyPage() {
             </h2>
             <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
               {(
-                `Explore the complete hierarchical structure of the ${country.directoryName} featuring 918 categories across all ${country.regions.length} ${country.regionTerm.plural.toLowerCase()} of ${country.name}. Navigate through main categories, subcategories, and specialized business classifications in ${country.regions.map((r) => r.name).join(", ")}. Interactive search, filtering, and statistics for comprehensive business discovery.`
+                tx("Explore the complete hierarchical structure of the {0} featuring 918 categories across all {1} {2} of {3}. Navigate through main categories, subcategories, and specialized business classifications in {4}. Interactive search, filtering, and statistics for comprehensive business discovery.", country.directoryName, country.regions.length, country.regionTerm.plural.toLowerCase(), country.name, country.regions.map((r) => r.name).join(", "))
               )}
             </p>
             
@@ -228,7 +229,7 @@ export default function CategoryHierarchyPage() {
                 Fill form below to request inclusion of your desired category
               </p>
               <p className="text-sm text-gray-600 mt-2">
-                {`We're constantly expanding our directory to include new business categories relevant to the ${country.adjective} market`}
+                {tx("We're constantly expanding our directory to include new business categories relevant to the {0} market", country.adjective)}
               </p>
             </div>
             <CategoryRequestForm />

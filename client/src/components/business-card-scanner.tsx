@@ -19,6 +19,8 @@ import {
   Copy
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface ExtractedBusinessInfo {
   businessName: string;
@@ -113,7 +115,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
         onBusinessExtracted?.(result.data);
         toast({
           title: "Business card scanned successfully!",
-          description: `Extracted information for ${result.data.businessName}`,
+          description: tx("Extracted information for {0}", result.data.businessName),
         });
       } else {
         setError(result.message || 'Failed to extract business information');
@@ -204,7 +206,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
                   variant="outline"
                   className="mb-4"
                 >
-                  <Upload className="h-4 w-4 mr-2" />
+                  <Upload className="h-4 w-4 me-2" />
                   Choose Image
                 </Button>
               </div>
@@ -230,7 +232,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
                   variant="outline"
                   className="mb-4"
                 >
-                  <Camera className="h-4 w-4 mr-2" />
+                  <Camera className="h-4 w-4 me-2" />
                   Take Photo
                 </Button>
               </div>
@@ -256,12 +258,12 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
                 >
                   {isScanning ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-4 w-4 me-2 animate-spin" />
                       Scanning...
                     </>
                   ) : (
                     <>
-                      <Scan className="h-4 w-4 mr-2" />
+                      <Scan className="h-4 w-4 me-2" />
                       Scan Business Card
                     </>
                   )}
@@ -271,7 +273,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
                   onClick={resetScanner}
                   variant="outline"
                 >
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className="h-4 w-4 me-2" />
                   Reset
                 </Button>
               </div>
@@ -294,9 +296,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
               <CheckCircle className="h-5 w-5 text-green-500" />
               Extracted Business Information
             </CardTitle>
-            <CardDescription>
-              AI confidence: {Math.round(extractedInfo.confidence * 100)}%
-            </CardDescription>
+            <CardDescription>{tj("AI confidence: {0}%", Math.round(extractedInfo.confidence * 100))}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -476,7 +476,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
                 onClick={handleAddBusiness}
                 className="flex-1"
               >
-                <CheckCircle className="h-4 w-4 mr-2" />
+                <CheckCircle className="h-4 w-4 me-2" />
                 Add Business to Directory
               </Button>
               
@@ -484,7 +484,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
                 onClick={downloadExtractedData}
                 variant="outline"
               >
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="h-4 w-4 me-2" />
                 Download Data
               </Button>
             </div>
@@ -510,9 +510,7 @@ export function BusinessCardScanner({ onBusinessExtracted, onAddBusiness }: Busi
                     <p className="font-medium">{scan.businessName}</p>
                     <p className="text-sm text-gray-600">{scan.contactPerson} • {scan.jobTitle}</p>
                   </div>
-                  <Badge variant="outline">
-                    {Math.round(scan.confidence * 100)}% confidence
-                  </Badge>
+                  <Badge variant="outline">{tj("{0}% confidence", Math.round(scan.confidence * 100))}</Badge>
                 </div>
               ))}
             </div>

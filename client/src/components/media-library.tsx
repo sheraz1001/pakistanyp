@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Upload, Folder, Image, FileText, Film, Music, Trash2, Download, Search, Grid, List, X } from 'lucide-react';
+import { tj } from "@/i18n-jsx/tj";
 
 interface MediaFile {
   id: number;
@@ -148,11 +150,11 @@ export default function MediaLibrary() {
         <h2 className="text-2xl font-bold">Media Library</h2>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setCreateFolderOpen(true)}>
-            <Folder className="w-4 h-4 mr-2" />
+            <Folder className="w-4 h-4 me-2" />
             New Folder
           </Button>
           <Button onClick={() => setUploadDialogOpen(true)}>
-            <Upload className="w-4 h-4 mr-2" />
+            <Upload className="w-4 h-4 me-2" />
             Upload Files
           </Button>
         </div>
@@ -166,7 +168,7 @@ export default function MediaLibrary() {
             className="w-full justify-start"
             onClick={() => setSelectedFolder(null)}
           >
-            <Folder className="w-4 h-4 mr-2" />
+            <Folder className="w-4 h-4 me-2" />
             All Files
           </Button>
           {folders.map((folder: MediaFolder) => (
@@ -176,9 +178,9 @@ export default function MediaLibrary() {
               className="w-full justify-start"
               onClick={() => setSelectedFolder(folder.id)}
             >
-              <Folder className="w-4 h-4 mr-2" />
+              <Folder className="w-4 h-4 me-2" />
               {folder.name}
-              <Badge variant="secondary" className="ml-auto">
+              <Badge variant="secondary" className="ms-auto">
                 {folder.filesCount}
               </Badge>
             </Button>
@@ -198,7 +200,7 @@ export default function MediaLibrary() {
               />
               {selectedFiles.length > 0 && (
                 <>
-                  <Badge variant="secondary">{selectedFiles.length} selected</Badge>
+                  <Badge variant="secondary">{tj("{0} selected", selectedFiles.length)}</Badge>
                   <Button
                     variant="destructive"
                     size="sm"
@@ -208,7 +210,7 @@ export default function MediaLibrary() {
                       }
                     }}
                   >
-                    <Trash2 className="w-4 h-4 mr-1" />
+                    <Trash2 className="w-4 h-4 me-1" />
                     Delete
                   </Button>
                 </>
@@ -291,9 +293,7 @@ export default function MediaLibrary() {
                   {getFileIcon(file.mimeType)}
                   <div className="flex-1">
                     <p className="font-medium">{file.originalName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {formatFileSize(file.size)} • Uploaded {new Date(file.uploadedAt).toLocaleDateString()}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{tj("{0} • Uploaded {1}", formatFileSize(file.size), new Date(file.uploadedAt).toLocaleDateString(dateLocale()))}</p>
                   </div>
                   <Button
                     variant="ghost"

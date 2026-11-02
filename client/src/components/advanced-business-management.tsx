@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,8 @@ import { CheckCircle, XCircle, Eye, Edit, Trash2, Star, Users, TrendingUp, Searc
 import { Progress } from "@/components/ui/progress";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Business {
   id: number;
@@ -291,7 +294,7 @@ export default function AdvancedBusinessManagement() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/business-stats"] });
       toast({
         title: "Bulk Operation Complete",
-        description: `Successfully applied ${operation} to selected businesses.`,
+        description: tx("Successfully applied {0} to selected businesses.", operation),
       });
     },
   });
@@ -308,7 +311,7 @@ export default function AdvancedBusinessManagement() {
       setShowRegenerationDialog(false);
       toast({
         title: "Content Regeneration Started",
-        description: `Job started for ${data.job.totalBusinesses} businesses. Progress will be tracked automatically.`,
+        description: tx("Job started for {0} businesses. Progress will be tracked automatically.", data.job.totalBusinesses),
       });
     },
     onError: (error: any) => {
@@ -384,7 +387,7 @@ export default function AdvancedBusinessManagement() {
     if (activeJobId && job.status === 'completed') {
       toast({
         title: "Content Regeneration Complete!",
-        description: `Successfully generated content for ${job.successfulGenerations} of ${job.totalBusinesses} businesses. ${job.failedGenerations} used fallback templates.`,
+        description: tx("Successfully generated content for {0} of {1} businesses. {2} used fallback templates.", job.successfulGenerations, job.totalBusinesses, job.failedGenerations),
       });
       
       // Invalidate businesses to show updated content
@@ -405,7 +408,7 @@ export default function AdvancedBusinessManagement() {
   }, [jobStatus, activeJobId, toast, queryClient]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(dateLocale('en-US'), {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -447,29 +450,27 @@ export default function AdvancedBusinessManagement() {
           {selectedBusinesses.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                  Bulk Actions ({selectedBusinesses.length})
-                </Button>
+                <Button variant="outline" className="gap-2">{tj("Bulk Actions ({0})", selectedBusinesses.length)}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => bulkOperationMutation.mutate({ operation: 'activate', businessIds: selectedBusinesses })}>
-                  <Power className="h-4 w-4 mr-2" />
+                  <Power className="h-4 w-4 me-2" />
                   Activate Selected
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => bulkOperationMutation.mutate({ operation: 'deactivate', businessIds: selectedBusinesses })}>
-                  <PowerOff className="h-4 w-4 mr-2" />
+                  <PowerOff className="h-4 w-4 me-2" />
                   Deactivate Selected
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => bulkOperationMutation.mutate({ operation: 'verify', businessIds: selectedBusinesses })}>
-                  <ShieldCheck className="h-4 w-4 mr-2" />
+                  <ShieldCheck className="h-4 w-4 me-2" />
                   Verify Selected
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => bulkOperationMutation.mutate({ operation: 'unverify', businessIds: selectedBusinesses })}>
-                  <Shield className="h-4 w-4 mr-2" />
+                  <Shield className="h-4 w-4 me-2" />
                   Unverify Selected
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => bulkOperationMutation.mutate({ operation: 'feature', businessIds: selectedBusinesses })}>
-                  <Star className="h-4 w-4 mr-2" />
+                  <Star className="h-4 w-4 me-2" />
                   Feature Selected
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -477,7 +478,7 @@ export default function AdvancedBusinessManagement() {
                   className="text-red-600"
                   onClick={() => bulkOperationMutation.mutate({ operation: 'delete', businessIds: selectedBusinesses })}
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="h-4 w-4 me-2" />
                   Delete Selected
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -540,7 +541,7 @@ export default function AdvancedBusinessManagement() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="pending">Pending Approval ({pendingBusinesses.length})</TabsTrigger>
+          <TabsTrigger value="pending">{tj("Pending Approval ({0})", pendingBusinesses.length)}</TabsTrigger>
           <TabsTrigger value="all">All Businesses</TabsTrigger>
         </TabsList>
 
@@ -576,7 +577,7 @@ export default function AdvancedBusinessManagement() {
                             <h4 className="font-semibold">{business.name}</h4>
                             <p className="text-sm text-gray-600">{business.category}</p>
                             <p className="text-sm text-gray-500">{business.ownerEmail}</p>
-                            <p className="text-sm text-gray-500">Submitted {formatDate(business.createdAt)}</p>
+                            <p className="text-sm text-gray-500">{tj("Submitted {0}", formatDate(business.createdAt))}</p>
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -585,7 +586,7 @@ export default function AdvancedBusinessManagement() {
                             variant="outline"
                             onClick={() => window.open(`/business/${business.slug || business.id}`, '_blank')}
                           >
-                            <Eye className="h-4 w-4 mr-1" />
+                            <Eye className="h-4 w-4 me-1" />
                             Preview
                           </Button>
                           <Button
@@ -595,7 +596,7 @@ export default function AdvancedBusinessManagement() {
                             onClick={() => rejectMutation.mutate(business.id)}
                             disabled={rejectMutation.isPending}
                           >
-                            <XCircle className="h-4 w-4 mr-1" />
+                            <XCircle className="h-4 w-4 me-1" />
                             Reject
                           </Button>
                           <Button
@@ -604,7 +605,7 @@ export default function AdvancedBusinessManagement() {
                             onClick={() => approveMutation.mutate(business.id)}
                             disabled={approveMutation.isPending}
                           >
-                            <CheckCircle className="h-4 w-4 mr-1" />
+                            <CheckCircle className="h-4 w-4 me-1" />
                             Approve
                           </Button>
                         </div>
@@ -738,21 +739,21 @@ export default function AdvancedBusinessManagement() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => window.open(`/business/${business.slug || business.id}`, '_blank')}>
-                                <Eye className="h-4 w-4 mr-2" />
+                                <Eye className="h-4 w-4 me-2" />
                                 View Business
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => {
                                 setBusinessToEdit(business);
                                 setShowEditDialog(true);
                               }}>
-                                <Edit className="h-4 w-4 mr-2" />
+                                <Edit className="h-4 w-4 me-2" />
                                 Edit Business
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => {
                                 setBusinessToChangeCategory(business);
                                 setShowCategoryDialog(true);
                               }}>
-                                <Settings className="h-4 w-4 mr-2" />
+                                <Settings className="h-4 w-4 me-2" />
                                 Change Category
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
@@ -761,12 +762,12 @@ export default function AdvancedBusinessManagement() {
                               >
                                 {business.isActive ? (
                                   <>
-                                    <PowerOff className="h-4 w-4 mr-2" />
+                                    <PowerOff className="h-4 w-4 me-2" />
                                     Deactivate
                                   </>
                                 ) : (
                                   <>
-                                    <Power className="h-4 w-4 mr-2" />
+                                    <Power className="h-4 w-4 me-2" />
                                     Activate
                                   </>
                                 )}
@@ -776,12 +777,12 @@ export default function AdvancedBusinessManagement() {
                               >
                                 {business.isVerified ? (
                                   <>
-                                    <Shield className="h-4 w-4 mr-2" />
+                                    <Shield className="h-4 w-4 me-2" />
                                     Remove Verification
                                   </>
                                 ) : (
                                   <>
-                                    <ShieldCheck className="h-4 w-4 mr-2" />
+                                    <ShieldCheck className="h-4 w-4 me-2" />
                                     Verify Business
                                   </>
                                 )}
@@ -791,12 +792,12 @@ export default function AdvancedBusinessManagement() {
                               >
                                 {business.isFeatured ? (
                                   <>
-                                    <Star className="h-4 w-4 mr-2 text-[#F59E0B]" />
+                                    <Star className="h-4 w-4 me-2 text-[#F59E0B]" />
                                     Remove Feature
                                   </>
                                 ) : (
                                   <>
-                                    <Star className="h-4 w-4 mr-2" />
+                                    <Star className="h-4 w-4 me-2" />
                                     Feature Business
                                   </>
                                 )}
@@ -809,7 +810,7 @@ export default function AdvancedBusinessManagement() {
                                   setShowDeleteDialog(true);
                                 }}
                               >
-                                <Trash2 className="h-4 w-4 mr-2" />
+                                <Trash2 className="h-4 w-4 me-2" />
                                 Delete Business
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -841,7 +842,7 @@ export default function AdvancedBusinessManagement() {
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-medium">{business.name}</p>
-                        <p className="text-xs text-gray-500">Added {formatDate(business.createdAt)}</p>
+                        <p className="text-xs text-gray-500">{tj("Added {0}", formatDate(business.createdAt))}</p>
                       </div>
                       {getStatusBadge(business)}
                     </div>
@@ -857,15 +858,13 @@ export default function AdvancedBusinessManagement() {
               <CardContent>
                 <div className="space-y-3">
                   <Button variant="outline" className="w-full justify-start" onClick={() => window.location.href = '#pending'}>
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    Review Pending Approvals ({Array.isArray(pendingBusinesses) ? pendingBusinesses.length : 0})
-                  </Button>
+                    <CheckCircle className="h-4 w-4 me-2" />{tj("Review Pending Approvals ({0})", Array.isArray(pendingBusinesses) ? pendingBusinesses.length : 0)}</Button>
                   <Button variant="outline" className="w-full justify-start">
-                    <TrendingUp className="h-4 w-4 mr-2" />
+                    <TrendingUp className="h-4 w-4 me-2" />
                     View Analytics
                   </Button>
                   <Button variant="outline" className="w-full justify-start">
-                    <Download className="h-4 w-4 mr-2" />
+                    <Download className="h-4 w-4 me-2" />
                     Export Business Data
                   </Button>
                 </div>
@@ -914,7 +913,7 @@ export default function AdvancedBusinessManagement() {
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">
                           {jobStatus.job.status === 'running' 
-                            ? `Processing: ${jobStatus.job.currentBusinessName || 'Loading...'}` 
+                            ? tx("Processing: {0}", jobStatus.job.currentBusinessName || 'Loading...') 
                             : 'Completed'}
                         </span>
                         <span className="text-sm text-gray-600">
@@ -952,7 +951,7 @@ export default function AdvancedBusinessManagement() {
 
                   {jobStatus.job.status === 'running' && (
                     <div className="text-sm text-gray-600 text-center">
-                      <p>⏱️ Estimated time remaining: ~{Math.ceil((jobStatus.job.totalBusinesses - jobStatus.job.processedBusinesses) * 2)} seconds</p>
+                      <p>{tj("⏱️ Estimated time remaining: ~{0} seconds", Math.ceil((jobStatus.job.totalBusinesses - jobStatus.job.processedBusinesses) * 2))}</p>
                     </div>
                   )}
                 </div>
@@ -997,7 +996,7 @@ export default function AdvancedBusinessManagement() {
                       </li>
                       <li className="flex items-start gap-2">
                         <Sparkles className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Estimated time: ~{Math.ceil((totalBusinesses || 89) * 2 / 60)} minutes for all businesses</span>
+                        <span>{tj("Estimated time: ~{0} minutes for all businesses", Math.ceil((totalBusinesses || 89) * 2 / 60))}</span>
                       </li>
                     </ul>
                   </div>
@@ -1024,14 +1023,14 @@ export default function AdvancedBusinessManagement() {
             <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
               <RefreshCw className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
               <div className="space-y-1">
-                <p className="text-sm font-medium">Generate AI-powered content for {totalBusinesses || 89} businesses</p>
+                <p className="text-sm font-medium">{tj("Generate AI-powered content for {0} businesses", totalBusinesses || 89)}</p>
                 <p className="text-xs text-gray-600">Includes descriptions, meta tags, social previews, and taglines</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
               <Loader2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
               <div className="space-y-1">
-                <p className="text-sm font-medium">Estimated duration: ~{Math.ceil((totalBusinesses || 89) * 2 / 60)} minutes</p>
+                <p className="text-sm font-medium">{tj("Estimated duration: ~{0} minutes", Math.ceil((totalBusinesses || 89) * 2 / 60))}</p>
                 <p className="text-xs text-gray-600">You can close this page - progress will continue in the background</p>
               </div>
             </div>
@@ -1059,12 +1058,12 @@ export default function AdvancedBusinessManagement() {
             >
               {startRegenerationMutation.isPending ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className="h-4 w-4 me-2 animate-spin" />
                   Starting...
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4 mr-2" />
+                  <Sparkles className="h-4 w-4 me-2" />
                   Start Regeneration
                 </>
               )}
@@ -1454,7 +1453,7 @@ export default function AdvancedBusinessManagement() {
               {/* Status Tab */}
               <TabsContent value="status" className="space-y-4 mt-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <Checkbox
                       id="isActive"
                       checked={businessToEdit.isActive}
@@ -1463,7 +1462,7 @@ export default function AdvancedBusinessManagement() {
                     <label htmlFor="isActive" className="text-sm font-medium">Active</label>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <Checkbox
                       id="adminApproved"
                       checked={businessToEdit.adminApproved}
@@ -1474,7 +1473,7 @@ export default function AdvancedBusinessManagement() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <Checkbox
                       id="isVerified"
                       checked={businessToEdit.isVerified}
@@ -1483,7 +1482,7 @@ export default function AdvancedBusinessManagement() {
                     <label htmlFor="isVerified" className="text-sm font-medium">Verified</label>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <Checkbox
                       id="isFeatured"
                       checked={businessToEdit.isFeatured}
@@ -1494,7 +1493,7 @@ export default function AdvancedBusinessManagement() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <Checkbox
                       id="isPremium"
                       checked={businessToEdit.isPremium || false}
@@ -1503,7 +1502,7 @@ export default function AdvancedBusinessManagement() {
                     <label htmlFor="isPremium" className="text-sm font-medium">Premium</label>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <Checkbox
                       id="isClaimed"
                       checked={businessToEdit.isClaimed || false}
@@ -1538,7 +1537,7 @@ export default function AdvancedBusinessManagement() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-sm text-gray-500">Rating</label>
-                    <p className="text-lg font-semibold">{businessToEdit.rating || 0} ({businessToEdit.ratingCount || 0} reviews)</p>
+                    <p className="text-lg font-semibold">{tj("{0} ({1} reviews)", businessToEdit.rating || 0, businessToEdit.ratingCount || 0)}</p>
                   </div>
                 </div>
               </TabsContent>
@@ -1566,9 +1565,7 @@ export default function AdvancedBusinessManagement() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Change Business Category</DialogTitle>
-            <DialogDescription>
-              Select a new category for "{businessToChangeCategory?.name}".
-            </DialogDescription>
+            <DialogDescription>{tj("Select a new category for \"{0}\".", businessToChangeCategory?.name)}</DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <div className="space-y-2">

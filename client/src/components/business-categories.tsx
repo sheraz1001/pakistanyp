@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -136,7 +138,7 @@ export default function BusinessCategories({ className }: BusinessCategoriesProp
   };
 
   const handleDeleteCategory = (category: Category) => {
-    if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
+    if (confirm(tx("Are you sure you want to delete \"{0}\"?", category.name))) {
       deleteCategoryMutation.mutate(category.id);
     }
   };
@@ -175,15 +177,13 @@ export default function BusinessCategories({ className }: BusinessCategoriesProp
         <CardContent>
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
-              <Badge variant="outline">{categories.length} Total Categories</Badge>
-              <Badge variant="outline">
-                {categories.filter((c: Category) => c.parent_id === null).length} Main Categories
-              </Badge>
+              <Badge variant="outline">{tj("{0} Total Categories", categories.length)}</Badge>
+              <Badge variant="outline">{tj("{0} Main Categories", categories.filter((c: Category) => c.parent_id === null).length)}</Badge>
             </div>
             <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
               <DialogTrigger asChild>
                 <Button>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-4 w-4 me-2" />
                   Add Category
                 </Button>
               </DialogTrigger>
@@ -258,7 +258,7 @@ export default function BusinessCategories({ className }: BusinessCategoriesProp
           <ScrollArea className="h-[600px]">
             <div className="space-y-4">
               {categoryHierarchy.map(({ main, subcategories }) => (
-                <Card key={main.id} className="border-l-4 border-l-blue-500">
+                <Card key={main.id} className="border-s-4 border-s-blue-500">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -269,9 +269,7 @@ export default function BusinessCategories({ className }: BusinessCategoriesProp
                             <p className="text-sm text-gray-600">{main.description}</p>
                           )}
                         </div>
-                        <Badge variant="secondary">
-                          {main.business_count || 0} businesses
-                        </Badge>
+                        <Badge variant="secondary">{tj("{0} businesses", main.business_count || 0)}</Badge>
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
@@ -298,7 +296,7 @@ export default function BusinessCategories({ className }: BusinessCategoriesProp
                     {subcategories.length > 0 && (
                       <div className="space-y-2">
                         {subcategories.map(({ category: sub, specialized }) => (
-                          <div key={sub.id} className="border-l-2 border-l-gray-300 pl-4">
+                          <div key={sub.id} className="border-s-2 border-s-gray-300 ps-4">
                             <div className="flex items-center justify-between py-2">
                               <div className="flex items-center gap-2">
                                 <div>
@@ -307,9 +305,7 @@ export default function BusinessCategories({ className }: BusinessCategoriesProp
                                     <p className="text-sm text-gray-600">{sub.description}</p>
                                   )}
                                 </div>
-                                <Badge variant="outline">
-                                  {sub.businessCount || 0} businesses
-                                </Badge>
+                                <Badge variant="outline">{tj("{0} businesses", sub.businessCount || 0)}</Badge>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Button
@@ -332,7 +328,7 @@ export default function BusinessCategories({ className }: BusinessCategoriesProp
                               </div>
                             </div>
                             {specialized.length > 0 && (
-                              <div className="border-l-2 border-l-gray-200 pl-4 space-y-1">
+                              <div className="border-s-2 border-s-gray-200 ps-4 space-y-1">
                                 {specialized.map((spec) => (
                                   <div key={spec.id} className="flex items-center justify-between py-1">
                                     <div className="flex items-center gap-2">

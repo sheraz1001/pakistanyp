@@ -11,6 +11,7 @@ import { OwnerShell as OpsShell, OwnerPill as StatusPill } from "@/components/ow
 import { SEO } from "@/components/seo";
 import { country } from "@shared/country";
 import { api } from "@/components/phase1/api";
+import { t as tx } from "@shared/i18n";
 
 type Extras = { servicePrices: any[]; portfolio: any[]; team: any[]; faqs: any[] };
 const EMPTY: Extras = { servicePrices: [], portfolio: [], team: [], faqs: [] };
@@ -66,10 +67,10 @@ export default function MyProfile() {
         <div className="space-y-6">
           <div className="flex flex-wrap items-center gap-3">
             <label className="text-sm font-medium text-[#283141]">Business
-              <select className="ml-2 h-11 rounded-xl border border-[#DDE1E8] bg-white px-3 text-sm" value={businessId || ""} onChange={(e) => setBusinessId(Number(e.target.value))}>{businesses.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}</select>
+              <select className="ms-2 h-11 rounded-xl border border-[#DDE1E8] bg-white px-3 text-sm" value={businessId || ""} onChange={(e) => setBusinessId(Number(e.target.value))}>{businesses.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}</select>
             </label>
             {data && <span className="text-sm">Plan: <StatusPill value={data.tier} /> · <Link href={`/business/${data.slug}`} className="underline">view public page</Link></span>}
-            <Button className="ml-auto" onClick={() => save.mutate()} disabled={save.isPending || !businessId}>{save.isPending ? "Saving…" : "Save changes"}</Button>
+            <Button className="ms-auto" onClick={() => save.mutate()} disabled={save.isPending || !businessId}>{save.isPending ? "Saving…" : "Save changes"}</Button>
           </div>
 
           <Card><CardHeader><CardTitle>Services &amp; prices <span className="text-sm font-normal text-gray-500">({d.servicePrices.length}/{lim.servicePrices})</span></CardTitle></CardHeader>
@@ -77,14 +78,14 @@ export default function MyProfile() {
               {d.servicePrices.map((s, i) => (
                 <div key={i} className="grid sm:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-2 items-start">
                   <Input placeholder="Service, e.g. VAT registration" value={s.name || ""} onChange={(e) => upd("servicePrices", i, { name: e.target.value })} />
-                  <Input type="number" placeholder={`From (${country.currency})`} value={s.priceFrom || ""} onChange={(e) => upd("servicePrices", i, { priceFrom: e.target.value })} />
-                  <Input type="number" placeholder={`To (${country.currency})`} value={s.priceTo || ""} onChange={(e) => upd("servicePrices", i, { priceTo: e.target.value })} />
+                  <Input type="number" placeholder={tx("From ({0})", country.currency)} value={s.priceFrom || ""} onChange={(e) => upd("servicePrices", i, { priceFrom: e.target.value })} />
+                  <Input type="number" placeholder={tx("To ({0})", country.currency)} value={s.priceTo || ""} onChange={(e) => upd("servicePrices", i, { priceTo: e.target.value })} />
                   <Input placeholder="Unit, e.g. per month" value={s.unit || ""} onChange={(e) => upd("servicePrices", i, { unit: e.target.value })} />
                   <button className="text-red-600 p-2" onClick={() => del("servicePrices", i)} title="Remove"><Trash2 className="h-4 w-4" /></button>
                   <Input className="sm:col-span-5" placeholder="Short description (optional)" value={s.description || ""} onChange={(e) => upd("servicePrices", i, { description: e.target.value })} />
                 </div>
               ))}
-              <Button variant="outline" size="sm" onClick={() => add("servicePrices", { name: "" })}><Plus className="h-4 w-4 mr-1" /> Add service</Button>
+              <Button variant="outline" size="sm" onClick={() => add("servicePrices", { name: "" })}><Plus className="h-4 w-4 me-1" /> Add service</Button>
             </CardContent></Card>
 
           <Card><CardHeader><CardTitle>Portfolio &amp; case studies <span className="text-sm font-normal text-gray-500">({d.portfolio.length}/{lim.portfolio})</span></CardTitle></CardHeader>
@@ -102,7 +103,7 @@ export default function MyProfile() {
                   <div className="flex flex-wrap gap-3 items-center"><ImageField value={p.image} onChange={(u) => upd("portfolio", i, { image: u })} /><Input className="flex-1 min-w-[200px]" placeholder="Link (optional)" value={p.link || ""} onChange={(e) => upd("portfolio", i, { link: e.target.value })} /></div>
                 </div>
               ))}
-              <Button variant="outline" size="sm" onClick={() => add("portfolio", { title: "" })}><Plus className="h-4 w-4 mr-1" /> Add project</Button>
+              <Button variant="outline" size="sm" onClick={() => add("portfolio", { title: "" })}><Plus className="h-4 w-4 me-1" /> Add project</Button>
             </CardContent></Card>
 
           <Card><CardHeader><CardTitle>Team <span className="text-sm font-normal text-gray-500">({d.team.length}/{lim.team})</span></CardTitle></CardHeader>
@@ -117,7 +118,7 @@ export default function MyProfile() {
                   <button className="text-red-600 p-2" onClick={() => del("team", i)} title="Remove"><Trash2 className="h-4 w-4" /></button>
                 </div>
               ))}
-              <Button variant="outline" size="sm" onClick={() => add("team", { name: "" })}><Plus className="h-4 w-4 mr-1" /> Add person</Button>
+              <Button variant="outline" size="sm" onClick={() => add("team", { name: "" })}><Plus className="h-4 w-4 me-1" /> Add person</Button>
             </CardContent></Card>
 
           <Card><CardHeader><CardTitle>FAQs <span className="text-sm font-normal text-gray-500">({d.faqs.length}/{lim.faqs})</span></CardTitle></CardHeader>
@@ -128,7 +129,7 @@ export default function MyProfile() {
                   <Textarea rows={2} placeholder="Answer" value={f.answer || ""} onChange={(e) => upd("faqs", i, { answer: e.target.value })} />
                 </div>
               ))}
-              <Button variant="outline" size="sm" onClick={() => add("faqs", { question: "", answer: "" })}><Plus className="h-4 w-4 mr-1" /> Add question</Button>
+              <Button variant="outline" size="sm" onClick={() => add("faqs", { question: "", answer: "" })}><Plus className="h-4 w-4 me-1" /> Add question</Button>
             </CardContent></Card>
           <div className="flex justify-end"><Button onClick={() => save.mutate()} disabled={save.isPending}>{save.isPending ? "Saving…" : "Save changes"}</Button></div>
         </div>

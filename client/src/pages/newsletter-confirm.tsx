@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { CheckCircle, XCircle, Loader2, ArrowLeft, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PakistanypLogo, FlagStripe } from "@/components/brand/pakistanyp-logo";
+import { t as tx } from "@shared/i18n";
 
 export default function NewsletterConfirm() {
   const [location] = useLocation();
@@ -97,7 +98,7 @@ export default function NewsletterConfirm() {
 
         {/* Success Benefits */}
         {status === 'success' && (
-          <div className="yp-tint rounded-[14px] p-4 mb-8 text-left">
+          <div className="yp-tint rounded-[14px] p-4 mb-8 text-start">
             <h3 className="font-semibold text-[#0A0A0A] mb-2">What's Next?</h3>
             <ul className="text-sm text-[#3A4354] space-y-1.5">
               <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 mt-0.5 shrink-0 text-[#0B6B2E]" />Weekly business newsletters</li>
@@ -143,7 +144,7 @@ export default function NewsletterConfirm() {
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()}{` ${country.brand}. All rights reserved.`}
+            © {new Date().getFullYear()}{tx(" {0}. All rights reserved.", country.brand)}
           </p>
         </div>
       </div>

@@ -1,0 +1,30 @@
+-- Second site language (see shared/i18n.ts): translated twins of user-facing text.
+-- The API shows "<field>_ar" instead of "<field>" for requests in that language (server/i18n.ts).
+BEGIN;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "preferred_language" varchar(8);
+ALTER TABLE "businesses" ADD COLUMN IF NOT EXISTS "description_ar" text;
+ALTER TABLE "businesses" ADD COLUMN IF NOT EXISTS "short_description_ar" text;
+ALTER TABLE "categories" ADD COLUMN IF NOT EXISTS "description_ar" text;
+ALTER TABLE "categories" ADD COLUMN IF NOT EXISTS "meta_title_ar" text;
+ALTER TABLE "categories" ADD COLUMN IF NOT EXISTS "meta_description_ar" text;
+ALTER TABLE "provinces" ADD COLUMN IF NOT EXISTS "description_ar" text;
+ALTER TABLE "provinces" ADD COLUMN IF NOT EXISTS "detailed_description_ar" text;
+ALTER TABLE "provinces" ADD COLUMN IF NOT EXISTS "meta_title_ar" text;
+ALTER TABLE "provinces" ADD COLUMN IF NOT EXISTS "meta_description_ar" text;
+ALTER TABLE "localities" ADD COLUMN IF NOT EXISTS "description_ar" text;
+ALTER TABLE "localities" ADD COLUMN IF NOT EXISTS "detailed_description_ar" text;
+ALTER TABLE "localities" ADD COLUMN IF NOT EXISTS "meta_title_ar" text;
+ALTER TABLE "localities" ADD COLUMN IF NOT EXISTS "meta_description_ar" text;
+ALTER TABLE "blog_posts" ADD COLUMN IF NOT EXISTS "title_ar" text;
+ALTER TABLE "blog_posts" ADD COLUMN IF NOT EXISTS "excerpt_ar" text;
+ALTER TABLE "blog_posts" ADD COLUMN IF NOT EXISTS "content_ar" text;
+ALTER TABLE "blog_posts" ADD COLUMN IF NOT EXISTS "meta_title_ar" text;
+ALTER TABLE "blog_posts" ADD COLUMN IF NOT EXISTS "meta_description_ar" text;
+ALTER TABLE "blog_posts" ADD COLUMN IF NOT EXISTS "category_ar" text;
+ALTER TABLE "news_articles" ADD COLUMN IF NOT EXISTS "title_ar" text;
+ALTER TABLE "news_articles" ADD COLUMN IF NOT EXISTS "summary_ar" text;
+ALTER TABLE "news_articles" ADD COLUMN IF NOT EXISTS "content_ar" text;
+ALTER TABLE "news_articles" ADD COLUMN IF NOT EXISTS "meta_title_ar" text;
+ALTER TABLE "news_articles" ADD COLUMN IF NOT EXISTS "meta_description_ar" text;
+ALTER TABLE "news_articles" ADD COLUMN IF NOT EXISTS "category_ar" text;
+COMMIT;

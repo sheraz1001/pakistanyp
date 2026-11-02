@@ -8,6 +8,8 @@ import { OwnerShell as OpsShell, OwnerPill as StatusPill } from "@/components/ow
 import { SEO } from "@/components/seo";
 import { country, localize } from "@shared/country";
 import { api, fmtDate } from "@/components/phase1/api";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 export default function MyPlan() {
   const { toast } = useToast();
@@ -22,7 +24,7 @@ export default function MyPlan() {
 
   const confirm = useMutation({
     mutationFn: (sessionId: string) => api("/api/billing/confirm", { method: "POST", json: { sessionId } }),
-    onSuccess: (r: any) => { toast({ title: `${r.tier === "premium" ? "Premium" : "Pro"} activated`, description: "Thank you – your benefits are live now." }); qc.invalidateQueries({ queryKey: ["/api/my/plan"] }); window.history.replaceState({}, "", "/my-plan"); },
+    onSuccess: (r: any) => { toast({ title: tx("{0} activated", r.tier === "premium" ? "Premium" : "Pro"), description: "Thank you – your benefits are live now." }); qc.invalidateQueries({ queryKey: ["/api/my/plan"] }); window.history.replaceState({}, "", "/my-plan"); },
     onError: (e: any) => toast({ title: "Could not confirm payment", description: e.message, variant: "destructive" }),
   });
   useEffect(() => { const sid = params.get("session_id"); if (sid) confirm.mutate(sid); if (params.get("cancelled")) toast({ title: "Checkout cancelled", description: "No payment was taken." }); }, []);
@@ -50,12 +52,12 @@ export default function MyPlan() {
         <>
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <label className="text-sm font-medium text-[#283141]">Business
-              <select className="ml-2 h-11 rounded-xl border border-[#DDE1E8] bg-white px-3 text-sm" value={businessId || ""} onChange={(e) => setBusinessId(Number(e.target.value))}>
+              <select className="ms-2 h-11 rounded-xl border border-[#DDE1E8] bg-white px-3 text-sm" value={businessId || ""} onChange={(e) => setBusinessId(Number(e.target.value))}>
                 {businesses.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
             </label>
-            {biz && <span className="text-sm">Current plan: <StatusPill value={biz.effectiveTier === "free" ? "free" : biz.effectiveTier} />{biz.tier_expires_at && biz.effectiveTier !== "free" ? <span className="text-gray-500"> · renews / expires {fmtDate(biz.tier_expires_at)}</span> : null}</span>}
-            <div className="ml-auto inline-flex gap-1 rounded-xl bg-[#F1F2F6] p-1 text-sm">
+            {biz && <span className="text-sm">Current plan: <StatusPill value={biz.effectiveTier === "free" ? "free" : biz.effectiveTier} />{biz.tier_expires_at && biz.effectiveTier !== "free" ? <span className="text-gray-500">{" "}{tj("· renews / expires {0}", fmtDate(biz.tier_expires_at))}</span> : null}</span>}
+            <div className="ms-auto inline-flex gap-1 rounded-xl bg-[#F1F2F6] p-1 text-sm">
               {(["monthly", "yearly"] as const).map((i) => <button key={i} onClick={() => setInterval_(i)} type="button" aria-pressed={interval === i} className={`min-h-[36px] rounded-[9px] px-3 font-semibold capitalize ${interval === i ? "bg-white text-[#0A0A0A] shadow-sm" : "text-[#5B6475]"}`}>{i}{i === "yearly" ? " · 2 months free" : ""}</button>)}
             </div>
           </div>
@@ -73,7 +75,7 @@ export default function MyPlan() {
                     <div className="mt-5">
                       {current ? <Button variant="outline" className="w-full" disabled>Current plan</Button>
                         : k === "free" ? <Button variant="outline" className="w-full" onClick={() => portal.mutate()} disabled={!biz || biz.effectiveTier === "free"}>Manage / cancel in billing portal</Button>
-                        : <Button className="w-full" onClick={() => checkout.mutate(k)} disabled={checkout.isPending || !biz}>{checkout.isPending ? "Opening checkout…" : `Upgrade to ${t.name}`}</Button>}
+                        : <Button className="w-full" onClick={() => checkout.mutate(k)} disabled={checkout.isPending || !biz}>{checkout.isPending ? "Opening checkout…" : tx("Upgrade to {0}", t.name)}</Button>}
                     </div>
                   </CardContent>
                 </Card>

@@ -8,6 +8,7 @@ import { AccountMenu } from "@/components/account-menu";
 import { PakistanypLogo, FlagStripe } from "@/components/brand/pakistanyp-logo";
 import { useAuth } from "@/hooks/useAuth";
 import { api } from "@/components/phase1/api";
+import { t as tx } from "@shared/i18n";
 
 /** Shared quote-request list (same cache entry as /my-leads). */
 export function useOwnerLeads(enabled = true) {
@@ -83,12 +84,12 @@ export function OwnerSidebar({
   );
   return (
     <>
-      <aside className="hidden lg:block w-[256px] shrink-0 border-r border-[#E7E9EE] bg-white">
+      <aside className="hidden lg:block w-[256px] shrink-0 border-e border-[#E7E9EE] bg-white">
         <div className="sticky top-[76px] flex min-h-[calc(100vh-76px)] flex-col px-4 py-5">{body}</div>
       </aside>
       {open && <div className="fixed inset-0 z-[60] bg-black/40 lg:hidden" onClick={onClose} aria-hidden="true" />}
       <aside
-        className={`fixed inset-y-0 left-0 z-[61] flex w-[272px] max-w-[85vw] flex-col overflow-y-auto border-r border-[#E7E9EE] bg-white px-4 py-5 transition-transform duration-200 lg:hidden ${open ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed inset-y-0 start-0 z-[61] flex w-[272px] max-w-[85vw] flex-col overflow-y-auto border-e border-[#E7E9EE] bg-white px-4 py-5 transition-transform duration-200 lg:hidden ${open ? "translate-x-0" : "-translate-x-full"}`}
         aria-hidden={!open}
       >
         {body}
@@ -100,7 +101,7 @@ export function OwnerSidebar({
 /** Lead count badge for sidebar links. */
 export function CountBadge({ n }: { n: number }) {
   if (!n) return null;
-  return <span className="ml-auto rounded-full bg-[#0B6B2E] px-2 py-px text-xs font-semibold text-white">{n}</span>;
+  return <span className="ms-auto rounded-full bg-[#0B6B2E] px-2 py-px text-xs font-semibold text-white">{n}</span>;
 }
 
 /** Top bar: flag stripe, directory search, notifications, avatar. */
@@ -119,10 +120,10 @@ export function OwnerTopBar({ onMenu, newLeads = 0 }: { onMenu: () => void; newL
           <label className="sr-only" htmlFor="owner-search">Search the directory</label>
           <input id="owner-search" name="q" type="search" placeholder="Search businesses, categories…" className="w-full min-w-0 border-0 bg-transparent text-[15px] outline-none placeholder:text-[#8A92A3]" />
         </form>
-        <div className="ml-auto flex items-center gap-2.5">
-          <a href="/my-leads" className="yp-btn yp-btn-ghost relative !w-11 !p-0" aria-label={newLeads ? `Notifications: ${newLeads} new quote requests` : "Notifications"}>
+        <div className="ms-auto flex items-center gap-2.5">
+          <a href="/my-leads" className="yp-btn yp-btn-ghost relative !w-11 !p-0" aria-label={newLeads ? tx("Notifications: {0} new quote requests", newLeads) : "Notifications"}>
             <Bell className="h-[18px] w-[18px]" />
-            {newLeads > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#D71920]" aria-hidden="true" />}
+            {newLeads > 0 && <span className="absolute end-2 top-2 h-2 w-2 rounded-full bg-[#D71920]" aria-hidden="true" />}
           </a>
           <AccountMenu tone="green" />
         </div>

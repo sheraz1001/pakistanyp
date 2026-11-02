@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, Crown, Star, Zap, Building } from 'lucide-react';
+import { tj } from "@/i18n-jsx/tj";
 
 interface SubscriptionPlan {
   id: string;
@@ -172,12 +173,8 @@ export default function SubscriptionPlanSelector({ onPlanSelect, currentPlan = '
                     {formatPrice(price)}
                   </div>
                   {price > 0 && (
-                    <div className="text-sm text-[#5B6475]">
-                      per {isYearly ? 'year' : 'month'}
-                      {isYearly && savings > 0 && (
-                        <span className="ml-1 text-[#0B6B2E] font-medium">
-                          (Save {savings}%)
-                        </span>
+                    <div className="text-sm text-[#5B6475]">{tj("per {0}", isYearly ? 'year' : 'month')}{isYearly && savings > 0 && (
+                        <span className="ms-1 text-[#0B6B2E] font-medium">{tj("(Save {0}%)", savings)}</span>
                       )}
                     </div>
                   )}

@@ -19,6 +19,8 @@ import { provinceDirectory } from "@shared/province-directory";
 import { localLang, localDir, country, localize, regionSlug } from "@shared/country";
 import { usePlaces, buildCityTree, singleCityOf, shortPlaceName, plural, cityUrl } from "@/lib/places";
 import { parseGuide, PlaceGuide, GuideFacts, guideFaqLd } from "@/components/place-guide";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Province {
   id: number;
@@ -94,7 +96,7 @@ export default function UltraModernProvincePage() {
   const onlyCity = singleCityOf(cities);
   const placeItems = onlyCity
     ? onlyCity.localities.map(l => ({ id: l.id, href: `/localities/${l.slug}`, name: shortPlaceName(l, onlyCity), sub: "", count: l.businessCount, busy: l.businessCount }))
-    : cities.map(c => ({ id: c.id, href: cityUrl(c), name: c.name, sub: c.localities.length ? `${c.localities.length} areas` : "", count: c.totalBusinesses, busy: c.totalBusinesses * 1000 + c.localities.length }));
+    : cities.map(c => ({ id: c.id, href: cityUrl(c), name: c.name, sub: c.localities.length ? plural(c.localities.length, "area", "areas") : "", count: c.totalBusinesses, busy: c.totalBusinesses * 1000 + c.localities.length }));
   const placeQuery = placeSearch.trim().toLowerCase();
   const matchingPlaces = placeQuery ? placeItems.filter(item => item.name.toLowerCase().includes(placeQuery)) : placeItems;
   // Busiest cities first, then by name; show a first screenful until "Show all"
@@ -164,7 +166,7 @@ export default function UltraModernProvincePage() {
         <div className="yp-wrap pt-16 pb-24">
           <div className="yp-card mx-auto max-w-xl p-10 text-center">
             <h1 className="text-2xl font-bold tracking-[-0.03em] text-[#0A0A0A] mb-4">{provincesError ? localize("Unable to load this Province") : localize("Province Not Found")}</h1>
-            {provincesError && <Button className="mr-3" onClick={() => refetch()}>Try again</Button>}
+            {provincesError && <Button className="me-3" onClick={() => refetch()}>Try again</Button>}
             <Button onClick={() => navigate(country.regionsPath)}>
               {localize("Back to Provinces")}
             </Button>
@@ -178,18 +180,18 @@ export default function UltraModernProvincePage() {
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A]">
       <Helmet>
-        <title>{currentProvince.metaTitle || `${currentProvince.name} - Pakistani Business Directory`}</title>
+        <title>{currentProvince.metaTitle || tx("{0} - Pakistani Business Directory", currentProvince.name)}</title>
         <meta 
           name="description" 
-          content={currentProvince.metaDescription || `Discover businesses in ${currentProvince.name}. Find verified companies, services, and local businesses with contact details and reviews.`} 
+          content={currentProvince.metaDescription || tx("Discover businesses in {0}. Find verified companies, services, and local businesses with contact details and reviews.", currentProvince.name)} 
         />
-        <meta property="og:title" content={`${currentProvince.name} Business Directory`} />
-        <meta property="og:description" content={`Explore businesses in ${currentProvince.name}, ${country.name}`} />
+        <meta property="og:title" content={tx("{0} Business Directory", currentProvince.name)} />
+        <meta property="og:description" content={tx("Explore businesses in {0}, {1}", currentProvince.name, country.name)} />
         <meta property="og:image" content={shareImage} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${currentProvince.name} Business Directory`} />
-        <meta name="twitter:description" content={`Explore businesses in ${currentProvince.name}, ${country.name}`} />
+        <meta name="twitter:title" content={tx("{0} Business Directory", currentProvince.name)} />
+        <meta name="twitter:description" content={tx("Explore businesses in {0}, {1}", currentProvince.name, country.name)} />
         <meta name="twitter:image" content={shareImage} />
         <script type="application/ld+json">{JSON.stringify(breadcrumbLd([
           { name: "Home", path: "/" },
@@ -256,14 +258,14 @@ export default function UltraModernProvincePage() {
         {/* Filters + localities */}
         <aside className="flex w-full flex-col gap-4 lg:w-[320px] lg:flex-none" aria-label="Filters">
           <section aria-labelledby="places-heading" className="yp-card p-5">
-            <h2 id="places-heading" className="text-base font-semibold">{placeNoun.title} in {currentProvince.name}</h2>
+            <h2 id="places-heading" className="text-base font-semibold">{tj("{0} in {1}", placeNoun.title, currentProvince.name)}</h2>
             <p className="mt-1 text-sm text-[#5B6475]" role="status">
-              {placesLoading ? "Loading…" : placeQuery ? `${plural(matchingPlaces.length, placeNoun.one, placeNoun.many)} match your search` : onlyCity ? plural(placeItems.length, "locality", "localities") : `${plural(cities.length, "city", "cities")} · ${plural(localityTotal, "locality", "localities")}`}
+              {placesLoading ? "Loading…" : placeQuery ? tx("{0} match your search", plural(matchingPlaces.length, placeNoun.one, placeNoun.many)) : onlyCity ? plural(placeItems.length, "locality", "localities") : `${plural(cities.length, "city", "cities")} · ${plural(localityTotal, "locality", "localities")}`}
             </p>
             <div className="relative mt-3">
-              <label htmlFor="place-search" className="sr-only">Search {placeNoun.many}</label>
+              <label htmlFor="place-search" className="sr-only">{tj("Search {0}", placeNoun.many)}</label>
               <input id="place-search" type="search" value={placeSearch} onChange={event => setPlaceSearch(event.target.value)}
-                placeholder={`Search ${placeNoun.many}`} className="yp-input text-[15px]" />
+                placeholder={tx("Search {0}", placeNoun.many)} className="yp-input text-[15px]" />
             </div>
             <div className="mt-3 flex items-center justify-between px-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5B6475]" aria-hidden="true">
               <span>{onlyCity ? "Locality" : "City"}</span><span>Businesses</span>
@@ -271,9 +273,9 @@ export default function UltraModernProvincePage() {
             {placesLoading ? (
               <div className="mt-2 flex flex-col gap-2" aria-hidden="true">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-8 animate-pulse rounded-[8px] bg-[#EEF0F4]" />)}</div>
             ) : placesError ? (
-              <div role="alert" className="mt-3 text-sm text-[#3A4354]">{placeNoun.title} could not be loaded. <Button variant="outline" className="mt-2" onClick={() => retryPlaces()}>Try again</Button></div>
+              <div role="alert" className="mt-3 text-sm text-[#3A4354]">{tj("{0} could not be loaded.", placeNoun.title)}{" "}<Button variant="outline" className="mt-2" onClick={() => retryPlaces()}>Try again</Button></div>
             ) : (
-              <ul className="-mx-2 mt-1 flex max-h-[620px] flex-col overflow-y-auto" aria-label={`${placeNoun.title} in ${currentProvince.name}`}>
+              <ul className="-mx-2 mt-1 flex max-h-[620px] flex-col overflow-y-auto" aria-label={tx("{0} in {1}", placeNoun.title, currentProvince.name)}>
                 {orderedPlaces.map(item => (
                   <li key={item.id}>
                     <Link href={item.href} className="flex min-h-[40px] items-center justify-between gap-2 rounded-[10px] px-2 text-sm font-medium text-[#3A4354] hover:bg-[#F1F2F6] hover:text-[#0A0A0A] focus-visible:outline focus-visible:outline-2">
@@ -282,12 +284,12 @@ export default function UltraModernProvincePage() {
                     </Link>
                   </li>
                 ))}
-                {!orderedPlaces.length && <li className="px-2 py-2 text-sm text-[#5B6475]">{placeQuery ? `No ${placeNoun.many} match your search.` : `No ${placeNoun.many} are listed yet.`}</li>}
+                {!orderedPlaces.length && <li className="px-2 py-2 text-sm text-[#5B6475]">{placeQuery ? tx("No {0} match your search.", placeNoun.many) : tx("No {0} are listed yet.", placeNoun.many)}</li>}
               </ul>
             )}
-            <Link href={onlyCity ? cityUrl(onlyCity) : "/cities"} className="mt-3 inline-block text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{onlyCity ? `All of ${onlyCity.name} →` : "All cities in Pakistan →"}</Link>
+            <Link href={onlyCity ? cityUrl(onlyCity) : "/cities"} className="mt-3 inline-block text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{onlyCity ? tx("All of {0} →", onlyCity.name) : "All cities in Pakistan →"}</Link>
           </section>
-          <GuideFacts guide={guide} title={`${currentProvince.name} at a glance`} />
+          <GuideFacts guide={guide} title={tx("{0} at a glance", currentProvince.name)} />
 
           <div className="yp-card flex flex-col gap-5 p-6">
             <span className="text-base font-semibold">Filters</span>
@@ -298,25 +300,19 @@ export default function UltraModernProvincePage() {
                 onClick={() => setFilter('all')}
                 className="min-h-[44px] justify-start gap-2"
               >
-                <Building2 className="w-4 h-4" />
-                All ({totalBusinesses})
-              </Button>
+                <Building2 className="w-4 h-4" />{tj("All ({0})", totalBusinesses)}</Button>
               <Button
                 variant={filter === 'featured' ? 'default' : 'outline'}
                 onClick={() => setFilter('featured')}
                 className="min-h-[44px] justify-start gap-2"
               >
-                <Star className="w-4 h-4" />
-                Featured ({featuredCount})
-              </Button>
+                <Star className="w-4 h-4" />{tj("Featured ({0})", featuredCount)}</Button>
               <Button
                 variant={filter === 'verified' ? 'default' : 'outline'}
                 onClick={() => setFilter('verified')}
                 className="min-h-[44px] justify-start gap-2"
               >
-                <Verified className="w-4 h-4" />
-                Verified ({verifiedCount})
-              </Button>
+                <Verified className="w-4 h-4" />{tj("Verified ({0})", verifiedCount)}</Button>
             </fieldset>
 
             <div className="flex flex-col gap-2">
@@ -351,11 +347,11 @@ export default function UltraModernProvincePage() {
         <section className="flex min-w-0 flex-col gap-4" aria-label="Results">
           <div className="flex flex-wrap items-end justify-between gap-2">
             <div>
-              <h2 className="text-[22px] font-semibold tracking-[-0.02em]">Businesses in {currentProvince.name}</h2>
-              <p className="mt-1 text-sm text-[#5B6475]">{totalBusinesses} businesses{filter !== 'all' ? ` · ${filter}` : ''}</p>
+              <h2 className="text-[22px] font-semibold tracking-[-0.02em]">{tj("Businesses in {0}", currentProvince.name)}</h2>
+              <p className="mt-1 text-sm text-[#5B6475]">{tj("{0} businesses{1}", totalBusinesses, filter !== 'all' ? ` · ${filter}` : '')}</p>
             </div>
           </div>
-          {!savedProvince && (<p role="status" className="yp-card p-6 text-[#4B5565]">{`Business listings for ${currentProvince.name} are not currently available. Please explore another ${country.regionTerm.singular}.`}</p>)}
+          {!savedProvince && (<p role="status" className="yp-card p-6 text-[#4B5565]">{tx("Business listings for {0} are not currently available. Please explore another {1}.", currentProvince.name, country.regionTerm.singular)}</p>)}
           {businessesError ? (
             <div role="alert" className="yp-card p-8 text-center">
               <h3 className="mb-2 text-lg font-semibold">Unable to load business listings</h3>
@@ -374,8 +370,8 @@ export default function UltraModernProvincePage() {
               </h3>
               <p className="mb-6 text-[#4B5565]">
                 {filter === 'all' 
-                  ? `No businesses are currently listed in ${currentProvince.name}.`
-                  : `No ${filter} businesses found in ${currentProvince.name}.`}
+                  ? tx("No businesses are currently listed in {0}.", currentProvince.name)
+                  : tx("No {0} businesses found in {1}.", filter, currentProvince.name)}
               </p>
               <Button className="bg-[#E3A82B] text-[#141414] hover:bg-[#D19719]" onClick={() => navigate('/add-business')}>
                 Add Your Business

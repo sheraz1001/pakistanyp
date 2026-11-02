@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { api, BUDGET_BANDS, DURATIONS, fmtDate } from "./api";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Props { businessId: number; businessName: string; ownerId?: string | null }
 
@@ -22,7 +24,7 @@ function Stars({ value, onChange, size = 18 }: { value: number; onChange?: (v: n
   return (
     <span className="inline-flex gap-0.5" role={onChange ? "radiogroup" : undefined}>
       {[1, 2, 3, 4, 5].map((n) => (
-        <button key={n} type="button" disabled={!onChange} onClick={() => onChange?.(n)} aria-label={`${n} star${n > 1 ? "s" : ""}`}
+        <button key={n} type="button" disabled={!onChange} onClick={() => onChange?.(n)} aria-label={tx("{0} star{1}", n, n > 1 ? "s" : "")}
           className={onChange ? "cursor-pointer" : "cursor-default"}>
           <Star style={{ width: size, height: size }} className={n <= Math.round(value) ? "fill-[#F59E0B] text-[#F59E0B]" : "text-[#D5D9E0]"} />
         </button>
@@ -37,7 +39,7 @@ function ScoreBar({ label, value }: { label: string; value: number | null }) {
     <div className="grid grid-cols-[minmax(96px,140px)_1fr_32px] items-center gap-3 text-sm text-[#3A4354]">
       <span>{label}</span>
       <div className="h-2 overflow-hidden rounded-full bg-[#EEF0F4]"><div className="h-full rounded-full bg-[#0B6B2E]" style={{ width: `${(v / 5) * 100}%` }} /></div>
-      <strong className="text-right font-semibold text-[#0A0A0A]">{v ? v.toFixed(1) : "–"}</strong>
+      <strong className="text-end font-semibold text-[#0A0A0A]">{v ? v.toFixed(1) : "–"}</strong>
     </div>
   );
 }
@@ -80,7 +82,7 @@ export function StructuredReviews({ businessId, businessName, ownerId }: Props) 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button variant="outline">Write a review</Button></DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader><DialogTitle>Review {businessName}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{tj("Review {0}", businessName)}</DialogTitle></DialogHeader>
             <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); submit.mutate(); }}>
               <div className="grid sm:grid-cols-2 gap-4">
                 {SCORES.map((sc) => (
@@ -125,9 +127,9 @@ export function StructuredReviews({ businessId, businessName, ownerId }: Props) 
           <div className="flex flex-wrap gap-8 border-b border-[#EEF0F4] pb-6">
             <div className="flex-none">
               <div className="text-[56px] font-bold leading-none tracking-[-0.05em] text-[#0A0A0A]">{Number(s.overall).toFixed(1)}</div>
-              <div className="mt-2" role="img" aria-label={`${Number(s.overall).toFixed(1)} out of 5 stars`}><Stars value={Number(s.overall)} /></div>
-              <div className="mt-1.5 text-sm text-[#5B6475]">{s.count} review{s.count === 1 ? "" : "s"}{s.verified ? ` · ${s.verified} verified` : ""}</div>
-              {s.budgets?.[0] && <div className="mt-1 text-xs text-[#5B6475]">Typical project: {s.budgets[0].budget_band}</div>}
+              <div className="mt-2" role="img" aria-label={tx("{0} out of 5 stars", Number(s.overall).toFixed(1))}><Stars value={Number(s.overall)} /></div>
+              <div className="mt-1.5 text-sm text-[#5B6475]">{tj("{0} review{1}{2}", s.count, s.count === 1 ? "" : "s", s.verified ? ` · ${s.verified} verified` : "")}</div>
+              {s.budgets?.[0] && <div className="mt-1 text-xs text-[#5B6475]">{tj("Typical project: {0}", s.budgets[0].budget_band)}</div>}
             </div>
             <div className="grid min-w-0 flex-[1_1_280px] content-center gap-3.5">
               <ScoreBar label="Quality of work" value={s.quality} /><ScoreBar label="Value for money" value={s.cost} />
@@ -135,7 +137,7 @@ export function StructuredReviews({ businessId, businessName, ownerId }: Props) 
             </div>
           </div>
         ) : (
-          <p className="yp-panel p-4 text-[#4B5565]">No reviews yet. Worked with {businessName}? Be the first to share how it went.</p>
+          <p className="yp-panel p-4 text-[#4B5565]">{tj("No reviews yet. Worked with {0}? Be the first to share how it went.", businessName)}</p>
         )}
         <div className="flex flex-col">
           {items.map((r) => (
@@ -143,7 +145,7 @@ export function StructuredReviews({ businessId, businessName, ownerId }: Props) 
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#F1F2F6] text-sm font-semibold text-[#0A0A0A]" aria-hidden="true">{initials(r.reviewer_name)}</span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-semibold text-[#0A0A0A]">{r.reviewer_name}{r.reviewer_role ? `, ${r.reviewer_role}` : ""}{r.reviewer_company ? ` at ${r.reviewer_company}` : ""}</span>
+                  <span className="block text-[15px] font-semibold text-[#0A0A0A]">{r.reviewer_name}{r.reviewer_role ? `, ${r.reviewer_role}` : ""}{r.reviewer_company ? tx(" at {0}", r.reviewer_company) : ""}</span>
                   <span className="block text-[13px] text-[#5B6475]"><time>{fmtDate(r.created_at)}</time>{r.project_type ? ` · ${r.project_type}` : ""}</span>
                 </span>
                 <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-[#0A0A0A]"><Star className="h-4 w-4 fill-[#F59E0B] text-[#F59E0B]" aria-hidden="true" />{Number(r.rating || 0).toFixed(1)}</span>
@@ -153,13 +155,13 @@ export function StructuredReviews({ businessId, businessName, ownerId }: Props) 
               <p className="whitespace-pre-line text-[15px] leading-[1.65] text-[#3A4354]">{r.content}</p>
               {(r.budget_band || r.duration) && (
                 <div className="flex flex-wrap gap-1.5">
-                  {r.budget_band && <span className="yp-tag">Budget: {r.budget_band}</span>}
-                  {r.duration && <span className="yp-tag">Duration: {r.duration}</span>}
+                  {r.budget_band && <span className="yp-tag">{tj("Budget: {0}", r.budget_band)}</span>}
+                  {r.duration && <span className="yp-tag">{tj("Duration: {0}", r.duration)}</span>}
                 </div>
               )}
               {r.response && (
                 <div className="rounded-xl bg-[#F7F8FA] px-3.5 py-3 text-sm text-[#3A4354]">
-                  <strong className="text-[#0A0A0A]">Response from {businessName}</strong>
+                  <strong className="text-[#0A0A0A]">{tj("Response from {0}", businessName)}</strong>
                   <p className="mt-1 whitespace-pre-line">{r.response}</p>
                 </div>
               )}
@@ -169,7 +171,7 @@ export function StructuredReviews({ businessId, businessName, ownerId }: Props) 
                     <Textarea rows={3} value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Thank the client or address the feedback…" />
                     <div className="flex gap-2"><Button size="sm" onClick={() => sendReply.mutate(r.id)} disabled={sendReply.isPending}>Post reply</Button><Button size="sm" variant="ghost" onClick={() => setReplyFor(null)}>Cancel</Button></div>
                   </div>
-                ) : <Button size="sm" variant="outline" className="self-start" onClick={() => setReplyFor(r.id)}><MessageSquareReply className="h-4 w-4 mr-1" /> Reply as owner</Button>
+                ) : <Button size="sm" variant="outline" className="self-start" onClick={() => setReplyFor(r.id)}><MessageSquareReply className="h-4 w-4 me-1" /> Reply as owner</Button>
               )}
             </article>
           ))}

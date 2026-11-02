@@ -11,6 +11,8 @@ import { breadcrumbLd } from "@/lib/structured-data";
 import { usePlaces, buildCityTree, shortPlaceName, plural, cityUrl } from "@/lib/places";
 import { parseGuide, PlaceGuide, GuideFacts, guideFaqLd } from "@/components/place-guide";
 import { country, localDir, localLang, regionUrl } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface CityRecord {
   id: number;
@@ -119,10 +121,10 @@ export default function CityDetail() {
             <Link href={provinceHref} className="text-[#0B6B2E] hover:text-[#05501F]">{city.provinceName}</Link><ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
             <span aria-current="page">{city.name}</span>
           </nav>
-          <span className="yp-pill gap-1 border border-[#CFE8D8] bg-white text-[#05501F]"><MapPin className="h-3 w-3" aria-hidden="true" />City in {city.provinceName}</span>
+          <span className="yp-pill gap-1 border border-[#CFE8D8] bg-white text-[#05501F]"><MapPin className="h-3 w-3" aria-hidden="true" />{tj("City in {0}", city.provinceName)}</span>
           {city.arabicName && <p dir={localDir} lang={localLang} className="mt-5 font-arabic text-[22px] text-[#0B6B2E]">{city.arabicName}</p>}
           <h1 className="yp-h1 mt-2">{city.name}</h1>
-          <p className="yp-lead mt-4 max-w-2xl">{city.description || `Businesses and services in ${city.name}, ${city.provinceName}.`}</p>
+          <p className="yp-lead mt-4 max-w-2xl">{city.description || tx("Businesses and services in {0}, {1}.", city.name, city.provinceName)}</p>
           <dl className="mt-7 grid max-w-xl grid-cols-3 gap-3">
             {[
               { value: businessesQuery.isSuccess ? total : "–", label: "Businesses" },
@@ -140,23 +142,23 @@ export default function CityDetail() {
 
       <div className="yp-wrap-wide grid items-start gap-6 pt-8 pb-20 lg:grid-cols-[320px_minmax(0,1fr)]">
         {/* Localities of the city */}
-        <aside className="flex min-w-0 flex-col gap-4" aria-label={`Localities in ${city.name}`}>
+        <aside className="flex min-w-0 flex-col gap-4" aria-label={tx("Localities in {0}", city.name)}>
           <section className="yp-card p-5" aria-labelledby="city-localities-heading">
-            <h2 id="city-localities-heading" className="text-base font-semibold">Localities in {city.name}</h2>
-            <p className="mt-1 text-sm text-[#5B6475]">{localities.length ? plural(localities.length, "locality", "localities") : `No separate localities are listed for ${city.name}.`}</p>
+            <h2 id="city-localities-heading" className="text-base font-semibold">{tj("Localities in {0}", city.name)}</h2>
+            <p className="mt-1 text-sm text-[#5B6475]">{localities.length ? plural(localities.length, "locality", "localities") : tx("No separate localities are listed for {0}.", city.name)}</p>
             {localities.length > 8 && (
               <div className="relative mt-3">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5B6475]" aria-hidden="true" />
-                <label htmlFor="city-locality-search" className="sr-only">Search localities in {city.name}</label>
-                <input id="city-locality-search" type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={`Search ${city.name} localities`} className="yp-input pl-9 text-[15px]" />
+                <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5B6475]" aria-hidden="true" />
+                <label htmlFor="city-locality-search" className="sr-only">{tj("Search localities in {0}", city.name)}</label>
+                <input id="city-locality-search" type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={tx("Search {0} localities", city.name)} className="yp-input ps-9 text-[15px]" />
               </div>
             )}
             {localities.length > 0 && (
-              <ul className="-mx-2 mt-3 flex max-h-[560px] flex-col overflow-y-auto" aria-label={`Localities in ${city.name}`}>
+              <ul className="-mx-2 mt-3 flex max-h-[560px] flex-col overflow-y-auto" aria-label={tx("Localities in {0}", city.name)}>
                 {!q && (
                   <li>
                     <span className="flex min-h-[40px] items-center justify-between gap-2 rounded-[10px] bg-[#F2F9F4] px-2 text-sm font-semibold text-[#05501F]">
-                      <span className="flex items-center gap-2"><Building2 className="h-4 w-4" aria-hidden="true" />All of {city.name}</span>
+                      <span className="flex items-center gap-2"><Building2 className="h-4 w-4" aria-hidden="true" />{tj("All of {0}", city.name)}</span>
                       <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold tabular-nums">{(node?.totalBusinesses ?? total).toLocaleString()}</span>
                     </span>
                   </li>
@@ -174,11 +176,11 @@ export default function CityDetail() {
             )}
           </section>
 
-          <GuideFacts guide={guide} title={`${city.name} at a glance`} />
+          <GuideFacts guide={guide} title={tx("{0} at a glance", city.name)} />
 
           {otherCities.length > 0 && (
             <section className="yp-card p-5" aria-labelledby="other-cities-heading">
-              <h2 id="other-cities-heading" className="text-base font-semibold">Other cities in {city.provinceName}</h2>
+              <h2 id="other-cities-heading" className="text-base font-semibold">{tj("Other cities in {0}", city.provinceName)}</h2>
               <ul className="-mx-2 mt-3 flex flex-col">
                 {otherCities.map((c) => (
                   <li key={c.id}>
@@ -189,7 +191,7 @@ export default function CityDetail() {
                   </li>
                 ))}
               </ul>
-              <Link href={provinceHref} className="mt-3 inline-block text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">All cities in {city.provinceName} →</Link>
+              <Link href={provinceHref} className="mt-3 inline-block text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{tj("All cities in {0} →", city.provinceName)}</Link>
             </section>
           )}
         </aside>
@@ -198,8 +200,8 @@ export default function CityDetail() {
         <div className="flex min-w-0 flex-col gap-8">
         <section className="flex min-w-0 flex-col gap-4" aria-labelledby="city-businesses-heading">
           <div>
-            <h2 id="city-businesses-heading" className="text-[22px] font-semibold tracking-[-0.02em]">Businesses in {city.name}</h2>
-            {businessesQuery.isSuccess && <p className="mt-1 text-sm text-[#5B6475]">{businesses.length === total ? plural(total, "business", "businesses") : `Showing ${businesses.length} of ${total.toLocaleString()} businesses`}</p>}
+            <h2 id="city-businesses-heading" className="text-[22px] font-semibold tracking-[-0.02em]">{tj("Businesses in {0}", city.name)}</h2>
+            {businessesQuery.isSuccess && <p className="mt-1 text-sm text-[#5B6475]">{businesses.length === total ? plural(total, "business", "businesses") : tx("Showing {0} of {1} businesses", businesses.length, total.toLocaleString())}</p>}
           </div>
           {businessesQuery.isError ? (
             <div role="alert" className="yp-card p-8 text-center">
@@ -211,8 +213,8 @@ export default function CityDetail() {
           ) : (
             <div className="yp-card px-6 py-12 text-center">
               <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-[14px] bg-[#F1F2F6] text-[#334155]"><Building2 className="h-6 w-6" aria-hidden="true" /></span>
-              <h3 className="mb-2 text-xl font-semibold">No businesses listed in {city.name} yet</h3>
-              <p className="mb-6 text-[#4B5565]">Be the first to list your business in {city.name}.</p>
+              <h3 className="mb-2 text-xl font-semibold">{tj("No businesses listed in {0} yet", city.name)}</h3>
+              <p className="mb-6 text-[#4B5565]">{tj("Be the first to list your business in {0}.", city.name)}</p>
               <Link href="/add-business-enhanced" className="yp-btn yp-btn-red">Add your business</Link>
             </div>
           )}

@@ -1,3 +1,4 @@
+import { registerLanguageRoutes } from "./i18n";
 import { country } from "@shared/country";
 import { registerPhase2Routes } from "./phase2";
 import { registerPhase1Routes } from "./phase1";
@@ -1522,6 +1523,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch users" });
     }
   });
+
+  registerLanguageRoutes(app);
 
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
@@ -4100,6 +4103,8 @@ Instructions:
         SELECT l.id, l.name, l.arabic_name AS "arabicName", l.slug, l.province_id AS "provinceId",
                l.description, l.detailed_description AS "detailedDescription", l.population, l.coordinates,
                l.meta_title AS "metaTitle", l.meta_description AS "metaDescription",
+               l.description_ar AS "descriptionAr", l.detailed_description_ar AS "detailedDescriptionAr",
+               l.meta_title_ar AS "metaTitleAr", l.meta_description_ar AS "metaDescriptionAr",
                p.name AS "provinceName"
         FROM localities l JOIN provinces p ON p.id = l.province_id
         WHERE l.is_main_area = true AND l.parent_id IS NULL AND split_part(l.slug, '/', 2) = ${slug}

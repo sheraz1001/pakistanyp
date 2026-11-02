@@ -54,6 +54,8 @@ import { breadcrumbLd } from "@/lib/structured-data";
 import { Business, BusinessReview, insertBusinessReviewSchema, insertBusinessEnquirySchema } from "@shared/schema";
 import { localLang, localDir, country } from "@shared/country";
 import { normalizePhone, formatPhone as formatBusinessPhone, isValidPhone } from "@shared/countries/locale";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 // E.164 tel: link (e.g. tel:+919876543210); falls back to the stored value.
 const telHref = (phone: string) => (isValidPhone(phone) ? `tel:+${normalizePhone(phone)}` : `tel:${phone}`);
@@ -98,7 +100,7 @@ function openStatus(hours: unknown): { label: string; open: boolean } | null {
     const o = toMinutes(v.open), c = toMinutes(v.close);
     if (o == null || c == null) return null;
     const isOpen = c > o ? now >= o && now < c : now >= o || now < c;
-    return isOpen ? { label: `Open until ${v.close}`, open: true } : { label: "Closed now", open: false };
+    return isOpen ? { label: tx("Open until {0}", v.close), open: true } : { label: "Closed now", open: false };
   } catch { return null; }
 }
 
@@ -362,7 +364,7 @@ export default function BusinessDetailEnhanced() {
     { id: "services", label: "Services" },
     { id: "products", label: "Products" },
     { id: "gallery", label: "Photos" },
-    { id: "reviews", label: ratingCount > 0 ? `Reviews (${ratingCount})` : "Reviews" },
+    { id: "reviews", label: ratingCount > 0 ? tx("Reviews ({0})", ratingCount) : "Reviews" },
     { id: "contact", label: "Location" },
   ];
   const cardTitle = "text-[22px] font-semibold tracking-[-0.02em] text-[#0A0A0A]";
@@ -414,7 +416,7 @@ export default function BusinessDetailEnhanced() {
                 <a key={src} href="#gallery" className={`relative block min-w-0 ${i > 0 ? "hidden sm:block" : ""}`}>
                   <img src={src} alt={i === 0 ? `${business.name}` : ""} className="h-full w-full object-cover" loading={i === 0 ? "eager" : "lazy"} />
                   {i === 2 && photos.length > 3 && (
-                    <span className="absolute inset-0 grid place-items-center bg-[#E8F4EC]/85 font-mono text-xs font-medium uppercase tracking-[.06em] text-[#05501F]">+ {photos.length - 3} photos</span>
+                    <span className="absolute inset-0 grid place-items-center bg-[#E8F4EC]/85 font-mono text-xs font-medium uppercase tracking-[.06em] text-[#05501F]">{tj("+ {0} photos", photos.length - 3)}</span>
                   )}
                 </a>
               ))}
@@ -430,7 +432,7 @@ export default function BusinessDetailEnhanced() {
               {logoSrc ? (
                 <img
                   src={logoSrc}
-                  alt={`${business.name} logo`}
+                  alt={tx("{0} logo", business.name)}
                   className="absolute inset-0 h-full w-full bg-white object-contain p-2"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
@@ -470,7 +472,7 @@ export default function BusinessDetailEnhanced() {
                 {extra.categoryName && <><span aria-hidden="true">·</span><span>{extra.categoryName}</span></>}
                 {placeLabel && <><span aria-hidden="true">·</span><span>{placeLabel}</span></>}
                 {status && <><span aria-hidden="true">·</span><span className={status.open ? "font-semibold text-[#047857]" : "font-medium text-[#B3141B]"}>{status.label}</span></>}
-                {Number(business.viewCount) > 0 && <><span aria-hidden="true">·</span><span className="inline-flex items-center gap-1"><Users className="h-4 w-4" aria-hidden="true" />{business.viewCount} views</span></>}
+                {Number(business.viewCount) > 0 && <><span aria-hidden="true">·</span><span className="inline-flex items-center gap-1"><Users className="h-4 w-4" aria-hidden="true" />{tj("{0} views", business.viewCount)}</span></>}
               </div>
             </div>
 
@@ -527,7 +529,7 @@ export default function BusinessDetailEnhanced() {
           <main className="business-sections flex min-w-0 flex-col gap-6">
               {/* Overview */}
               <section id="overview" aria-label="Business overview" className="yp-card scroll-mt-24 p-6 md:p-7">
-                <h2 role="heading" aria-level={2} className={`${cardTitle} mb-3`}>About {business.name}</h2>
+                <h2 role="heading" aria-level={2} className={`${cardTitle} mb-3`}>{tj("About {0}", business.name)}</h2>
                 {business.description ? (
                   <p className="whitespace-pre-line text-base leading-[1.7] text-[#3A4354]">{business.description}</p>
                 ) : (
@@ -620,7 +622,7 @@ export default function BusinessDetailEnhanced() {
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {photos.map((src, i) => (
                       <a key={src} href={src} target="_blank" rel="noopener noreferrer" className="block aspect-[4/3] overflow-hidden rounded-[14px] bg-[#F7F8FA]">
-                        <img src={src} alt={`${business.name} photo ${i + 1}`} loading="lazy" className="h-full w-full object-cover" />
+                        <img src={src} alt={tx("{0} photo {1}", business.name, i + 1)} loading="lazy" className="h-full w-full object-cover" />
                       </a>
                     ))}
                   </div>
@@ -692,7 +694,7 @@ export default function BusinessDetailEnhanced() {
                   <div className="mb-2 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-[#5B6475]" aria-hidden="true" />
                     <span className="text-sm font-medium text-[#0A0A0A]">Working Hours</span>
-                    {status && <span className={`ml-auto text-xs font-semibold ${status.open ? "text-[#047857]" : "text-[#B3141B]"}`}>{status.label}</span>}
+                    {status && <span className={`ms-auto text-xs font-semibold ${status.open ? "text-[#047857]" : "text-[#B3141B]"}`}>{status.label}</span>}
                   </div>
                   {typeof business.workingHours === 'string' ? (
                     <p className="text-sm text-[#3A4354]">{business.workingHours}</p>
@@ -701,7 +703,7 @@ export default function BusinessDetailEnhanced() {
                       {hoursEntries.map(([day, hours]) => (
                         <div key={day} className="contents">
                           <span className="capitalize">{day}</span>
-                          <span className="text-right">{formatHours(hours)}</span>
+                          <span className="text-end">{formatHours(hours)}</span>
                         </div>
                       ))}
                     </div>
@@ -811,7 +813,7 @@ export default function BusinessDetailEnhanced() {
       <Dialog open={showEnquiryDialog} onOpenChange={setShowEnquiryDialog}>
         <DialogContent className="max-w-md max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Contact {business.name}</DialogTitle>
+            <DialogTitle>{tj("Contact {0}", business.name)}</DialogTitle>
           </DialogHeader>
           <Form {...enquiryForm}>
             <form onSubmit={enquiryForm.handleSubmit((data) => addEnquiryMutation.mutate(data))} className="space-y-4">
@@ -953,7 +955,7 @@ export default function BusinessDetailEnhanced() {
       <Dialog open={showClaimDialog} onOpenChange={setShowClaimDialog}>
         <DialogContent className="max-w-2xl max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Claim Business: {business.name}</DialogTitle>
+            <DialogTitle>{tj("Claim Business: {0}", business.name)}</DialogTitle>
           </DialogHeader>
           <Form {...claimForm}>
             <form onSubmit={claimForm.handleSubmit((data) => claimBusinessMutation.mutate({...data, businessId: business.id}))} className="space-y-4">

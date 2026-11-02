@@ -35,6 +35,7 @@ import BusinessProfilePreview from "@/components/business-profile-preview";
 import DropdownCategorySelector from "@/components/dropdown-category-selector";
 import { LocationPicker } from "@/components/location-picker";
 import ImageCropDialog from "@/components/image-crop-dialog";
+import { t as tx } from "@shared/i18n";
 
 
 const businessFormSchema = z.object({
@@ -961,7 +962,7 @@ export default function AddBusinessEnhanced() {
                                 <FormControl>
                                   <Input placeholder="Enter business name" {...field} />
                                 </FormControl>
-                                <div className="text-sm text-gray-500 text-right">
+                                <div className="text-sm text-gray-500 text-end">
                                   {field.value?.length || 0}/200
                                 </div>
                                 <FormMessage />
@@ -1020,7 +1021,7 @@ export default function AddBusinessEnhanced() {
                               <FormControl>
                                 <Input placeholder="Brief description for search results" {...field} />
                               </FormControl>
-                              <div className="text-sm text-gray-500 text-right">
+                              <div className="text-sm text-gray-500 text-end">
                                 {field.value?.length || 0}/500
                               </div>
                               <FormMessage />
@@ -1051,7 +1052,7 @@ export default function AddBusinessEnhanced() {
                                       value={phoneCountryCode || country.phonePrefix}
                                       onValueChange={setPhoneCountryCode}
                                     >
-                                      <SelectTrigger className="w-24 rounded-r-none border-r-0">
+                                      <SelectTrigger className="w-24 rounded-e-none border-e-0">
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
@@ -1104,7 +1105,7 @@ export default function AddBusinessEnhanced() {
                                     </Select>
                                     <Input 
                                       placeholder={country.phonePlaceholder.replace(/ /g, "-")} 
-                                      className="rounded-l-none"
+                                      className="rounded-s-none"
                                       value={field.value ? field.value.replace(/^\+\d+\s?-?\s?/, '') : ''}
                                       onChange={(e) => {
                                         const number = e.target.value.replace(/[^\d-]/g, '');
@@ -1113,7 +1114,7 @@ export default function AddBusinessEnhanced() {
                                     />
                                   </div>
                                 </FormControl>
-                                <div className="text-sm text-gray-500 text-right">
+                                <div className="text-sm text-gray-500 text-end">
                                   {field.value?.length || 0}/50
                                 </div>
                                 <FormMessage />
@@ -1133,7 +1134,7 @@ export default function AddBusinessEnhanced() {
                                       value={whatsappCountryCode || country.phonePrefix}
                                       onValueChange={setWhatsappCountryCode}
                                     >
-                                      <SelectTrigger className="w-24 rounded-r-none border-r-0">
+                                      <SelectTrigger className="w-24 rounded-e-none border-e-0">
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
@@ -1186,7 +1187,7 @@ export default function AddBusinessEnhanced() {
                                     </Select>
                                     <Input 
                                       placeholder={country.phonePlaceholder.replace(/ /g, "-")} 
-                                      className="rounded-l-none"
+                                      className="rounded-s-none"
                                       value={field.value ? field.value.replace(/^\+\d+\s?-?\s?/, '') : ''}
                                       onChange={(e) => {
                                         const number = e.target.value.replace(/[^\d-]/g, '');
@@ -1209,7 +1210,7 @@ export default function AddBusinessEnhanced() {
                                 <FormControl>
                                   <Input type="email" placeholder="info@yourbusiness.com" {...field} />
                                 </FormControl>
-                                <div className="text-sm text-gray-500 text-right">
+                                <div className="text-sm text-gray-500 text-end">
                                   {field.value?.length || 0}/200
                                 </div>
                                 <FormMessage />
@@ -1316,7 +1317,7 @@ export default function AddBusinessEnhanced() {
                                 )}
                                 {isPremiumUser(userMembership) && (
                                   <Badge variant="secondary" className="text-xs bg-[#F1F2F6] text-[#334155]">
-                                    <Crown className="h-3 w-3 mr-1" />
+                                    <Crown className="h-3 w-3 me-1" />
                                     Premium: Unlimited all levels
                                   </Badge>
                                 )}
@@ -1368,7 +1369,7 @@ export default function AddBusinessEnhanced() {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleLogoUpload}
-                                    className="cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    className="cursor-pointer file:me-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                   />
                                   <p className="text-sm text-gray-500">
                                     Upload an image file (JPG, PNG, GIF). Max size: 5MB
@@ -1387,7 +1388,7 @@ export default function AddBusinessEnhanced() {
                                         className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
                                       />
                                       {form.watch('logo') && (
-                                        <div className="absolute -top-2 -right-2">
+                                        <div className="absolute -top-2 -end-2">
                                           <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                                             Saved
                                           </div>
@@ -1409,7 +1410,7 @@ export default function AddBusinessEnhanced() {
                                           onClick={() => setShowCropDialog(true)}
                                           disabled={!originalLogoSrc}
                                         >
-                                          <Crop className="h-3 w-3 mr-1" />
+                                          <Crop className="h-3 w-3 me-1" />
                                           Edit & Crop
                                         </Button>
 
@@ -1995,7 +1996,7 @@ export default function AddBusinessEnhanced() {
                         <FormItem>
                           <FormLabel>Delivery/Service Areas</FormLabel>
                           <FormControl>
-                            <Input placeholder={`${country.regions.slice(0, 3).map((r) => r.name).join(", ")}, ${country.shortName}-wide`} {...field} />
+                            <Input placeholder={tx("{0}, {1}-wide", country.regions.slice(0, 3).map((r) => r.name).join(", "), country.shortName)} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

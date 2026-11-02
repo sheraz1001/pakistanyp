@@ -35,6 +35,8 @@ import {
   Clock
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface ExtractedBusinessInfo {
   businessName: string;
@@ -183,7 +185,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
         onBusinessExtracted?.(result.data);
         toast({
           title: "Business card scanned successfully!",
-          description: `Extracted information for ${result.data.businessName}`,
+          description: tx("Extracted information for {0}", result.data.businessName),
         });
       } else {
         setError(result.message || 'Failed to extract business information');
@@ -281,7 +283,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+          <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
             <Sparkles className="w-6 h-6 text-blue-500" />
             <span>Interactive Business Card Scanner</span>
           </CardTitle>
@@ -293,15 +295,15 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
           <Tabs defaultValue="upload" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="upload">
-                <Upload className="w-4 h-4 mr-2" />
+                <Upload className="w-4 h-4 me-2" />
                 Upload Image
               </TabsTrigger>
               <TabsTrigger value="camera">
-                <Camera className="w-4 h-4 mr-2" />
+                <Camera className="w-4 h-4 me-2" />
                 Take Photo
               </TabsTrigger>
               <TabsTrigger value="preview" disabled={!selectedImage}>
-                <Eye className="w-4 h-4 mr-2" />
+                <Eye className="w-4 h-4 me-2" />
                 Preview & Edit
               </TabsTrigger>
             </TabsList>
@@ -327,7 +329,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                     onClick={() => fileInputRef.current?.click()}
                     className="mt-4"
                   >
-                    <Upload className="w-4 h-4 mr-2" />
+                    <Upload className="w-4 h-4 me-2" />
                     Choose File
                   </Button>
                 </div>
@@ -356,7 +358,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                     onClick={() => cameraInputRef.current?.click()}
                     className="mt-4"
                   >
-                    <Camera className="w-4 h-4 mr-2" />
+                    <Camera className="w-4 h-4 me-2" />
                     Open Camera
                   </Button>
                 </div>
@@ -368,7 +370,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                 <div className="space-y-4">
                   {/* Image Preview Controls */}
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <Button
                         variant="outline"
                         size="sm"
@@ -388,15 +390,13 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                       </Button>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setShowPreview(!showPreview)}
                       >
-                        {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        {showPreview ? 'Hide' : 'Show'} Regions
-                      </Button>
+                        {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}{tj("{0} Regions", showPreview ? 'Hide' : 'Show')}</Button>
                       <Button
                         variant="outline"
                         size="sm"
@@ -450,7 +450,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                           }}
                           onClick={() => handleRegionClick(index)}
                         >
-                          <div className="absolute -top-6 left-0 bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                          <div className="absolute -top-6 start-0 bg-blue-600 text-white text-xs px-2 py-1 rounded">
                             {region.label}
                           </div>
                         </div>
@@ -468,12 +468,12 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                     >
                       {isScanning ? (
                         <>
-                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          <Loader2 className="w-5 h-5 me-2 animate-spin" />
                           Scanning...
                         </>
                       ) : (
                         <>
-                          <Scan className="w-5 h-5 mr-2" />
+                          <Scan className="w-5 h-5 me-2" />
                           Scan Business Card
                         </>
                       )}
@@ -485,7 +485,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                     <div className="space-y-3">
                       <Progress value={scanProgress} className="h-2" />
                       <p className="text-center text-sm text-gray-600 flex items-center justify-center">
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        <Loader2 className="w-4 h-4 me-2 animate-spin" />
                         {currentStep}
                       </p>
                     </div>
@@ -509,18 +509,18 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <CheckCircle className="w-5 h-5 text-green-500" />
                 <span>Extracted Information</span>
-                <Badge variant="secondary">{Math.round(extractedInfo.confidence * 100)}% confidence</Badge>
+                <Badge variant="secondary">{tj("{0}% confidence", Math.round(extractedInfo.confidence * 100))}</Badge>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => copyToClipboard(JSON.stringify(extractedInfo, null, 2))}
                 >
-                  <Copy className="w-4 h-4 mr-2" />
+                  <Copy className="w-4 h-4 me-2" />
                   Copy All
                 </Button>
                 {onAddBusiness && (
@@ -528,7 +528,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                     onClick={() => onAddBusiness(extractedInfo)}
                     size="sm"
                   >
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 me-2" />
                     Add Business
                   </Button>
                 )}
@@ -569,7 +569,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
                         <p className="text-sm font-medium mt-1">{value || 'Not detected'}</p>
                       )}
                     </div>
-                    <div className="flex items-center space-x-1 ml-2">
+                    <div className="flex items-center space-x-1 rtl:space-x-reverse ms-2">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -658,7 +658,7 @@ export function InteractiveBusinessCardScanner({ onBusinessExtracted, onAddBusin
       {scanHistory.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
               <Clock className="w-5 h-5" />
               <span>Recent Scans</span>
             </CardTitle>

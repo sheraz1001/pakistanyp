@@ -1,3 +1,5 @@
+import { dateLocale } from "@shared/i18n";
+import { LanguagePreference } from "@/components/language-switch";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +29,7 @@ import {
   Calendar
 } from "lucide-react";
 import type { Business, BusinessClaim, BusinessReview } from "@shared/schema";
+import { tj } from "@/i18n-jsx/tj";
 
 export default function UserDashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -91,9 +94,7 @@ export default function UserDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Welcome back, {user?.firstName || 'User'}!
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900">{tj("Welcome back, {0}!", user?.firstName || 'User')}</h1>
         <p className="text-gray-600 mt-2">
           Manage your business listings and monitor your performance
         </p>
@@ -175,7 +176,7 @@ export default function UserDashboard() {
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Your Business Listings</h2>
             <Button onClick={() => window.location.href = '/add-business'}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 me-2" />
               Add New Business
             </Button>
           </div>
@@ -195,7 +196,7 @@ export default function UserDashboard() {
                   </p>
                   <div className="mt-6">
                     <Button onClick={() => window.location.href = '/add-business'}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="h-4 w-4 me-2" />
                       Add Business
                     </Button>
                   </div>
@@ -229,21 +230,15 @@ export default function UserDashboard() {
                     <div className="flex justify-between items-center text-sm text-gray-500">
                       <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
-                          <Eye className="h-4 w-4" />
-                          {business.viewCount || 0} views
-                        </span>
+                          <Eye className="h-4 w-4" />{tj("{0} views", business.viewCount || 0)}</span>
                         <span className="flex items-center gap-1">
-                          <Star className="h-4 w-4" />
-                          {business.rating || 0} rating
-                        </span>
+                          <Star className="h-4 w-4" />{tj("{0} rating", business.rating || 0)}</span>
                         <span className="flex items-center gap-1">
-                          <MessageSquare className="h-4 w-4" />
-                          {business.reviewCount || 0} reviews
-                        </span>
+                          <MessageSquare className="h-4 w-4" />{tj("{0} reviews", business.reviewCount || 0)}</span>
                       </div>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm">
-                          <Edit className="h-4 w-4 mr-1" />
+                          <Edit className="h-4 w-4 me-1" />
                           Edit
                         </Button>
                         <Button 
@@ -251,7 +246,7 @@ export default function UserDashboard() {
                           size="sm"
                           onClick={() => window.open(`/business/${business.slug}`, '_blank')}
                         >
-                          <Eye className="h-4 w-4 mr-1" />
+                          <Eye className="h-4 w-4 me-1" />
                           View
                         </Button>
                       </div>
@@ -288,10 +283,8 @@ export default function UserDashboard() {
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle>Claim Request #{claim.id}</CardTitle>
-                        <CardDescription>
-                          Submitted on {new Date(claim.createdAt).toLocaleDateString()}
-                        </CardDescription>
+                        <CardTitle>{tj("Claim Request #{0}", claim.id)}</CardTitle>
+                        <CardDescription>{tj("Submitted on {0}", new Date(claim.createdAt).toLocaleDateString(dateLocale()))}</CardDescription>
                       </div>
                       {getStatusBadge(claim.status)}
                     </div>
@@ -330,7 +323,7 @@ export default function UserDashboard() {
                     <div key={business.id} className="flex justify-between items-center">
                       <span className="font-medium">{business.name}</span>
                       <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <span>{business.viewCount || 0} views</span>
+                        <span>{tj("{0} views", business.viewCount || 0)}</span>
                         <span>•</span>
                         <span>{business.rating || 0}★</span>
                       </div>
@@ -378,6 +371,7 @@ export default function UserDashboard() {
 
         <TabsContent value="settings" className="space-y-4">
           <h2 className="text-xl font-semibold">Account Settings</h2>
+          <LanguagePreference />
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -400,11 +394,11 @@ export default function UserDashboard() {
                 <div>
                   <label className="text-sm font-medium">Account Created</label>
                   <p className="text-sm text-gray-600">
-                    {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                    {user?.createdAt ? new Date(user.createdAt).toLocaleDateString(dateLocale()) : 'N/A'}
                   </p>
                 </div>
                 <Button variant="outline">
-                  <Edit className="h-4 w-4 mr-2" />
+                  <Edit className="h-4 w-4 me-2" />
                   Edit Profile
                 </Button>
               </div>

@@ -9,6 +9,8 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Business, Category, Province } from "@shared/schema";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 export default function SearchResults() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
@@ -139,7 +141,7 @@ export default function SearchResults() {
           <div className="min-w-0">
             <h1 className="text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-[-0.04em] text-[#0A0A0A] break-words">{pageTitle}</h1>
             <p className="mt-2 text-[15px] text-[#5B6475]">
-              {businessesLoading ? "Searching…" : `${total.toLocaleString()} ${total === 1 ? "business" : "businesses"} · sorted by ${sortLabels[filters.sort] || "relevance"}`}
+              {businessesLoading ? "Searching…" : tx("{0} {1} · sorted by {2}", total.toLocaleString(), total === 1 ? "business" : "businesses", sortLabels[filters.sort] || "relevance")}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -248,7 +250,7 @@ export default function SearchResults() {
             {activeFilters.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {activeFilters.map((f) => (
-                  <button key={f.key} type="button" onClick={f.clear} className="yp-tag yp-tag-green gap-1.5 hover:bg-[#D6EDDF]" aria-label={`Remove filter ${f.label}`}>
+                  <button key={f.key} type="button" onClick={f.clear} className="yp-tag yp-tag-green gap-1.5 hover:bg-[#D6EDDF]" aria-label={tx("Remove filter {0}", f.label)}>
                     {f.label}<X className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 ))}
@@ -265,9 +267,7 @@ export default function SearchResults() {
               </div>
             ) : !businessesLoading && businesses?.businesses?.length ? (
               <>
-                <p className="text-sm text-[#5B6475]">
-                  Showing {businesses.businesses.length} of {businesses.total} results
-                </p>
+                <p className="text-sm text-[#5B6475]">{tj("Showing {0} of {1} results", businesses.businesses.length, businesses.total)}</p>
                 <BusinessListing businesses={businesses.businesses} layout={viewMode} />
 
                 {totalPages > 1 && (

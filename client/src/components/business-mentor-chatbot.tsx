@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -165,7 +166,7 @@ export default function BusinessMentorChatbot() {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-36 md:bottom-4 right-4 z-50">
+      <div className="fixed bottom-36 md:bottom-4 end-4 z-50">
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
@@ -179,7 +180,7 @@ export default function BusinessMentorChatbot() {
   }
 
   return (
-    <div className={`fixed bottom-20 md:bottom-4 right-4 z-50 max-w-[calc(100vw-2rem)] ${isMinimized ? 'w-80' : 'w-96'}`}>
+    <div className={`fixed bottom-20 md:bottom-4 end-4 z-50 max-w-[calc(100vw-2rem)] ${isMinimized ? 'w-80' : 'w-96'}`}>
       <Card className="overflow-hidden rounded-[20px] border border-[#E7E9EE] bg-white shadow-[0_30px_70px_-34px_rgba(10,10,10,.35)]">
         <CardHeader className="p-4 pb-3 bg-white border-b border-[#E7E9EE] text-[#0A0A0A]">
           <div className="flex items-center justify-between">
@@ -230,7 +231,7 @@ export default function BusinessMentorChatbot() {
                     className="cursor-pointer text-xs py-1 px-2 rounded-full hover:border-[#0B6B2E]"
                     onClick={() => handleCategorySelect(category.id)}
                   >
-                    <category.icon className="mr-1 h-3 w-3" aria-hidden="true" />
+                    <category.icon className="me-1 h-3 w-3" aria-hidden="true" />
                     {category.label}
                   </Badge>
                 ))}
@@ -264,7 +265,7 @@ export default function BusinessMentorChatbot() {
                               key={index}
                               variant="outline"
                               size="sm"
-                              className="text-xs h-7 mr-1 mb-1"
+                              className="text-xs h-7 me-1 mb-1"
                               onClick={() => handleQuickQuestion(suggestion)}
                             >
                               {suggestion}
@@ -274,7 +275,7 @@ export default function BusinessMentorChatbot() {
                       )}
                       
                       <p className="text-xs text-gray-500 mt-1">
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {message.timestamp.toLocaleTimeString(dateLocale([]), { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
                   </div>
@@ -284,7 +285,7 @@ export default function BusinessMentorChatbot() {
                   <div className="flex justify-start">
                     <div className="bg-[#F7F8FA] rounded-[14px] px-3 py-2 text-sm">
                       <div className="flex items-center gap-2">
-                        <div className="flex space-x-1">
+                        <div className="flex space-x-1 rtl:space-x-reverse">
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }}></div>
                           <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>

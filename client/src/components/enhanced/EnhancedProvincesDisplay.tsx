@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Building2, MapPin, Users, Eye, ArrowRight } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface Province {
   id: number;
@@ -139,12 +141,12 @@ export default function EnhancedProvincesDisplay() {
                 <div className="aspect-video relative overflow-hidden rounded-t-lg">
                   <img 
                     src={getProvinceImage(province.name)} 
-                    alt={`${province.name} skyline`}
+                    alt={tx("{0} skyline", province.name)}
                     className="w-full h-full object-cover transition-transform duration-300"
                   />
                   
                   {/* Status badges */}
-                  <div className="absolute top-3 right-3 flex gap-2">
+                  <div className="absolute top-3 end-3 flex gap-2">
                     {province.isPublished && (
                       <Badge variant="default" className="bg-green-500 text-white text-xs">
                         Live
@@ -203,8 +205,8 @@ export default function EnhancedProvincesDisplay() {
                     className="w-full group/btn bg-blue-600 hover:bg-blue-700 text-white"
                     size="sm"
                   >
-                    <span>Explore {province.name}</span>
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                    <span>{tj("Explore {0}", province.name)}</span>
+                    <ArrowRight className="h-4 w-4 ms-2 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
               </CardContent>
@@ -222,7 +224,7 @@ export default function EnhancedProvincesDisplay() {
               className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group"
             >
               View All Provinces
-              <ArrowRight className="h-4 w-4 ml-2 transition-transform" />
+              <ArrowRight className="h-4 w-4 ms-2 transition-transform" />
             </Button>
           </Link>
         </div>

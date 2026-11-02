@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, Phone, Globe, Clock, Eye, Grid3x3, Building2 } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
 
 export default function Categories() {
   const [, params] = useRoute("/categories/:slug?");
@@ -83,7 +84,7 @@ export default function Categories() {
               />
               
               <div className="max-w-4xl mx-auto text-center">
-                <div className="flex justify-center items-center space-x-4 mb-6">
+                <div className="flex justify-center items-center space-x-4 rtl:space-x-reverse mb-6">
                   <div className="w-12 h-12 bg-[#E8F4EC] text-[#0B6B2E] rounded-[14px] flex items-center justify-center">
                     <Grid3x3 className="w-6 h-6" />
                   </div>
@@ -104,10 +105,7 @@ export default function Categories() {
                 
                 <p className="text-xl text-[#4B5565] mb-8 max-w-2xl mx-auto leading-relaxed">
                   {(
-                    <>
-                  Explore {categories.length} business categories across all {country.regions.length} {country.regionTerm.plural.toLowerCase()} of {country.name}. 
-                  Discover companies by industry and find the perfect business match.
-                    </>
+                    <>{tj("Explore {0} business categories across all {1} {2} of {3}. Discover companies by industry and find the perfect business match.", categories.length, country.regions.length, country.regionTerm.plural.toLowerCase(), country.name)}</>
                   )}
                 </p>
                 
@@ -138,7 +136,7 @@ export default function Categories() {
         <div className="container mx-auto px-4 py-8 relative z-10">
           <Card className="bg-white border border-[#E7E9EE] rounded-[20px] mb-8">
             <CardContent className="p-8">
-              <div className="flex items-center space-x-3 mb-6">
+              <div className="flex items-center space-x-3 rtl:space-x-reverse mb-6">
                 <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
                   <Grid3x3 className="w-5 h-5 text-white" />
                 </div>
@@ -147,17 +145,17 @@ export default function Categories() {
               
               {/* Search Bar */}
               <div className="relative mb-6">
-                <Grid3x3 className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Grid3x3 className="absolute start-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <Input
                   placeholder="Search categories..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="ps-12 h-12 border-gray-200 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
 
               <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
-                <span>Showing {filteredCategories.length} of {allCategories.length} categories</span>
+                <span>{tj("Showing {0} of {1} categories", filteredCategories.length, allCategories.length)}</span>
               </div>
             </CardContent>
           </Card>
@@ -177,7 +175,7 @@ export default function Categories() {
                       <h4 className="font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors line-clamp-2">
                         {category.name}
                       </h4>
-                      <Building2 className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors flex-shrink-0 ml-2" />
+                      <Building2 className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors flex-shrink-0 ms-2" />
                     </div>
                     
                     <div className="space-y-2">

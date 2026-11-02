@@ -319,10 +319,10 @@ const ContextualUIHints = ({
             {/* Pointer/Arrow */}
             <div 
               className={`absolute w-0 h-0 ${
-                hint.position === 'top' ? 'border-l-4 border-r-4 border-t-4 border-transparent border-t-current bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full' :
-                hint.position === 'bottom' ? 'border-l-4 border-r-4 border-b-4 border-transparent border-b-current top-0 left-1/2 transform -translate-x-1/2 -translate-y-full' :
-                hint.position === 'left' ? 'border-t-4 border-b-4 border-l-4 border-transparent border-l-current right-0 top-1/2 transform translate-x-full -translate-y-1/2' :
-                'border-t-4 border-b-4 border-r-4 border-transparent border-r-current left-0 top-1/2 transform -translate-x-full -translate-y-1/2'
+                hint.position === 'top' ? 'border-s-4 border-e-4 border-t-4 border-transparent border-t-current bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full' :
+                hint.position === 'bottom' ? 'border-s-4 border-e-4 border-b-4 border-transparent border-b-current top-0 left-1/2 transform -translate-x-1/2 -translate-y-full' :
+                hint.position === 'left' ? 'border-t-4 border-b-4 border-s-4 border-transparent border-s-current end-0 top-1/2 transform translate-x-full -translate-y-1/2' :
+                'border-t-4 border-b-4 border-e-4 border-transparent border-e-current start-0 top-1/2 transform -translate-x-full -translate-y-1/2'
               }`}
               style={{ 
                 color: hint.type === 'warning' ? '#F5C2C4' : '#CFE8D8' 

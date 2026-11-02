@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { RotateCw, ZoomIn, ZoomOut, Move, Crop } from 'lucide-react';
+import { tj } from "@/i18n-jsx/tj";
 
 interface ImageCropDialogProps {
   isOpen: boolean;
@@ -204,9 +205,7 @@ export default function ImageCropDialog({ isOpen, onClose, imageUrl, onSave }: I
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
-                <ZoomIn className="h-4 w-4" />
-                Zoom: {scale[0].toFixed(1)}x
-              </label>
+                <ZoomIn className="h-4 w-4" />{tj("Zoom: {0}x", scale[0].toFixed(1))}</label>
               <Slider
                 value={scale}
                 onValueChange={setScale}
@@ -218,7 +217,7 @@ export default function ImageCropDialog({ isOpen, onClose, imageUrl, onSave }: I
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Rotation: {rotation}°</label>
+              <label className="text-sm font-medium">{tj("Rotation: {0}°", rotation)}</label>
               <Slider
                 value={[rotation]}
                 onValueChange={(value) => setRotation(value[0])}

@@ -11,6 +11,8 @@ import { ArrowLeft, Check, Crown, Star, Building, AlertCircle, CreditCard } from
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import SEO from '@/components/seo';
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 // Stripe configuration - using hosted checkout as primary method due to CDN issues
 const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
@@ -108,7 +110,7 @@ const CheckoutForm = ({ plan, isYearly, clientSecret }: { plan: SubscriptionPlan
             Processing...
           </div>
         ) : (
-          `Pay ${isYearly ? plan.yearlyPrice : plan.price} ${plan.currency}${isYearly ? '/month (billed yearly)' : '/month'}`
+          tx("Pay {0} {1}{2}", isYearly ? plan.yearlyPrice : plan.price, plan.currency, isYearly ? '/month (billed yearly)' : '/month')
         )}
       </Button>
     </form>
@@ -355,8 +357,8 @@ export default function Subscribe() {
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A] py-10 md:py-16">
       <SEO 
-        title={`Subscribe to ${plan.displayName} Plan - PakistanYP`}
-        description={`Subscribe to ${plan.displayName} plan for ${isYearly ? plan.yearlyPrice : plan.price} PKR per ${isYearly ? 'month (billed yearly)' : 'month'}`}
+        title={tx("Subscribe to {0} Plan - PakistanYP", plan.displayName)}
+        description={tx("Subscribe to {0} plan for {1} PKR per {2}", plan.displayName, isYearly ? plan.yearlyPrice : plan.price, isYearly ? 'month (billed yearly)' : 'month')}
       />
       
       <div className="yp-wrap max-w-[1000px]">
@@ -367,7 +369,7 @@ export default function Subscribe() {
             size="sm" 
             onClick={() => setLocation("/add-business-enhanced")}
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4 me-2" />
             Back
           </Button>
           <div>
@@ -399,15 +401,11 @@ export default function Subscribe() {
                   <span className="text-4xl font-bold tracking-[-0.04em]">
                     {isYearly ? plan.yearlyPrice : plan.price} {plan.currency}
                   </span>
-                  <span className="text-[#5B6475]">
-                    /month{isYearly ? ' (billed yearly)' : ''}
-                  </span>
+                  <span className="text-[#5B6475]">{tj("/month{0}", isYearly ? ' (billed yearly)' : '')}</span>
                 </div>
                 
                 {isYearly && (
-                  <div className="yp-tag yp-tag-green font-medium">
-                    Save {Math.round(((plan.price * 12 - plan.yearlyPrice * 12) / (plan.price * 12)) * 100)}% annually!
-                  </div>
+                  <div className="yp-tag yp-tag-green font-medium">{tj("Save {0}% annually!", Math.round(((plan.price * 12 - plan.yearlyPrice * 12) / (plan.price * 12)) * 100))}</div>
                 )}
 
                 <div className="space-y-3 border-t border-[#EEF0F4] pt-5">
@@ -420,7 +418,7 @@ export default function Subscribe() {
                       </li>
                     ))}
                     {plan.features.length > 5 && (
-                      <li className="text-[#5B6475] pl-6">+ {plan.features.length - 5} more features</li>
+                      <li className="text-[#5B6475] ps-6">{tj("+ {0} more features", plan.features.length - 5)}</li>
                     )}
                   </ul>
                 </div>

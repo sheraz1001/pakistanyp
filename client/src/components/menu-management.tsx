@@ -32,6 +32,7 @@ import {
   Monitor,
   Smartphone
 } from 'lucide-react';
+import { tj } from "@/i18n-jsx/tj";
 
 interface Menu {
   id: number;
@@ -228,7 +229,7 @@ export default function MenuManagement() {
         <Dialog open={isMenuDialogOpen} onOpenChange={setIsMenuDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => setEditingMenu(null)}>
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 me-2" />
               Create Menu
             </Button>
           </DialogTrigger>
@@ -276,7 +277,7 @@ export default function MenuManagement() {
                     min="0"
                   />
                 </div>
-                <div className="flex items-center space-x-2 pt-8">
+                <div className="flex items-center space-x-2 rtl:space-x-reverse pt-8">
                   <Switch
                     id="isActive"
                     name="isActive"
@@ -308,7 +309,7 @@ export default function MenuManagement() {
               <Card key={menu.id} className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 rtl:space-x-reverse">
                       <div className="p-2 rounded-lg bg-primary/10">
                         {menu.location === 'header' ? (
                           <Navigation className="w-5 h-5 text-primary" />
@@ -325,20 +326,20 @@ export default function MenuManagement() {
                             {menu.location.charAt(0).toUpperCase() + menu.location.slice(1)}
                           </Badge>
                           {menu.isActive ? (
-                            <Badge variant="outline" className="ml-2">
-                              <Eye className="w-3 h-3 mr-1" />
+                            <Badge variant="outline" className="ms-2">
+                              <Eye className="w-3 h-3 me-1" />
                               Active
                             </Badge>
                           ) : (
-                            <Badge variant="secondary" className="ml-2">
-                              <EyeOff className="w-3 h-3 mr-1" />
+                            <Badge variant="secondary" className="ms-2">
+                              <EyeOff className="w-3 h-3 me-1" />
                               Inactive
                             </Badge>
                           )}
                         </CardDescription>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <Button
                         variant="outline"
                         size="sm"
@@ -347,7 +348,7 @@ export default function MenuManagement() {
                           setActiveTab('items');
                         }}
                       >
-                        <Edit2 className="w-4 h-4 mr-2" />
+                        <Edit2 className="w-4 h-4 me-2" />
                         Manage Items
                       </Button>
                       <Button
@@ -381,9 +382,7 @@ export default function MenuManagement() {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-xl font-semibold">
-                    {menuWithItems?.name} Items
-                  </h3>
+                  <h3 className="text-xl font-semibold">{tj("{0} Items", menuWithItems?.name)}</h3>
                   <p className="text-muted-foreground">
                     Manage navigation links and structure
                   </p>
@@ -391,7 +390,7 @@ export default function MenuManagement() {
                 <Dialog open={isItemDialogOpen} onOpenChange={setIsItemDialogOpen}>
                   <DialogTrigger asChild>
                     <Button onClick={() => setEditingMenuItem(null)}>
-                      <Plus className="w-4 h-4 mr-2" />
+                      <Plus className="w-4 h-4 me-2" />
                       Add Menu Item
                     </Button>
                   </DialogTrigger>
@@ -480,7 +479,7 @@ export default function MenuManagement() {
                             placeholder="custom-class"
                           />
                         </div>
-                        <div className="flex items-center space-x-2 pt-8">
+                        <div className="flex items-center space-x-2 rtl:space-x-reverse pt-8">
                           <Switch
                             id="isVisible"
                             name="isVisible"
@@ -516,7 +515,7 @@ export default function MenuManagement() {
                       {menuWithItems?.items.map((item: MenuItem) => (
                         <TableRow key={item.id}>
                           <TableCell className="font-medium">
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
                               {item.icon && (
                                 <span className="text-muted-foreground">
                                   {/* Icon placeholder */}
@@ -526,7 +525,7 @@ export default function MenuManagement() {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center space-x-1">
+                            <div className="flex items-center space-x-1 rtl:space-x-reverse">
                               {item.linkType === 'external' && (
                                 <ExternalLink className="w-3 h-3 text-muted-foreground" />
                               )}
@@ -544,18 +543,18 @@ export default function MenuManagement() {
                           <TableCell>
                             {item.isVisible ? (
                               <Badge variant="outline">
-                                <Eye className="w-3 h-3 mr-1" />
+                                <Eye className="w-3 h-3 me-1" />
                                 Visible
                               </Badge>
                             ) : (
                               <Badge variant="secondary">
-                                <EyeOff className="w-3 h-3 mr-1" />
+                                <EyeOff className="w-3 h-3 me-1" />
                                 Hidden
                               </Badge>
                             )}
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -599,7 +598,7 @@ export default function MenuManagement() {
         <TabsContent value="preview" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Monitor className="w-5 h-5" />
                 <span>Live Menu Preview</span>
               </CardTitle>
@@ -611,7 +610,7 @@ export default function MenuManagement() {
               <div className="space-y-6">
                 {menus?.filter((menu: Menu) => menu.isActive).map((menu: Menu) => (
                   <div key={menu.id} className="border rounded-lg p-4">
-                    <h4 className="font-semibold mb-3 flex items-center space-x-2">
+                    <h4 className="font-semibold mb-3 flex items-center space-x-2 rtl:space-x-reverse">
                       <Badge variant="outline">{menu.location}</Badge>
                       <span>{menu.name}</span>
                     </h4>

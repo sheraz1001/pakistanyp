@@ -15,6 +15,8 @@ import { Helmet } from "@/lib/helmet-compat";
 import { country, localize } from "@shared/country";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface EventCategory {
   id: number;
@@ -147,8 +149,8 @@ export default function Events() {
   return (
     <>
       <Helmet>
-        <title>{`${country.adjective} Events Calendar | Concerts, Sports, Festivals & More`}</title>
-        <meta name="description" content={`Discover upcoming events across ${country.name}. Browse concerts, sports, festivals, exhibitions, and cultural events. Book tickets now!`} />
+        <title>{tx("{0} Events Calendar | Concerts, Sports, Festivals & More", country.adjective)}</title>
+        <meta name="description" content={tx("Discover upcoming events across {0}. Browse concerts, sports, festivals, exhibitions, and cultural events. Book tickets now!", country.name)} />
       </Helmet>
 
       <div className="min-h-screen bg-[#FAF8F3]">
@@ -160,7 +162,7 @@ export default function Events() {
               <div className="max-w-[680px]">
                 <div className="yp-label">{localize("PakistanYP Events")}</div>
                 <h1 className="mt-2.5 mb-0 text-[clamp(40px,5vw,64px)] font-bold leading-[1.02] tracking-[-0.045em] text-[#0A0A0A]" data-testid="heading-events-hero">
-                  {`Discover ${country.adjective} Events`}
+                  {tx("Discover {0} Events", country.adjective)}
                 </h1>
                 <p className="yp-lead mt-4 mb-0" data-testid="text-events-subtitle">
                   From world-class concerts to cultural festivals - find your next experience
@@ -169,7 +171,7 @@ export default function Events() {
 
               {/* Search Bar */}
               <div className="relative w-full sm:w-[360px]">
-                <CalendarIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#5B6475]" aria-hidden="true" />
+                <CalendarIcon className="pointer-events-none absolute start-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#5B6475]" aria-hidden="true" />
                 <input
                   type="text"
                   placeholder="Search events..."
@@ -183,7 +185,7 @@ export default function Events() {
                   <button
                     onClick={() => setSearchQuery("")}
                     aria-label="Clear search"
-                    className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-[#5B6475] hover:bg-[#F1F2F6] hover:text-[#0A0A0A]"
+                    className="absolute end-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-[#5B6475] hover:bg-[#F1F2F6] hover:text-[#0A0A0A]"
                     data-testid="button-clear-search"
                   >
                     <X className="h-4 w-4" />
@@ -246,7 +248,7 @@ export default function Events() {
                     </h4>
                     <div className="space-y-2">
                       {categories.map(category => (
-                        <div key={category.id} className="flex items-center space-x-2">
+                        <div key={category.id} className="flex items-center space-x-2 rtl:space-x-reverse">
                           <Checkbox
                             id={`category-${category.id}`}
                             checked={selectedCategories.includes(category.id)}
@@ -273,10 +275,10 @@ export default function Events() {
                     </h4>
                     <Select value={selectedProvince} onValueChange={setSelectedProvince}>
                       <SelectTrigger data-testid="select-province">
-                        <SelectValue placeholder={`All ${country.regionTerm.plural}`} />
+                        <SelectValue placeholder={tx("All {0}", country.regionTerm.plural)} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">{`All ${country.regionTerm.plural}`}</SelectItem>
+                        <SelectItem value="all">{tx("All {0}", country.regionTerm.plural)}</SelectItem>
                         {provinces.map(province => (
                           <SelectItem key={province.id} value={province.id.toString()}>
                             {province.name}
@@ -300,7 +302,7 @@ export default function Events() {
                       <SelectContent>
                         <SelectItem value="all">All Prices</SelectItem>
                         <SelectItem value="free">Free</SelectItem>
-                        <SelectItem value="under-100">{`Under ${country.currency} 100`}</SelectItem>
+                        <SelectItem value="under-100">{tx("Under {0} 100", country.currency)}</SelectItem>
                         <SelectItem value="premium">Premium</SelectItem>
                       </SelectContent>
                     </Select>
@@ -321,12 +323,10 @@ export default function Events() {
                     className="lg:hidden"
                     data-testid="button-toggle-filters"
                   >
-                    <Filter className="h-4 w-4 mr-2" />
+                    <Filter className="h-4 w-4 me-2" />
                     Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
                   </Button>
-                  <p className="text-sm text-[#5B6475]">
-                    {filteredEvents.length} events found
-                  </p>
+                  <p className="text-sm text-[#5B6475]">{tj("{0} events found", filteredEvents.length)}</p>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -384,7 +384,7 @@ export default function Events() {
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <div className="px-2 pb-4 md:py-4 md:pl-0 md:pr-6 flex flex-col justify-center">
+                            <div className="px-2 pb-4 md:py-4 md:ps-0 md:pe-6 flex flex-col justify-center">
                               <span className="mb-4 flex flex-wrap items-center gap-2.5">
                                 <span className="yp-pill bg-[#E3A82B] text-[#141414]">Featured</span>
                                 {event.category && <span className="yp-label">{event.category.name}</span>}
@@ -484,7 +484,7 @@ function EventCard({ event, viewMode }: { event: Event; viewMode: "grid" | "list
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="min-w-0 flex-1 px-2 py-3 sm:pl-0">
+          <div className="min-w-0 flex-1 px-2 py-3 sm:ps-0">
             {event.category && <span className="yp-label">{event.category.name}</span>}
             <h3 className="mt-1.5 text-xl font-semibold tracking-[-0.02em] mb-3 group-hover:text-[#0B6B2E] transition-colors" data-testid={`text-event-title-${event.slug}`}>
               {event.title}
@@ -530,7 +530,7 @@ function EventCard({ event, viewMode }: { event: Event; viewMode: "grid" | "list
             loading="lazy"
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-3 left-3 min-w-[52px] rounded-xl bg-white px-2 py-1.5 text-center shadow-[0_8px_24px_-12px_rgba(10,10,10,.35)]">
+          <div className="absolute top-3 start-3 min-w-[52px] rounded-xl bg-white px-2 py-1.5 text-center shadow-[0_8px_24px_-12px_rgba(10,10,10,.35)]">
             <div className="text-xl font-bold leading-none text-[#0B6B2E]">
               {format(parseISO(event.startDate), "d")}
             </div>
@@ -646,9 +646,7 @@ function CalendarView({
                   </Link>
                 ))}
                 {dayEvents.length > 2 && (
-                  <div className="text-xs text-[#5B6475]">
-                    +{dayEvents.length - 2} more
-                  </div>
+                  <div className="text-xs text-[#5B6475]">{tj("+{0} more", dayEvents.length - 2)}</div>
                 )}
               </div>
             </div>

@@ -30,6 +30,7 @@ import {
   Crown,
   Activity
 } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
 
 interface DashboardData {
   user: any;
@@ -92,9 +93,7 @@ export function PersonalizedDashboard() {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <LayoutDashboard className="h-8 w-8 text-blue-600" />
-            Welcome back, {user?.firstName || 'Business Owner'}!
-          </h1>
+            <LayoutDashboard className="h-8 w-8 text-blue-600" />{tj("Welcome back, {0}!", user?.firstName || 'Business Owner')}</h1>
           <p className="text-gray-600 mt-2">
             Here's how your business is performing across PakistanYP
           </p>
@@ -114,12 +113,12 @@ export function PersonalizedDashboard() {
           </Select>
           
           <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="h-4 w-4 me-2" />
             Export
           </Button>
           
           <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="h-4 w-4 me-2" />
             Settings
           </Button>
         </div>
@@ -170,7 +169,7 @@ export function PersonalizedDashboard() {
                     <div className="flex gap-1">
                       {business.isPremium && (
                         <Badge className="bg-[#FFF4E0] text-[#B45309] text-xs">
-                          <Crown className="h-3 w-3 mr-1" />
+                          <Crown className="h-3 w-3 me-1" />
                           Premium
                         </Badge>
                       )}
@@ -299,19 +298,19 @@ function QuickActionsCard({ businessCount }: { businessCount: number }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <Button className="w-full justify-start" variant="outline">
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4 me-2" />
           Add New Business
         </Button>
         <Button className="w-full justify-start" variant="outline">
-          <Crown className="h-4 w-4 mr-2" />
+          <Crown className="h-4 w-4 me-2" />
           Upgrade to Premium
         </Button>
         <Button className="w-full justify-start" variant="outline">
-          <Target className="h-4 w-4 mr-2" />
+          <Target className="h-4 w-4 me-2" />
           Boost Performance
         </Button>
         <Button className="w-full justify-start" variant="outline">
-          <Share2 className="h-4 w-4 mr-2" />
+          <Share2 className="h-4 w-4 me-2" />
           Share Business
         </Button>
       </CardContent>

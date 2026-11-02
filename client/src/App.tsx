@@ -309,6 +309,10 @@ function Router() {
   );
 }
 
+import { LanguageGuard } from "@/components/language-switch";
+import { DirectionProvider } from "@radix-ui/react-direction";
+import { langDir } from "@shared/i18n";
+
 function App() {
   const isMobile = useMobile();
 
@@ -356,15 +360,18 @@ function App() {
 
   return (
     <>
+        <DirectionProvider dir={langDir()}>
         <AdminAuthProvider>
           <TooltipProvider>
             {/* <FaviconCacheManager /> Disabled favicon cache */}
+            <LanguageGuard />
             <Router />
             {isMobile && <MobileFloatingSearch />}
             <MobileOfflineIndicator />
             <Toaster />
           </TooltipProvider>
         </AdminAuthProvider>
+        </DirectionProvider>
       </>
   );
 }

@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { country } from "@shared/country";
 import { usePlaces, buildCityTree, shortPlaceName } from "@/lib/places";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 /**
  * Province > City > Locality picker for business forms (all three are required).
@@ -79,7 +81,7 @@ export function LocationPicker({
             onProvinceChange?.(e.target.value);
           }}
         >
-          <option value="">Select {country.regionTerm.singular.toLowerCase()}</option>
+          <option value="">{tj("Select {0}", country.regionTerm.singular.toLowerCase())}</option>
           {provinces.map((p) => <option key={p.id} value={String(p.id)}>{p.name}</option>)}
         </select>
         {err("provinceId")}
@@ -103,7 +105,7 @@ export function LocationPicker({
               set("localityId", "");
             }}
           >
-            <option value="">{!provinceId ? `Select a ${country.regionTerm.singular.toLowerCase()} first` : placesQuery.isLoading ? "Loading cities…" : "Select city"}</option>
+            <option value="">{!provinceId ? tx("Select a {0} first", country.regionTerm.singular.toLowerCase()) : placesQuery.isLoading ? "Loading cities…" : "Select city"}</option>
             {cities.map((c) => <option key={c.id} value={String(c.id)}>{c.name}</option>)}
           </select>
         )}
@@ -113,9 +115,7 @@ export function LocationPicker({
       <div>
         <label htmlFor={`${idPrefix}-locality`} className={label}>Locality *</label>
         {city && city.localities.length === 0 ? (
-          <p id={`${idPrefix}-locality`} className="flex min-h-[44px] items-center rounded-[10px] border border-[#E7E9EE] bg-[#F7F8FA] px-3 text-sm text-[#3A4354]">
-            {city.name} (no separate localities)
-          </p>
+          <p id={`${idPrefix}-locality`} className="flex min-h-[44px] items-center rounded-[10px] border border-[#E7E9EE] bg-[#F7F8FA] px-3 text-sm text-[#3A4354]">{tj("{0} (no separate localities)", city.name)}</p>
         ) : (
           <select
             id={`${idPrefix}-locality`}

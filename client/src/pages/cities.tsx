@@ -9,6 +9,8 @@ import { breadcrumbLd } from "@/lib/structured-data";
 import { usePlaces, buildCityTree, plural, cityUrl } from "@/lib/places";
 import { country, localDir, localLang, regionSlug, regionUrl } from "@shared/country";
 import "./localities.css";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Province { id: number; name: string; arabicName?: string | null }
 
@@ -41,8 +43,8 @@ export default function Cities() {
   return (
     <>
       <PageSEO
-        title={`Cities in Pakistan – Business Directory by City | ${country.brand}`}
-        description={`Browse businesses in ${cityTotal ? cityTotal.toLocaleString() + " " : ""}cities and towns across Pakistan: Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Peshawar, Multan, Quetta and more.`}
+        title={tx("Cities in Pakistan – Business Directory by City | {0}", country.brand)}
+        description={tx("Browse businesses in {0}cities and towns across Pakistan: Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Peshawar, Multan, Quetta and more.", cityTotal ? cityTotal.toLocaleString() + " " : "")}
         canonicalUrl={`${country.origin}/cities`}
         schemaMarkup={breadcrumbLd([{ name: "Home", path: "/" }, { name: "Cities", path: "/cities" }])}
       />
@@ -56,7 +58,7 @@ export default function Cities() {
             <p className="locality-lead">Pick a city to see its businesses and localities.</p>
             {!loading && <div className="locality-meta">
               <span><MapPin aria-hidden="true" />{plural(cityTotal, "city", "cities")}</span>
-              <span><Building2 aria-hidden="true" />{plural(businessTotal, "business", "businesses")} listed</span>
+              <span><Building2 aria-hidden="true" />{tj("{0} listed", plural(businessTotal, "business", "businesses"))}</span>
               <span>{plural(provincesQuery.data?.length || 0, "province & territory", "provinces & territories")}</span>
             </div>}
           </div>
@@ -65,7 +67,7 @@ export default function Cities() {
           <section className="locality-search-panel" aria-labelledby="city-search-heading">
             <div>
               <h2 id="city-search-heading">Cities by province</h2>
-              <p aria-live="polite">{q && !loading ? `${plural(resultCount, "city matches", "cities match")} your search` : "Busiest cities first in each province."}</p>
+              <p aria-live="polite">{q && !loading ? tx("{0} your search", plural(resultCount, "city matches", "cities match")) : "Busiest cities first in each province."}</p>
             </div>
             <div className="locality-search">
               <Search aria-hidden="true" />
@@ -79,7 +81,7 @@ export default function Cities() {
           ) : placesQuery.isError || provincesQuery.isError ? (
             <section className="locality-state" role="alert"><MapPin aria-hidden="true" /><h2>We couldn't load the cities</h2><button type="button" className="locality-button" onClick={() => { void placesQuery.refetch(); void provincesQuery.refetch(); }}>Try again</button></section>
           ) : groups.length === 0 ? (
-            <section className="locality-state"><Search aria-hidden="true" /><h2>No matching cities</h2><p>{`We couldn't find a city matching "${search}".`}</p><button type="button" className="locality-button" onClick={() => setSearch("")}>Clear search</button></section>
+            <section className="locality-state"><Search aria-hidden="true" /><h2>No matching cities</h2><p>{tx("We couldn't find a city matching \"{0}\".", search)}</p><button type="button" className="locality-button" onClick={() => setSearch("")}>Clear search</button></section>
           ) : (
             <div className="locality-groups">
               {groups.map((g) => (

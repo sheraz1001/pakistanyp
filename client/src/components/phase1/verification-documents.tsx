@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "./api";
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 const licence = country.licenceAuthority;
 
@@ -46,13 +47,13 @@ export function VerificationDocuments({ businessId, editable }: { businessId: nu
   return (
     <div className="rounded-[14px] border border-[#E7E9EE] bg-white p-4 space-y-2">
       <div className="font-medium flex items-center gap-2"><FileText className="h-4 w-4" /> Documents</div>
-      {docs.length === 0 ? <p className="text-[#4B5565]">{`Upload a copy of your ${licence} so our team can check it.`}</p> : (
+      {docs.length === 0 ? <p className="text-[#4B5565]">{tx("Upload a copy of your {0} so our team can check it.", licence)}</p> : (
         <ul className="divide-y divide-[#EEF0F4]">
           {docs.map((d) => (
             <li key={d.id} className="py-1.5 flex items-center gap-2">
               <span className="flex-1 truncate">{d.file_name} <span className="text-[#5B6475]">· {TYPES.find((t) => t.value === d.doc_type)?.label || d.doc_type}</span></span>
-              <a href={d.url} target="_blank" rel="noopener noreferrer" className="grid h-9 w-9 place-items-center rounded-[10px] text-[#3A4354] hover:bg-[#F1F2F6]" title="View" aria-label={`View ${d.file_name}`}><Eye className="h-4 w-4" /></a>
-              {editable && <button onClick={() => remove.mutate(d.id)} className="grid h-9 w-9 place-items-center rounded-[10px] text-[#D71920] hover:bg-[#FDECEC]" title="Remove" aria-label={`Remove ${d.file_name}`}><Trash2 className="h-4 w-4" /></button>}
+              <a href={d.url} target="_blank" rel="noopener noreferrer" className="grid h-9 w-9 place-items-center rounded-[10px] text-[#3A4354] hover:bg-[#F1F2F6]" title="View" aria-label={tx("View {0}", d.file_name)}><Eye className="h-4 w-4" /></a>
+              {editable && <button onClick={() => remove.mutate(d.id)} className="grid h-9 w-9 place-items-center rounded-[10px] text-[#D71920] hover:bg-[#FDECEC]" title="Remove" aria-label={tx("Remove {0}", d.file_name)}><Trash2 className="h-4 w-4" /></button>}
             </li>
           ))}
         </ul>
@@ -65,7 +66,7 @@ export function VerificationDocuments({ businessId, editable }: { businessId: nu
           <input ref={input} type="file" accept="application/pdf,image/jpeg,image/png,image/webp" className="hidden"
             onChange={(e) => { const f = e.target.files?.[0]; if (f) upload.mutate(f); }} />
           <Button size="sm" variant="outline" disabled={upload.isPending} onClick={() => input.current?.click()}>
-            <Upload className="h-4 w-4 mr-1" />{upload.isPending ? "Uploading…" : "Upload file"}
+            <Upload className="h-4 w-4 me-1" />{upload.isPending ? "Uploading…" : "Upload file"}
           </Button>
           <span className="text-xs text-[#5B6475]">PDF, JPG or PNG · max 10 MB</span>
         </div>

@@ -32,6 +32,7 @@ import {
   Globe,
   Users
 } from "lucide-react";
+import { t as tx } from "@shared/i18n";
 
 export default function AIRecommendationsPage() {
   const [, setLocation] = useLocation();
@@ -103,20 +104,20 @@ export default function AIRecommendationsPage() {
                   AI Business <span className="text-[#0B6B2E]">Recommendations</span>
                 </h1>
                 <p className="yp-lead mb-8 max-w-3xl mx-auto">
-                  {`Discover the perfect businesses for your needs with our intelligent AI-powered recommendation engine. Smart matching technology for the ${country.adjective} market.`}
+                  {tx("Discover the perfect businesses for your needs with our intelligent AI-powered recommendation engine. Smart matching technology for the {0} market.", country.adjective)}
                 </p>
                 
                 <div className="flex flex-wrap justify-center gap-4 mb-8">
                   <Badge variant="secondary" className="bg-white text-[#05501F] border border-[#CFE8D8] px-4 py-2">
-                    <Sparkles className="w-4 h-4 mr-2" />
+                    <Sparkles className="w-4 h-4 me-2" />
                     AI-Powered
                   </Badge>
                   <Badge variant="secondary" className="bg-white text-[#05501F] border border-[#CFE8D8] px-4 py-2">
-                    <Target className="w-4 h-4 mr-2" />
+                    <Target className="w-4 h-4 me-2" />
                     Smart Matching
                   </Badge>
                   <Badge variant="secondary" className="bg-white text-[#05501F] border border-[#CFE8D8] px-4 py-2">
-                    <Zap className="w-4 h-4 mr-2" />
+                    <Zap className="w-4 h-4 me-2" />
                     Instant Results
                   </Badge>
                 </div>
@@ -215,7 +216,7 @@ export default function AIRecommendationsPage() {
                         onClick={() => handleQuickSearch(term)}
                         className="text-xs hover:bg-blue-50 hover:border-blue-300"
                       >
-                        <Search className="h-3 w-3 mr-1" />
+                        <Search className="h-3 w-3 me-1" />
                         {term}
                       </Button>
                     ))}
@@ -239,7 +240,7 @@ export default function AIRecommendationsPage() {
                       Our AI recommendation service is currently being upgraded. Meanwhile, you can still explore businesses using our advanced search features.
                     </p>
                     <Button onClick={() => setLocation('/search')} className="bg-blue-600 hover:bg-blue-700">
-                      <Search className="h-4 w-4 mr-2" />
+                      <Search className="h-4 w-4 me-2" />
                       Browse All Businesses
                     </Button>
                   </div>
@@ -286,7 +287,7 @@ export default function AIRecommendationsPage() {
                   
                   <div className="bg-white p-4 rounded-lg border border-[#E7E9EE]">
                     <p className="text-sm text-blue-800 leading-relaxed">
-                      <Sparkles className="h-4 w-4 inline mr-1" />
+                      <Sparkles className="h-4 w-4 inline me-1" />
                       Our AI considers over 20 factors including location, ratings, services, and user preferences to provide personalized recommendations.
                     </p>
                   </div>

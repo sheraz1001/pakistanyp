@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Clock, Calendar, Eye, Share2, Bookmark, Tag, ChevronUp, Copy, Facebook, Twitter, Linkedin } from "lucide-react";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { tj } from "@/i18n-jsx/tj";
 
 interface BlogPost {
   id: number;
@@ -94,7 +96,7 @@ const TableOfContents = ({ content }: { content: string }) => {
           <button
             key={heading.id}
             onClick={() => scrollToHeading(heading.id)}
-            className={`block w-full text-left text-xs py-1.5 px-2 rounded transition-colors ${
+            className={`block w-full text-start text-xs py-1.5 px-2 rounded transition-colors ${
               activeId === heading.id 
                 ? 'bg-[#E8F4EC] text-[#05501F]' 
                 : 'text-gray-600 hover:bg-gray-100'
@@ -116,7 +118,7 @@ const ArticleStats = ({ post }: { post: BlogPost }) => {
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs">
           <span className="text-gray-600">Reading Time</span>
-          <span className="font-medium">{post.readTime || 5} min</span>
+          <span className="font-medium">{tj("{0} min", post.readTime || 5)}</span>
         </div>
         <div className="flex items-center justify-between text-xs">
           <span className="text-gray-600">Views</span>
@@ -124,11 +126,11 @@ const ArticleStats = ({ post }: { post: BlogPost }) => {
         </div>
         <div className="flex items-center justify-between text-xs">
           <span className="text-gray-600">Published</span>
-          <span className="font-medium">{new Date(post.publishedAt).toLocaleDateString()}</span>
+          <span className="font-medium">{new Date(post.publishedAt).toLocaleDateString(dateLocale())}</span>
         </div>
         <div className="flex items-center justify-between text-xs">
           <span className="text-gray-600">Updated</span>
-          <span className="font-medium">{new Date(post.updatedAt).toLocaleDateString()}</span>
+          <span className="font-medium">{new Date(post.updatedAt).toLocaleDateString(dateLocale())}</span>
         </div>
       </div>
     </Card>
@@ -348,7 +350,7 @@ export default function StandaloneBlogPost({ post, onBack }: StandaloneBlogPostP
                   
                   <div className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                    {new Date(post.publishedAt).toLocaleDateString(dateLocale('en-US'), {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
@@ -356,14 +358,10 @@ export default function StandaloneBlogPost({ post, onBack }: StandaloneBlogPostP
                   </div>
                   
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {post.readTime || 5} min read
-                  </div>
+                    <Clock className="w-4 h-4" />{tj("{0} min read", post.readTime || 5)}</div>
                   
                   <div className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
-                    {post.views || 0} views
-                  </div>
+                    <Eye className="w-4 h-4" />{tj("{0} views", post.views || 0)}</div>
                 </div>
               </header>
 
@@ -378,7 +376,7 @@ export default function StandaloneBlogPost({ post, onBack }: StandaloneBlogPostP
                 <div className="mt-8 pt-6 border-t">
                   <div className="flex items-center gap-2 flex-wrap">
                     <Tag className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600 mr-2">Tags:</span>
+                    <span className="text-sm text-gray-600 me-2">Tags:</span>
                     {post.tags.map((tag, index) => (
                       <Badge key={index} variant="outline" className="text-xs">
                         {tag}
@@ -402,7 +400,7 @@ export default function StandaloneBlogPost({ post, onBack }: StandaloneBlogPostP
       {showScrollTop && (
         <Button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 rounded-full w-12 h-12 p-0 bg-[#0B6B2E] hover:bg-[#05501F] shadow-lg"
+          className="fixed bottom-8 end-8 z-50 rounded-full w-12 h-12 p-0 bg-[#0B6B2E] hover:bg-[#05501F] shadow-lg"
         >
           <ChevronUp className="w-5 h-5" />
         </Button>

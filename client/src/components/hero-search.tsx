@@ -78,7 +78,7 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
   return (
     <section className="directory-hero relative overflow-hidden border-b border-[#EEECE6] bg-white text-[#0A0A0A]">
       {/* Faint geometric pattern */}
-      <svg aria-hidden="true" width="100%" height="100%" className="pointer-events-none absolute left-0 top-0 opacity-[.07]">
+      <svg aria-hidden="true" width="100%" height="100%" className="pointer-events-none absolute start-0 top-0 opacity-[.07]">
         <defs>
           <pattern id="yp-hero-geo" width="72" height="72" patternUnits="userSpaceOnUse">
             <rect x="22" y="22" width="28" height="28" fill="none" stroke="#0B6B2E" strokeWidth="1" />
@@ -90,11 +90,11 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
       </svg>
       {/* Red hoist strip */}
       {(
-        <div aria-hidden="true" className="absolute bottom-0 left-0 top-0 w-[6px] sm:w-[10px]" style={{ background: country.flagStripe[0].color }} />
+        <div aria-hidden="true" className="absolute bottom-0 start-0 top-0 w-[6px] sm:w-[10px]" style={{ background: country.flagStripe[0].color }} />
       )}
 
       <div className="yp-wrap relative z-20 flex flex-col items-center gap-7 pb-12 pt-16 text-center md:pb-16 md:pt-24">
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#CFE8D8] bg-[#F2F9F4] py-1.5 pl-1.5 pr-3.5 text-[13px] font-medium text-[#0A0A0A]">
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#CFE8D8] bg-[#F2F9F4] py-1.5 ps-1.5 pe-3.5 text-[13px] font-medium text-[#0A0A0A]">
           <span className="rounded-full bg-[#E3A82B] px-2.5 py-[3px] text-xs font-semibold text-[#141414]">New</span>
           Verified business badges are live
         </span>
@@ -111,7 +111,7 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
         <form
           role="search"
           onSubmit={handleSubmit}
-          className="relative flex w-full max-w-[900px] flex-wrap gap-2 rounded-[22px] border border-[#DDE1E8] bg-white p-2 text-left shadow-[0_30px_70px_-34px_rgba(0,115,47,.45)]"
+          className="relative flex w-full max-w-[900px] flex-wrap gap-2 rounded-[22px] border border-[#DDE1E8] bg-white p-2 text-start shadow-[0_30px_70px_-34px_rgba(0,115,47,.45)]"
         >
           <div className="relative flex min-h-[58px] flex-[2_1_280px] items-center gap-2.5 rounded-[14px] bg-[#F5F5F4] px-3.5">
             <Search className="h-5 w-5 flex-shrink-0 text-[#5B6475]" aria-hidden="true" />
@@ -128,7 +128,7 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
             />
 
             {showSuggestions && (
-              <div className="absolute left-0 right-0 top-full z-50 mt-2">
+              <div className="absolute start-0 end-0 top-full z-50 mt-2">
                 <SmartSearchSuggestions
                   query={query}
                   onSuggestionClick={handleSuggestionClick}
@@ -167,7 +167,7 @@ export default function HeroSearch({ onSearch }: HeroSearchProps) {
 
         {/* Popular searches */}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="mr-1 text-sm text-[#5B6475]">Popular:</span>
+          <span className="me-1 text-sm text-[#5B6475]">Popular:</span>
           {popularSearches.map((term) => (
             <a
               key={term}

@@ -70,6 +70,7 @@ import {
   ArrowDown,
   Minus
 } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
 
 interface BusinessGrowthWizardProps {
   businessId: number;
@@ -254,7 +255,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
           onClick={() => setComparisonMode(!comparisonMode)}
           className={comparisonMode ? "bg-blue-100" : ""}
         >
-          <Layers className="w-4 h-4 mr-2" />
+          <Layers className="w-4 h-4 me-2" />
           Compare
         </Button>
       </div>
@@ -266,27 +267,27 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
           onClick={() => setAutoRefresh(!autoRefresh)}
           className={autoRefresh ? "bg-green-100" : ""}
         >
-          {autoRefresh ? <Pause className="w-4 h-4 mr-2" /> : <Play className="w-4 h-4 mr-2" />}
+          {autoRefresh ? <Pause className="w-4 h-4 me-2" /> : <Play className="w-4 h-4 me-2" />}
           Auto Refresh
         </Button>
 
         <Button variant="outline" size="sm" onClick={() => refetchMetrics()}>
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <RefreshCw className="w-4 h-4 me-2" />
           Refresh
         </Button>
 
         <Button variant="outline" size="sm" onClick={() => setIsFullscreen(!isFullscreen)}>
-          <Maximize2 className="w-4 h-4 mr-2" />
+          <Maximize2 className="w-4 h-4 me-2" />
           {isFullscreen ? 'Exit' : 'Fullscreen'}
         </Button>
 
         <Button variant="outline" size="sm">
-          <Download className="w-4 h-4 mr-2" />
+          <Download className="w-4 h-4 me-2" />
           Export
         </Button>
 
         <Button variant="outline" size="sm">
-          <Share2 className="w-4 h-4 mr-2" />
+          <Share2 className="w-4 h-4 me-2" />
           Share
         </Button>
       </div>
@@ -304,15 +305,15 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">PKR {summary.totalRevenue?.toLocaleString() || '185K'}</p>
+                <p className="text-2xl font-bold text-green-600">{tj("PKR {0}", summary.totalRevenue?.toLocaleString() || '185K')}</p>
                 <p className="text-xs text-gray-500 flex items-center">
-                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <TrendingUp className="w-3 h-3 me-1" />
                   +12% from last month
                 </p>
               </div>
               <DollarSign className="w-8 h-8 text-green-600" />
             </div>
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-[#0B6B2E]"></div>
+            <div className="absolute bottom-0 start-0 w-full h-1 bg-[#0B6B2E]"></div>
           </CardContent>
         </Card>
 
@@ -323,13 +324,13 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                 <p className="text-sm font-medium text-gray-600">Total Customers</p>
                 <p className="text-2xl font-bold text-blue-600">{summary.totalCustomers?.toLocaleString() || '203'}</p>
                 <p className="text-xs text-gray-500 flex items-center">
-                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <TrendingUp className="w-3 h-3 me-1" />
                   +8% from last month
                 </p>
               </div>
               <Users className="w-8 h-8 text-blue-600" />
             </div>
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-[#0B6B2E]"></div>
+            <div className="absolute bottom-0 start-0 w-full h-1 bg-[#0B6B2E]"></div>
           </CardContent>
         </Card>
 
@@ -340,13 +341,13 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                 <p className="text-sm font-medium text-gray-600">Website Views</p>
                 <p className="text-2xl font-bold text-purple-600">{summary.totalViews?.toLocaleString() || '12.5K'}</p>
                 <p className="text-xs text-gray-500 flex items-center">
-                  <TrendingUp className="w-3 h-3 mr-1" />
+                  <TrendingUp className="w-3 h-3 me-1" />
                   +15% from last month
                 </p>
               </div>
               <Eye className="w-8 h-8 text-purple-600" />
             </div>
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-[#0B6B2E]"></div>
+            <div className="absolute bottom-0 start-0 w-full h-1 bg-[#0B6B2E]"></div>
           </CardContent>
         </Card>
 
@@ -357,13 +358,13 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                 <p className="text-sm font-medium text-gray-600">Conversion Rate</p>
                 <p className="text-2xl font-bold text-[#B45309]">{summary.conversionRate || '2.8'}%</p>
                 <p className="text-xs text-gray-500 flex items-center">
-                  <TrendingDown className="w-3 h-3 mr-1" />
+                  <TrendingDown className="w-3 h-3 me-1" />
                   -0.3% from last month
                 </p>
               </div>
               <MousePointer className="w-8 h-8 text-[#B45309]" />
             </div>
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-[#0B6B2E]"></div>
+            <div className="absolute bottom-0 start-0 w-full h-1 bg-[#0B6B2E]"></div>
           </CardContent>
         </Card>
       </div>
@@ -381,7 +382,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                 <BarChart3 className="w-4 h-4 text-white" />
               </div>
               <h4 className="text-sm font-medium">{config.title}</h4>
-              <p className="text-xs text-gray-500 capitalize">{config.type} chart</p>
+              <p className="text-xs text-gray-500 capitalize">{tj("{0} chart", config.type)}</p>
             </CardContent>
           </Card>
         ))}
@@ -396,11 +397,11 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
           </CardTitle>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={() => setIsAddingMetric(true)}>
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 me-2" />
               Add Metric
             </Button>
             <Button variant="outline" size="sm">
-              <Settings className="w-4 h-4 mr-2" />
+              <Settings className="w-4 h-4 me-2" />
               Configure
             </Button>
           </div>
@@ -486,7 +487,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
           <p className="text-sm text-gray-600">Track and manage your business objectives</p>
         </div>
         <Button onClick={() => setIsAddingGoal(true)} className="bg-pk-gold hover:bg-pk-navy">
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4 me-2" />
           Add Goal
         </Button>
       </div>
@@ -532,9 +533,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={goal.progress >= 70 ? "default" : goal.progress >= 40 ? "secondary" : "destructive"}>
-                    {goal.progress}% Complete
-                  </Badge>
+                  <Badge variant={goal.progress >= 70 ? "default" : goal.progress >= 40 ? "secondary" : "destructive"}>{tj("{0}% Complete", goal.progress)}</Badge>
                   <Button variant="ghost" size="sm">
                     <Settings className="w-4 h-4" />
                   </Button>
@@ -654,7 +653,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
           <p className="text-sm text-gray-600">Personalized insights to accelerate your business growth</p>
         </div>
         <Button variant="outline" size="sm">
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <RefreshCw className="w-4 h-4 me-2" />
           Generate New
         </Button>
       </div>
@@ -674,7 +673,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                  index === 2 ? <DollarSign className="w-4 h-4" /> : <Users className="w-4 h-4" />}
               </div>
               <div className="text-sm font-medium">{category}</div>
-              <div className="text-xs text-gray-500">{index + 1} recommendations</div>
+              <div className="text-xs text-gray-500">{tj("{0} recommendations", index + 1)}</div>
             </CardContent>
           </Card>
         ))}
@@ -725,9 +724,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                     <Badge 
                       variant={rec.priority === 'High' ? 'destructive' : rec.priority === 'Medium' ? 'secondary' : 'default'}
                       className="text-xs"
-                    >
-                      {rec.priority} Priority
-                    </Badge>
+                    >{tj("{0} Priority", rec.priority)}</Badge>
                     <Badge variant="outline" className="text-xs">{rec.timeframe}</Badge>
                   </div>
                   
@@ -751,7 +748,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
                 </div>
                 
                 <Button variant="outline" size="sm">
-                  <Flag className="w-4 h-4 mr-1" />
+                  <Flag className="w-4 h-4 me-1" />
                   Implement
                 </Button>
               </div>
@@ -767,7 +764,7 @@ export default function BusinessGrowthVisualizationWizard({ businessId, business
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Business Growth Dashboard</h1>
-          <p className="text-gray-600 mt-1">{businessName} - Analytics & Insights</p>
+          <p className="text-gray-600 mt-1">{tj("{0} - Analytics & Insights", businessName)}</p>
         </div>
         
         <div className="flex gap-2">

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Eye, Code, Wand2, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { tj } from "@/i18n-jsx/tj";
 
 interface FAQItem {
   question: string;
@@ -109,13 +110,13 @@ ${JSON.stringify(schemaMarkup, null, 2)}
     ${faqList.map((faq, index) => `
     <div class="faq-item border border-gray-200 rounded-lg overflow-hidden">
       <button 
-        class="faq-question w-full text-left px-6 py-4 bg-white hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors flex items-center justify-between"
+        class="faq-question w-full text-start px-6 py-4 bg-white hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors flex items-center justify-between"
         onclick="toggleFAQ(${index})"
         aria-expanded="false"
         id="faq-button-${index}"
         aria-controls="faq-answer-${index}"
       >
-        <span class="font-semibold text-gray-900 pr-4">${faq.question}</span>
+        <span class="font-semibold text-gray-900 pe-4">${faq.question}</span>
         <svg 
           class="faq-icon w-5 h-5 text-gray-500 transition-transform duration-200" 
           fill="none" 
@@ -255,11 +256,9 @@ function toggleFAQ(index) {
               
               {faqs.length > 0 && (
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary">
-                    {faqs.length} FAQ{faqs.length !== 1 ? 's' : ''} detected
-                  </Badge>
+                  <Badge variant="secondary">{tj("{0} FAQ{1} detected", faqs.length, faqs.length !== 1 ? 's' : '')}</Badge>
                   <Button size="sm" onClick={copyHTML} variant="outline">
-                    <Copy className="w-4 h-4 mr-2" />
+                    <Copy className="w-4 h-4 me-2" />
                     Copy HTML
                   </Button>
                 </div>
@@ -303,7 +302,7 @@ You can track your order using the tracking number sent to your email.`}
               
               {faqs.length > 0 && (
                 <div className="text-sm text-gray-600">
-                  <p>✓ Detected {faqs.length} FAQ{faqs.length !== 1 ? 's' : ''} from your input</p>
+                  <p>{tj("✓ Detected {0} FAQ{1} from your input", faqs.length, faqs.length !== 1 ? 's' : '')}</p>
                   <p>• Complete HTML with Schema.org markup will be generated</p>
                   <p>• Accordion interaction with smooth animations included</p>
                 </div>
@@ -324,10 +323,10 @@ You can track your order using the tracking number sent to your email.`}
                   {faqs.map((faq, index) => (
                     <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
                       <button
-                        className="w-full text-left px-6 py-4 bg-white hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors flex items-center justify-between"
+                        className="w-full text-start px-6 py-4 bg-white hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors flex items-center justify-between"
                         onClick={() => togglePreviewItem(index)}
                       >
-                        <span className="font-semibold text-gray-900 pr-4">{faq.question}</span>
+                        <span className="font-semibold text-gray-900 pe-4">{faq.question}</span>
                         {expandedItems.has(index) ? (
                           <ChevronUp className="w-5 h-5 text-gray-500" />
                         ) : (
@@ -356,7 +355,7 @@ You can track your order using the tracking number sent to your email.`}
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium">Generated HTML with Schema.org markup:</label>
                     <Button size="sm" onClick={copyHTML}>
-                      <Copy className="w-4 h-4 mr-2" />
+                      <Copy className="w-4 h-4 me-2" />
                       Copy HTML
                     </Button>
                   </div>

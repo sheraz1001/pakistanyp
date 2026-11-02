@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Users, Building } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface ProvincesSelectorProps {
   onProvinceClick: (provinceName: string) => void;
@@ -89,11 +91,11 @@ export default function ProvincesSelector({ onProvinceClick }: ProvincesSelector
                 <div className="h-48 relative">
                   <img 
                     src={provinceImages[province.name] || provinceImages["Karachi"]}
-                    alt={`${province.name} skyline`}
+                    alt={tx("{0} skyline", province.name)}
                     className="w-full h-full object-cover"
                   />
                                     {badgeText && (
-                    <Badge className="absolute top-4 right-4 bg-white text-[#05501F] border-0">
+                    <Badge className="absolute top-4 end-4 bg-white text-[#05501F] border-0">
                       {badgeText}
                     </Badge>
                   )}
@@ -105,7 +107,7 @@ export default function ProvincesSelector({ onProvinceClick }: ProvincesSelector
                   </div>
                   
                   <p className="text-gray-600 mb-4">
-                    {province.description || `Explore businesses across ${province.name}`}
+                    {province.description || tx("Explore businesses across {0}", province.name)}
                   </p>
                   
                   <div className="grid grid-cols-2 gap-2 text-sm mb-4">
@@ -115,30 +117,26 @@ export default function ProvincesSelector({ onProvinceClick }: ProvincesSelector
                       </div>
                     ))}
                     {localities.length > 4 && (
-                      <div className="text-gray-500 text-xs">
-                        +{localities.length - 4} more localities
-                      </div>
+                      <div className="text-gray-500 text-xs">{tj("+{0} more localities", localities.length - 4)}</div>
                     )}
                   </div>
 
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                     {province.area && (
                       <div className="flex items-center">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        <span>{province.area} km²</span>
+                        <MapPin className="w-4 h-4 me-1" />
+                        <span>{tj("{0} km²", province.area)}</span>
                       </div>
                     )}
                     {province.population && (
                       <div className="flex items-center">
-                        <Users className="w-4 h-4 mr-1" />
+                        <Users className="w-4 h-4 me-1" />
                         <span>{province.population.toLocaleString()}</span>
                       </div>
                     )}
                   </div>
                   
-                  <Button variant="outline" className="w-full">
-                    Explore {province.name}
-                  </Button>
+                  <Button variant="outline" className="w-full">{tj("Explore {0}", province.name)}</Button>
                 </CardContent>
               </Card>
             );

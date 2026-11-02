@@ -1,3 +1,4 @@
+import { country } from "@shared/country";
 import fs from "fs";
 import path from "path";
 import { pool } from "./db";
@@ -16,11 +17,13 @@ const ROOT = path.resolve(import.meta.dirname, "..", "content");
 const EDITORIAL_USER = { id: "pakistanyp-editorial", email: "editorial@pakistanyp.com", first: "PakistanYP", last: "Editorial" };
 
 interface Doc { file: string; meta: Record<string, string>; body: string }
+const L2 = country.secondLanguage?.code; // "<name>.<code>.md" = second-language version of "<name>.md"
+const isSecond = (d: Doc) => !!L2 && d.file.endsWith(`.${L2}.md`);
 
 function readDocs(dir: string): Doc[] {
   const full = path.join(ROOT, dir);
   if (!fs.existsSync(full)) return [];
-  return fs.readdirSync(full).filter((f) => f.endsWith(".md")).sort().map((file) => {
+  return fs.readdirSync(full).filter((f) => /^[^.]+\.md$/.test(f) || (L2 && f.endsWith(`.${L2}.md`))).sort().map((file) => {
     const raw = fs.readFileSync(path.join(full, file), "utf8").replace(/\r\n/g, "\n");
     const meta: Record<string, string> = {};
     let body = raw;
@@ -38,6 +41,7 @@ function readDocs(dir: string): Doc[] {
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const inline = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+const idAttr = (s: string) => { const id = slugId(s); return id ? ` id="${id}"` : ""; };
 const slugId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 /** Minimal Markdown to HTML: ## / ### headings, paragraphs, - and 1. lists (one nested level), **bold**. */
@@ -58,8 +62,8 @@ export function markdownToHtml(md: string): string {
     if (!t) { flushPara(); continue; }
     const nested = /^\s{2,}[-*] /.test(line);
     if (nested && list && list.items.length) { list.items[list.items.length - 1].sub.push(t.slice(2).trim()); continue; }
-    if (t.startsWith("### ")) { flushPara(); flushList(); out.push(`<h3 id="${slugId(t.slice(4))}">${inline(t.slice(4))}</h3>`); continue; }
-    if (t.startsWith("## ")) { flushPara(); flushList(); out.push(`<h2 id="${slugId(t.slice(3))}">${inline(t.slice(3))}</h2>`); continue; }
+    if (t.startsWith("### ")) { flushPara(); flushList(); out.push(`<h3${idAttr(t.slice(4))}>${inline(t.slice(4))}</h3>`); continue; }
+    if (t.startsWith("## ")) { flushPara(); flushList(); out.push(`<h2${idAttr(t.slice(3))}>${inline(t.slice(3))}</h2>`); continue; }
     const ul = t.match(/^[-*] (.*)$/);
     const ol = t.match(/^\d+\. (.*)$/);
     if (ul || ol) {
@@ -82,8 +86,9 @@ const date = (s?: string) => { const d = s ? new Date(s) : new Date(); return Nu
 
 export async function publishContent(): Promise<void> {
   try {
-    const news = readDocs("news");
-    const blog = readDocs("blog");
+    const allNews = readDocs("news"), allBlog = readDocs("blog");
+    const news = allNews.filter((d) => !isSecond(d));
+    const blog = allBlog.filter((d) => !isSecond(d));
     if (!news.length && !blog.length) return;
     let added = 0;
 
@@ -126,6 +131,22 @@ export async function publishContent(): Promise<void> {
       added++;
     }
     if (added) console.log(`[content] published ${added} new article(s)`);
+
+    // Second-language versions fill the *_<code> columns once (later edits in the admin panel are kept)
+    let translated = 0;
+    for (const d of [...allNews, ...allBlog].filter(isSecond)) {
+      const news = allNews.includes(d);
+      const base = (news ? allNews : allBlog).find((x) => x.file === d.file.replace(`.${L2}.md`, ".md"));
+      const slug = d.meta.slug || base?.meta.slug || d.file.replace(`.${L2}.md`, "");
+      const table = news ? "news_articles" : "blog_posts";
+      const r = await pool.query(
+        `update ${table} set title_${L2} = $2, ${news ? "summary" : "excerpt"}_${L2} = $3, content_${L2} = $4, meta_title_${L2} = $5,
+           meta_description_${L2} = $6, category_${L2} = $7 where slug = $1 and title_${L2} is null`,
+        [slug, d.meta.title, (news ? d.meta.summary : d.meta.excerpt) || null, markdownToHtml(d.body), d.meta.metaTitle || null, d.meta.metaDescription || null, d.meta.category || null],
+      );
+      translated += r.rowCount || 0;
+    }
+    if (translated) console.log(`[content] ${translated} ${country.secondLanguage?.englishName} version(s) added`);
   } catch (error: any) {
     console.error("[content] publishing failed:", error?.message || error);
   }

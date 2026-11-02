@@ -81,10 +81,83 @@ def transform(text, pairs, colors, place_map={}):
     return text
 
 
-def fill_tokens(text, counts):
+AR_DIGITS = str.maketrans("0123456789,", "٠١٢٣٤٥٦٧٨٩٬")
+
+
+def fill_tokens(text, counts, arabic=False):
     for k, v in counts.items():
-        text = text.replace("{{%s}}" % k, f"{v:,}")
+        n = f"{v:,}"
+        text = text.replace("{{%s}}" % k, n.translate(AR_DIGITS) if arabic else n)
     return text
+
+
+def write_second_language(pack, out):
+    """i18n/ in the pack -> UI dictionary and category/locality names (only for sites with a second language)."""
+    i18n = pack / "i18n"
+    files = sorted(i18n.glob("ui.*.json")) if i18n.exists() else []
+    if files:
+        code = files[0].name.split(".")[1]
+        shutil.copy2(files[0], out / f"shared/countries/dictionary.{code}.json")
+        (out / "shared/countries/dictionary.ts").write_text(
+            "/**\n * UI dictionary for the site's second language (see `secondLanguage` in shared/country.ts).\n"
+            " * Keys are the English source strings, values the translation. Loaded only on second-language pages.\n */\n"
+            f"export const loadDictionary = async (): Promise<Record<string, string>> => (await import(\"./dictionary.{code}.json\")).default as Record<string, string>;\n")
+    cats = json.loads((i18n / next(iter(sorted(x.name for x in i18n.glob("categories.*.json"))), "")).read_text()) if i18n.exists() and list(i18n.glob("categories.*.json")) else {}
+    locs = json.loads((i18n / next(iter(sorted(x.name for x in i18n.glob("districts.*.json"))), "")).read_text()) if i18n.exists() and list(i18n.glob("districts.*.json")) else {}
+    if cats or locs:
+        (out / "shared/countries/translations.ts").write_text(
+            "/**\n * Names of categories and localities in the site's second language, loaded into the database\n"
+            " * by server/catalogSync.ts. CATEGORY_NAMES: slug -> name. LOCALITY_NAMES: \"<City>|<Locality>\" -> name.\n */\n"
+            f"export const CATEGORY_NAMES: Record<string, string> = {json.dumps(cats, ensure_ascii=False, indent=0)};\n"
+            f"export const LOCALITY_NAMES: Record<string, string> = {json.dumps(locs, ensure_ascii=False, indent=0)};\n")
+    print(f"  second language: dictionary {'yes' if files else 'no'}, {len(cats)} category and {len(locs)} locality names")
+
+
+def add_names_to_dictionary(pack, out):
+    """Second-language names of regions, cities, localities, categories and article categories, merged into the
+    UI dictionary: the API keeps English names (pages match on them) and they are translated where shown."""
+    dic = next(iter(sorted((out / "shared/countries").glob("dictionary.*.json"))), None)
+    if not dic:
+        return
+    script = f"""
+import {{ REGIONS }} from "{out}/shared/countries/places.ts";
+import {{ parseCategoryTree }} from "{out}/shared/countries/categories.ts";
+import {{ CATEGORY_NAMES, LOCALITY_NAMES }} from "{out}/shared/countries/translations.ts";
+const m: Record<string, string> = {{}};
+const cityAr: Record<string, string> = {{}};
+for (const r of REGIONS as any[]) {{
+  if (r.nameAr) m[r.name] = r.nameAr;
+  for (const c of r.cities || []) if (!c.locality && c.nameAr) {{ m[c.name] = c.nameAr; cityAr[c.name] = c.nameAr; }}
+}}
+for (const r of REGIONS as any[]) for (const c of r.cities || []) if (c.locality) {{
+  const i = c.name.lastIndexOf(", "); const city = c.name.slice(i + 2), loc = c.name.slice(0, i);
+  const a = LOCALITY_NAMES[`${{city}}|${{loc}}`];
+  if (a && cityAr[city]) {{ m[c.name] = `${{a}}، ${{cityAr[city]}}`; if (!(loc in m)) m[loc] = a; }}
+}}
+for (const row of parseCategoryTree()) if (CATEGORY_NAMES[row.slug]) m[row.name] = CATEGORY_NAMES[row.slug];
+console.log(JSON.stringify(m));
+"""
+    tmp = TEMPLATE / "scripts" / ".kit-names.ts"
+    tmp.write_text(script)
+    try:
+        res = subprocess.run(["npx", "tsx", str(tmp)], cwd=TEMPLATE, capture_output=True, text=True)
+        if res.returncode:
+            sys.exit(res.stderr)
+        names = json.loads(res.stdout.strip().splitlines()[-1])
+    finally:
+        tmp.unlink()
+    # article categories from the content front matter (English file + second-language file)
+    for ar in (pack / "content").rglob("*.*.md"):
+        en = ar.with_name(ar.name.split(".")[0] + ".md")
+        if en.exists():
+            ce = re.search(r"^category:\s*(.+)$", en.read_text(), re.M)
+            ca = re.search(r"^category:\s*(.+)$", ar.read_text(), re.M)
+            if ce and ca:
+                names[ce.group(1).strip()] = ca.group(1).strip()
+    ui = json.loads(dic.read_text())
+    merged = {**names, **ui}  # UI wording wins over a same-named place or category
+    dic.write_text(json.dumps(merged, ensure_ascii=False, sort_keys=True, indent=0))
+    print(f"  dictionary: {len(ui)} UI strings + {len(names)} names")
 
 
 def pack_counts(out):
@@ -171,7 +244,7 @@ def build_images(pack, out, p, content_dir):
     """OG image and article covers (rendered with Playwright from the logo)."""
     covers = []
     for md in sorted(content_dir.glob("*/*.md")):
-        if md.parent.parent.name == "places":
+        if md.parent.parent.name == "places" or md.name.count(".") > 1:
             continue
         fm = re.match(r"---\n(.*?)\n---", md.read_text(), re.S)
         meta = dict(re.findall(r"^(\w+):\s*(.*)$", fm.group(1), re.M)) if fm else {}
@@ -216,7 +289,7 @@ def main():
         shutil.rmtree(e) if e.is_dir() and not e.is_symlink() else e.unlink()
 
     # 2. copy + transform template files
-    files = subprocess.run(["git", "ls-files"], cwd=TEMPLATE, check=True, capture_output=True, text=True).stdout.split("\n")
+    files = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=TEMPLATE, check=True, capture_output=True, text=True).stdout.split("\n")
     files = [f for f in files if f and not any(re.search(s, f) for s in SKIP) and (TEMPLATE / f).exists()]
     for f in files:
         src = TEMPLATE / f
@@ -244,14 +317,16 @@ def main():
     (out / "shared/countries").mkdir(parents=True, exist_ok=True)
     for name in ("places", "categories", "locale"):
         shutil.copy2(pack / f"{name}.ts", out / f"shared/countries/{name}.ts")
+    write_second_language(pack, out)
 
     # 5. content (counts substituted) and root overlays
+    add_names_to_dictionary(pack, out)
     counts = pack_counts(out)
     print(f"  counts: {counts}")
     for src in (pack / "content").rglob("*.md"):
         dst = out / "content" / src.relative_to(pack / "content")
         dst.parent.mkdir(parents=True, exist_ok=True)
-        dst.write_text(fill_tokens(src.read_text(), counts))
+        dst.write_text(fill_tokens(src.read_text(), counts, arabic=src.name.endswith(".ar.md")))
     if (pack / "root").exists():
         shutil.copytree(pack / "root", out, dirs_exist_ok=True)
     if (pack / "public").exists():
@@ -284,14 +359,29 @@ def seed_init(out, url):
     """Load the schema into an empty database, run the catalog sync, dump the reference rows into init.sql."""
     init = out / "server/sql/init.sql"
     sh(["psql", url, "-q", "-v", "ON_ERROR_STOP=1", "-f", str(init)], stdout=subprocess.DEVNULL)
+    langs = out / "scripts/languages.sql"  # second-language columns are part of the reference rows
+    if langs.exists():
+        sh(["psql", url, "-q", "-v", "ON_ERROR_STOP=1", "-f", str(langs)], stdout=subprocess.DEVNULL)
     env = dict(os.environ, DATABASE_URL=url, DATABASE_DRIVER="pg", INDEXNOW_DISABLED="true")
     sh(["npx", "tsx", "scripts/seed.ts"], cwd=out, env=env)
-    dump = subprocess.run(["pg_dump", url, "--data-only", "--inserts", "--no-owner", "--no-privileges",
+    dump = subprocess.run(["pg_dump", url, "--data-only", "--column-inserts", "--no-owner", "--no-privileges",
                            "-t", "public.provinces", "-t", "public.localities", "-t", "public.categories", "-t", "public.catalog_sync_state"],
                           check=True, capture_output=True, text=True).stdout
     rows = [l for l in dump.splitlines(True) if l.startswith(("INSERT INTO", "SELECT pg_catalog.setval"))]
+    # id order per table, so parents (lower ids) come before the rows that reference them
+    def key(l):
+        m = re.match(r"INSERT INTO (\S+) \(.*?\) VALUES \((\d+),", l)
+        return (0, m.group(1), int(m.group(2))) if m else (1, l, 0)
+    tables = []
+    for l in rows:
+        t = l.split(" ")[2] if l.startswith("INSERT") else "~"
+        if t not in tables:
+            tables.append(t)
+    rows = sorted(rows, key=lambda l: (tables.index(l.split(" ")[2] if l.startswith("INSERT") else "~"),) + key(l)[2:])
     # catalog_sync_state is created by the sync itself; init.sql must create it before the rows
     extra = "CREATE TABLE IF NOT EXISTS public.catalog_sync_state (key text PRIMARY KEY, value text NOT NULL);\n"
+    if langs.exists():
+        extra += "\n".join(l for l in langs.read_text().splitlines() if l.startswith("ALTER TABLE")) + "\n"
     init.write_text(init.read_text() + "\n-- Reference data generated by tools/country-kit (regions, cities, localities, categories)\n" + extra + "".join(rows))
     print(f"  init.sql: +{len(rows)} reference rows")
 

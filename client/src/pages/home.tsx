@@ -22,6 +22,8 @@ import VoiceSearch from "@/components/voice-search";
 import CoreWebVitals from "@/components/core-web-vitals";
 import BusinessNewsTicker from "@/components/business-news-ticker";
 import { localLang, localDir, country, localize, regionUrl } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface ProvinceSummary {
   id: number;
@@ -56,7 +58,7 @@ function ProvincesGrid() {
     <section className="yp-wrap pt-16 md:pt-24" aria-labelledby="home-provinces-heading">
       <div className="mb-8">
         <div className="yp-label">Explore</div>
-        <h2 id="home-provinces-heading" className="yp-h2 mt-2 text-[#0A0A0A]">{`Across all ${country.regions.length} ${country.regionTerm.plural.toLowerCase()}`}</h2>
+        <h2 id="home-provinces-heading" className="yp-h2 mt-2 text-[#0A0A0A]">{tx("Across all {0} {1}", country.regions.length, country.regionTerm.plural.toLowerCase())}</h2>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {lead && (
@@ -65,13 +67,13 @@ function ProvincesGrid() {
             className="relative flex min-h-[240px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#E8F4EC] p-7 text-[#0A0A0A] hover:text-[#0A0A0A] sm:col-span-2 lg:col-span-1 lg:row-span-2 lg:min-h-[320px]"
             data-testid={`link-home-province-${provinceSlug(lead.name)}`}
           >
-            <svg width="100%" height="180" viewBox="0 0 400 180" preserveAspectRatio="xMidYMax meet" className="pointer-events-none absolute bottom-0 left-0 opacity-[.22]" aria-hidden="true">
+            <svg width="100%" height="180" viewBox="0 0 400 180" preserveAspectRatio="xMidYMax meet" className="pointer-events-none absolute bottom-0 start-0 opacity-[.22]" aria-hidden="true">
               <path d="M0 180V140h30v-30h20v30h25V90h18v50h22V60l8-30 8 30v80h25v-55h30v55h20v-40h25v40h30V100h20v40h35v-25h25v25h29v40z" fill="#0B6B2E" />
             </svg>
             {arabic(lead) && <span dir={localDir} lang={localLang} className="relative font-arabic text-[22px] text-[#0B6B2E]">{arabic(lead)}</span>}
             <span className="relative">
               <span className="block text-[34px] font-bold tracking-[-0.035em]">{lead.name}</span>
-              <span className="mt-1.5 block text-[15px] text-[#3A4354]">Explore businesses in {lead.name} →</span>
+              <span className="mt-1.5 block text-[15px] text-[#3A4354]">{tj("Explore businesses in {0} →", lead.name)}</span>
             </span>
           </Link>
         )}
@@ -204,8 +206,8 @@ export default function Home() {
           <div className="yp-card flex flex-col gap-[18px] p-6">
             <span className="grid h-12 w-12 place-items-center rounded-[14px] bg-[#FFF4E0] text-[#B45309]" aria-hidden="true"><MapPinned className="h-6 w-6" strokeWidth={1.8} /></span>
             <span>
-              <h3 className="text-[17px] font-semibold text-[#0A0A0A]">{`All ${country.regions.length} ${country.regionTerm.plural.toLowerCase()} covered`}</h3>
-              <p className="mt-1.5 text-sm leading-[1.6] text-[#4B5565]">{`Complete coverage across ${country.regions.slice(0, -1).map((r) => r.name).join(", ")}, and ${country.regions[country.regions.length - 1].name}.`}</p>
+              <h3 className="text-[17px] font-semibold text-[#0A0A0A]">{tx("All {0} {1} covered", country.regions.length, country.regionTerm.plural.toLowerCase())}</h3>
+              <p className="mt-1.5 text-sm leading-[1.6] text-[#4B5565]">{tx("Complete coverage across {0}, and {1}.", country.regions.slice(0, -1).map((r) => r.name).join(", "), country.regions[country.regions.length - 1].name)}</p>
             </span>
           </div>
           <div className="yp-card flex flex-col gap-[18px] p-6">
@@ -222,7 +224,7 @@ export default function Home() {
           <div className="min-w-0 flex-[1_1_420px]">
             <h3 className="yp-h3 text-[#0A0A0A]">{localize("About PakistanYP")}</h3>
             <p className="mt-3 text-[16px] leading-[1.7] text-[#3A4354]">
-              {`${country.brand} is ${country.name}'s most comprehensive business directory, founded with the mission to connect businesses and consumers across all ${country.regions.length} ${country.regionTerm.plural.toLowerCase()}. Our platform features verified business listings, authentic customer reviews, and detailed company information to help you make informed decisions. With expertise in the ${country.adjective} market and commitment to data accuracy, we serve as the trusted bridge between businesses and their customers.`}
+              {tx("{0} is {1}'s most comprehensive business directory, founded with the mission to connect businesses and consumers across all {2} {3}. Our platform features verified business listings, authentic customer reviews, and detailed company information to help you make informed decisions. With expertise in the {4} market and commitment to data accuracy, we serve as the trusted bridge between businesses and their customers.", country.brand, country.name, country.regions.length, country.regionTerm.plural.toLowerCase(), country.adjective)}
             </p>
           </div>
           <div className="flex flex-none gap-8">

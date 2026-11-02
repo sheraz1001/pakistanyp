@@ -93,7 +93,7 @@ export function BusinessCardScannerPage() {
             onClick={() => navigate('/')}
             className="mb-4"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="h-4 w-4 me-2" />
             Back
           </Button>
           
@@ -193,12 +193,12 @@ export function BusinessCardScannerPage() {
         {/* Scanner Component with Tabs */}
         <Tabs defaultValue="interactive" className="w-full mb-8">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="interactive" className="flex items-center space-x-2">
+            <TabsTrigger value="interactive" className="flex items-center space-x-2 rtl:space-x-reverse">
               <Eye className="w-4 h-4" />
               <span>Interactive Scanner</span>
-              <Badge variant="secondary" className="ml-2">New</Badge>
+              <Badge variant="secondary" className="ms-2">New</Badge>
             </TabsTrigger>
-            <TabsTrigger value="classic" className="flex items-center space-x-2">
+            <TabsTrigger value="classic" className="flex items-center space-x-2 rtl:space-x-reverse">
               <Settings className="w-4 h-4" />
               <span>Classic Scanner</span>
             </TabsTrigger>
@@ -207,7 +207,7 @@ export function BusinessCardScannerPage() {
           <TabsContent value="interactive">
             <Card className="mb-4">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+                <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                   <Sparkles className="w-5 h-5 text-blue-500" />
                   <span>Interactive Business Card Scanner</span>
                   <Badge variant="secondary">Advanced</Badge>
@@ -226,7 +226,7 @@ export function BusinessCardScannerPage() {
           <TabsContent value="classic">
             <Card className="mb-4">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
+                <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                   <Scan className="w-5 h-5 text-green-500" />
                   <span>Classic Business Card Scanner</span>
                 </CardTitle>
@@ -326,7 +326,7 @@ export function BusinessCardScannerPage() {
         {/* Call to Action */}
         <Card className="mt-8 bg-white border-[#E7E9EE]">
           <CardHeader>
-            <CardTitle className="text-center flex items-center justify-center space-x-2">
+            <CardTitle className="text-center flex items-center justify-center space-x-2 rtl:space-x-reverse">
               <Sparkles className="w-6 h-6 text-blue-500" />
               <span>Experience the Interactive Scanner</span>
             </CardTitle>
@@ -335,12 +335,12 @@ export function BusinessCardScannerPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">
               <Button
                 onClick={() => navigate('/interactive-scanner-demo')}
                 className="bg-blue-600 hover:bg-blue-700 text-white min-w-48"
               >
-                <Sparkles className="w-4 h-4 mr-2" />
+                <Sparkles className="w-4 h-4 me-2" />
                 Try Interactive Demo
               </Button>
               <Button
@@ -349,7 +349,7 @@ export function BusinessCardScannerPage() {
                 className="min-w-48"
               >
                 Add Your Business
-                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                <ArrowLeft className="w-4 h-4 ms-2 rotate-180" />
               </Button>
             </div>
           </CardContent>

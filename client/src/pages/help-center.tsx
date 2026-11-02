@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Search, Book, MessageCircle, Phone, Mail, ArrowRight, Star } from 'lucide-react';
@@ -7,6 +8,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Link } from 'wouter';
 import { localize } from '@shared/country';
+import { tj } from "@/i18n-jsx/tj";
 
 export default function HelpCenter() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -72,13 +74,13 @@ export default function HelpCenter() {
             
             <div className="w-full max-w-2xl pt-2">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5B6475] w-5 h-5" aria-hidden="true" />
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-[#5B6475] w-5 h-5" aria-hidden="true" />
                 <Input
                   type="text"
                   placeholder="Search for help articles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-14 pl-12 pr-4 text-base rounded-2xl bg-white border-[#DDE1E8]"
+                  className="w-full h-14 ps-12 pe-4 text-base rounded-2xl bg-white border-[#DDE1E8]"
                 />
               </div>
             </div>
@@ -117,9 +119,7 @@ export default function HelpCenter() {
                   <p className="text-[15px] leading-relaxed text-[#4B5565]">
                     {category.description}
                   </p>
-                  <span className="yp-tag yp-tag-green self-start">
-                    {helpArticles.filter((article: any) => article.categoryId === category.id).length} articles
-                  </span>
+                  <span className="yp-tag yp-tag-green self-start">{tj("{0} articles", helpArticles.filter((article: any) => article.categoryId === category.id).length)}</span>
                 </div>
               ))}
             </div>
@@ -138,8 +138,8 @@ export default function HelpCenter() {
                     {article.summary}
                   </p>
                   <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-[#5B6475]">
-                    <span>{article.views} views</span>
-                    <span>Updated {new Date(article.updatedAt).toLocaleDateString()}</span>
+                    <span>{tj("{0} views", article.views)}</span>
+                    <span>{tj("Updated {0}", new Date(article.updatedAt).toLocaleDateString(dateLocale()))}</span>
                   </div>
                 </div>
               ))}

@@ -4,6 +4,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import SEO from '@/components/seo';
 import { country, localize } from '@shared/country';
+import { t as tx } from "@shared/i18n";
 
 export default function About() {
   // Live directory figures (no invented numbers)
@@ -20,7 +21,7 @@ export default function About() {
     {
       icon: Target,
       title: 'Smart Business Discovery',
-      description: `Advanced AI-powered search and recommendations help users find exactly what they need across all ${country.regions.length} ${country.adjective} ${country.regionTerm.plural.toLowerCase()}.`,
+      description: tx("Advanced AI-powered search and recommendations help users find exactly what they need across all {0} {1} {2}.", country.regions.length, country.adjective, country.regionTerm.plural.toLowerCase()),
     },
     {
       icon: Users,
@@ -69,7 +70,7 @@ export default function About() {
             <span className="yp-label !text-[#0B6B2E]">About us</span>
             <h1 className="yp-h1 max-w-4xl">{localize("About PakistanYP")}</h1>
             <p className="yp-lead max-w-3xl">
-              {`${country.name}'s premier business directory platform, connecting entrepreneurs, businesses, and customers across all ${country.regions.length} ${country.regionTerm.plural.toLowerCase()} through innovative technology.`}
+              {tx("{0}'s premier business directory platform, connecting entrepreneurs, businesses, and customers across all {1} {2} through innovative technology.", country.name, country.regions.length, country.regionTerm.plural.toLowerCase())}
             </p>
           </div>
         </section>
@@ -84,7 +85,7 @@ export default function About() {
                 {localize("To empower businesses across Pakistan by providing the most comprehensive, intelligent, and user-friendly business discovery platform.")}
               </p>
               <p className="text-lg leading-relaxed text-[#3A4354]">
-                {`We believe every business deserves the opportunity to be discovered, whether it's a local restaurant or a tech startup ${country.inName}. Our platform bridges the gap between businesses and their potential customers through advanced AI technology and deep local market understanding.`}
+                {tx("We believe every business deserves the opportunity to be discovered, whether it's a local restaurant or a tech startup {0}. Our platform bridges the gap between businesses and their potential customers through advanced AI technology and deep local market understanding.", country.inName)}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">

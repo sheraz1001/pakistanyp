@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { api, fmtDate } from "./api";
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 /** "trade licence" (Pakistan) / "commercial registration (CR)" (Pakistan) and its sentence-case form */
 const licence = country.licenceAuthority;
@@ -14,7 +15,7 @@ const Licence = licence.charAt(0).toUpperCase() + licence.slice(1);
 export function VerifiedBadge({ verified, className = "" }: { verified?: boolean | null; className?: string }) {
   if (!verified) return null;
   return (
-    <span className={`yp-verified ${className}`} title={`${Licence}, email and phone checked by ${country.directoryName}`}>
+    <span className={`yp-verified ${className}`} title={tx("{0}, email and phone checked by {1}", Licence, country.directoryName)}>
       <BadgeCheck className="h-3.5 w-3.5" /> Verified business
     </span>
   );
@@ -30,7 +31,7 @@ export function TrustPanel({ businessId, businessName, ownerId, isClaimed }: { b
   const checks = legacy
     ? [{ ok: true, icon: FileCheck2, label: "Listing details confirmed by our team" }]
     : [
-        { ok: !!t?.isVerified, icon: FileCheck2, label: t?.licenceAuthority ? `${Licence} checked (${t.licenceAuthority})` : `${Licence} checked` },
+        { ok: !!t?.isVerified, icon: FileCheck2, label: t?.licenceAuthority ? tx("{0} checked ({1})", Licence, t.licenceAuthority) : tx("{0} checked", Licence) },
         { ok: !!t?.emailVerified, icon: Mail, label: "Business email confirmed" },
         { ok: !!t?.phoneVerified, icon: Phone, label: "Phone number confirmed" },
       ];
@@ -41,10 +42,10 @@ export function TrustPanel({ businessId, businessName, ownerId, isClaimed }: { b
           <ShieldCheck className="h-6 w-6" aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="text-lg font-semibold tracking-[-0.02em] text-[#0A0A0A]">{t?.isVerified ? `Verified by ${country.directoryName}` : "Not yet verified"}</h2>
+          <h2 className="text-lg font-semibold tracking-[-0.02em] text-[#0A0A0A]">{t?.isVerified ? tx("Verified by {0}", country.directoryName) : "Not yet verified"}</h2>
           <p className="mt-1 text-sm leading-[1.55] text-[#4B5565]">
             {t?.isVerified
-              ? `${t.verifiedAt ? `Checked ${fmtDate(t.verifiedAt)}. ` : ""}Verified businesses confirmed their ${licence} and contact details with our team.`
+              ? tx("{0}Verified businesses confirmed their {1} and contact details with our team.", t.verifiedAt ? `Checked ${fmtDate(t.verifiedAt)}. ` : "", licence)
               : "This listing has not completed our licence and contact checks yet."}
           </p>
           <ul className="mt-4 flex flex-col gap-2 text-sm">

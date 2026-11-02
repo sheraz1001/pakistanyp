@@ -1,3 +1,4 @@
+import { langOfPath } from "@shared/i18n";
 import { country } from "@shared/country";
 import { pool } from "../db";
 import type { Request, Response, NextFunction } from "express";
@@ -116,7 +117,7 @@ const LEGACY_GONE = /^\/(?:af|am|ar|az|be|bg|bn|bs|ca|cs|cy|da|de|el|eo|es|et|eu
 
 export function legacyGone(req: Request, res: Response, next: NextFunction) {
   if (req.method !== "GET" && req.method !== "HEAD") return next();
-  if (!LEGACY_GONE.test(req.path)) return next();
+  if (!LEGACY_GONE.test(req.path) || langOfPath(req.path) !== "en") return next(); // the site's own second language is real
   res.set("X-Robots-Tag", "noindex");
   res.set("Cache-Control", "public, max-age=86400");
   res.status(410).type("html").send("<!doctype html><html><head><title>410 Gone</title><meta name=\"robots\" content=\"noindex\"></head><body><h1>This page no longer exists</h1><p>The translated pages of the old website were removed. Visit <a href=\"https://pakistanyp.com/\">pakistanyp.com</a> for Pakistan business directory.</p></body></html>");

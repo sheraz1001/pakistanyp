@@ -18,6 +18,7 @@ import {
   Camera,
   Gamepad2
 } from 'lucide-react';
+import { tj } from "@/i18n-jsx/tj";
 
 const categoryIcons: { [key: string]: React.ComponentType<{ className?: string }> } = {
   'Restaurants & Food': Utensils,
@@ -77,9 +78,7 @@ export function MobileCategoryGrid({ limit = 8, onCategorySelect }: MobileCatego
                 <p className="text-xs text-gray-600 mb-2 line-clamp-2">
                   {category.description}
                 </p>
-                <Badge variant="secondary" className="text-xs">
-                  {category.businessCount || 0} businesses
-                </Badge>
+                <Badge variant="secondary" className="text-xs">{tj("{0} businesses", category.businessCount || 0)}</Badge>
               </div>
             </CardContent>
           </Card>

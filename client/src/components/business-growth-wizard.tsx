@@ -21,6 +21,8 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { apiRequest } from '@/lib/queryClient';
 import { BusinessGrowthMetric, BusinessGrowthGoal, BusinessGrowthVisualization, Business } from '@shared/schema';
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 // Wizard step schemas
 const metricSchema = z.object({
@@ -176,7 +178,7 @@ export default function BusinessGrowthWizard({ businessId, onComplete }: Busines
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Progress</h3>
-              <span className="text-sm text-gray-600">{currentStep + 1} of {steps.length}</span>
+              <span className="text-sm text-gray-600">{tj("{0} of {1}", currentStep + 1, steps.length)}</span>
             </div>
             <Progress value={progress} className="mb-4" />
             
@@ -196,7 +198,7 @@ export default function BusinessGrowthWizard({ businessId, onComplete }: Busines
                   >
                     <step.icon className="h-5 w-5" />
                   </div>
-                  <div className="ml-3 hidden sm:block">
+                  <div className="ms-3 hidden sm:block">
                     <div className="text-sm font-medium">{step.title}</div>
                     <div className="text-xs text-gray-500">{step.description}</div>
                   </div>
@@ -322,7 +324,7 @@ function SetupStep({ business, existingMetrics, existingGoals, onNext }: SetupSt
                   </div>
                 ))}
                 {existingMetrics.length > 3 && (
-                  <p className="text-xs text-gray-500">+{existingMetrics.length - 3} more metrics</p>
+                  <p className="text-xs text-gray-500">{tj("+{0} more metrics", existingMetrics.length - 3)}</p>
                 )}
               </div>
             ) : (
@@ -348,7 +350,7 @@ function SetupStep({ business, existingMetrics, existingGoals, onNext }: SetupSt
                   </div>
                 ))}
                 {existingGoals.length > 3 && (
-                  <p className="text-xs text-gray-500">+{existingGoals.length - 3} more goals</p>
+                  <p className="text-xs text-gray-500">{tj("+{0} more goals", existingGoals.length - 3)}</p>
                 )}
               </div>
             ) : (
@@ -369,7 +371,7 @@ function SetupStep({ business, existingMetrics, existingGoals, onNext }: SetupSt
       <div className="flex justify-end">
         <Button onClick={onNext} className="bg-blue-600 hover:bg-blue-700">
           Get Started
-          <ChevronRight className="ml-2 h-4 w-4" />
+          <ChevronRight className="ms-2 h-4 w-4" />
         </Button>
       </div>
     </div>
@@ -555,7 +557,7 @@ function MetricsStep({ businessId, existingMetrics, onNext, onPrev }: MetricsSte
                               <Button
                                 variant="outline"
                                 className={cn(
-                                  "w-full pl-3 text-left font-normal",
+                                  "w-full ps-3 text-start font-normal",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
@@ -564,7 +566,7 @@ function MetricsStep({ businessId, existingMetrics, onNext, onPrev }: MetricsSte
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                <CalendarIcon className="ms-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -622,7 +624,7 @@ function MetricsStep({ businessId, existingMetrics, onNext, onPrev }: MetricsSte
                         {metric.targetValue && ` / ${metric.targetValue}`}
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <Badge variant="outline" className="capitalize">{metric.period}</Badge>
                       <div className="text-xs text-gray-500 mt-1">
                         {format(new Date(metric.date), 'MMM dd, yyyy')}
@@ -644,12 +646,12 @@ function MetricsStep({ businessId, existingMetrics, onNext, onPrev }: MetricsSte
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrev}>
-          <ChevronLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="me-2 h-4 w-4" />
           Previous
         </Button>
         <Button onClick={onNext} disabled={existingMetrics.length === 0}>
           Next Step
-          <ChevronRight className="ml-2 h-4 w-4" />
+          <ChevronRight className="ms-2 h-4 w-4" />
         </Button>
       </div>
     </div>
@@ -876,7 +878,7 @@ function GoalsStep({ businessId, existingGoals, onNext, onPrev }: GoalsStepProps
                               <Button
                                 variant="outline"
                                 className={cn(
-                                  "w-full pl-3 text-left font-normal",
+                                  "w-full ps-3 text-start font-normal",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
@@ -885,7 +887,7 @@ function GoalsStep({ businessId, existingGoals, onNext, onPrev }: GoalsStepProps
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                <CalendarIcon className="ms-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -932,7 +934,7 @@ function GoalsStep({ businessId, existingGoals, onNext, onPrev }: GoalsStepProps
                       size="sm"
                       onClick={addMilestone}
                     >
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="h-4 w-4 me-2" />
                       Add Milestone
                     </Button>
                   </div>
@@ -995,14 +997,12 @@ function GoalsStep({ businessId, existingGoals, onNext, onPrev }: GoalsStepProps
                   >
                     <div className="flex-1">
                       <div className="font-medium">{goal.goalName}</div>
-                      <div className="text-sm text-gray-500 capitalize">
-                        {goal.goalType} • {goal.priority} priority
-                      </div>
+                      <div className="text-sm text-gray-500 capitalize">{tj("{0} • {1} priority", goal.goalType, goal.priority)}</div>
                       <div className="text-sm text-gray-500">
                         {goal.currentValue} / {goal.targetValue}
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <Badge 
                         variant={goal.status === 'completed' ? 'default' : 'secondary'}
                         className="capitalize"
@@ -1029,12 +1029,12 @@ function GoalsStep({ businessId, existingGoals, onNext, onPrev }: GoalsStepProps
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrev}>
-          <ChevronLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="me-2 h-4 w-4" />
           Previous
         </Button>
         <Button onClick={onNext}>
           Next Step
-          <ChevronRight className="ml-2 h-4 w-4" />
+          <ChevronRight className="ms-2 h-4 w-4" />
         </Button>
       </div>
     </div>
@@ -1222,7 +1222,7 @@ function VisualizationsStep({ businessId, onNext, onPrev }: VisualizationsStepPr
                   <label className="text-sm font-medium mb-3 block">Select Metrics</label>
                   <div className="space-y-2">
                     {availableMetrics.map((metric) => (
-                      <div key={metric} className="flex items-center space-x-2">
+                      <div key={metric} className="flex items-center space-x-2 rtl:space-x-reverse">
                         <input
                           type="checkbox"
                           id={metric}
@@ -1281,7 +1281,7 @@ function VisualizationsStep({ businessId, onNext, onPrev }: VisualizationsStepPr
                     </div>
                     <div className="text-sm text-gray-500 mt-2">
                       {selectedMetrics.length > 0 
-                        ? `${selectedMetrics.length} metrics selected`
+                        ? tx("{0} metrics selected", selectedMetrics.length)
                         : 'Select metrics to preview'
                       }
                     </div>
@@ -1293,7 +1293,7 @@ function VisualizationsStep({ businessId, onNext, onPrev }: VisualizationsStepPr
 
           <div className="flex justify-between">
             <Button type="button" variant="outline" onClick={onPrev}>
-              <ChevronLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="me-2 h-4 w-4" />
               Previous
             </Button>
             <Button 
@@ -1309,7 +1309,7 @@ function VisualizationsStep({ businessId, onNext, onPrev }: VisualizationsStepPr
       <div className="flex justify-center">
         <Button onClick={onNext} variant="outline">
           Skip and Continue
-          <ChevronRight className="ml-2 h-4 w-4" />
+          <ChevronRight className="ms-2 h-4 w-4" />
         </Button>
       </div>
     </div>
@@ -1375,7 +1375,7 @@ function ReviewStep({ businessId, onComplete, onPrev }: ReviewStepProps) {
                   </div>
                 ))}
                 {metrics.length > 3 && (
-                  <div className="text-xs text-gray-500">+{metrics.length - 3} more</div>
+                  <div className="text-xs text-gray-500">{tj("+{0} more", metrics.length - 3)}</div>
                 )}
               </div>
             )}
@@ -1402,13 +1402,11 @@ function ReviewStep({ businessId, onComplete, onPrev }: ReviewStepProps) {
                 {goals.slice(0, 3).map((goal, index) => (
                   <div key={index} className="text-sm">
                     <div className="font-medium">{goal.goalName}</div>
-                    <div className="text-xs text-gray-500 capitalize">
-                      {goal.priority} priority
-                    </div>
+                    <div className="text-xs text-gray-500 capitalize">{tj("{0} priority", goal.priority)}</div>
                   </div>
                 ))}
                 {goals.length > 3 && (
-                  <div className="text-xs text-gray-500">+{goals.length - 3} more</div>
+                  <div className="text-xs text-gray-500">{tj("+{0} more", goals.length - 3)}</div>
                 )}
               </div>
             )}
@@ -1441,7 +1439,7 @@ function ReviewStep({ businessId, onComplete, onPrev }: ReviewStepProps) {
                   </div>
                 ))}
                 {visualizations.length > 3 && (
-                  <div className="text-xs text-gray-500">+{visualizations.length - 3} more</div>
+                  <div className="text-xs text-gray-500">{tj("+{0} more", visualizations.length - 3)}</div>
                 )}
               </div>
             )}
@@ -1459,11 +1457,11 @@ function ReviewStep({ businessId, onComplete, onPrev }: ReviewStepProps) {
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrev}>
-          <ChevronLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="me-2 h-4 w-4" />
           Previous
         </Button>
         <Button onClick={handleComplete} className="bg-green-600 hover:bg-green-700">
-          <CheckCircle className="mr-2 h-4 w-4" />
+          <CheckCircle className="me-2 h-4 w-4" />
           Launch Dashboard
         </Button>
       </div>

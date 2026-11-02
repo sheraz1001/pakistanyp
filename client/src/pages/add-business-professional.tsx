@@ -39,6 +39,8 @@ import {
   Users,
   Image
 } from "lucide-react";
+import { t as tx, SECOND } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 const businessFormSchema = z.object({
   // Basic Information
@@ -46,6 +48,7 @@ const businessFormSchema = z.object({
   arabicName: z.string().max(200, "Local-language name cannot exceed 200 characters").optional(),
   description: z.string().min(10, "Description must be at least 10 characters"),
   shortDescription: z.string().max(500, "Short description cannot exceed 500 characters").optional(),
+  descriptionAr: z.string().max(5000, "Description cannot exceed 5000 characters").optional(),
   categories: z.array(z.number()).min(1, "Please select at least one sub-category (a main category on its own is not enough)"),
   provinceId: z.string().min(1, `Please select a ${country.regionTerm.singular.toLowerCase()}`),
   cityId: z.string().min(1, "Please select a city"),
@@ -93,6 +96,7 @@ export default function AddBusinessProfessional() {
     defaultValues: {
       name: "",
       arabicName: "",
+      descriptionAr: "",
       description: "",
       shortDescription: "",
       categories: [],
@@ -211,7 +215,7 @@ export default function AddBusinessProfessional() {
             <SubscriptionPlansShowcase currentPlan={subscription?.planName || 'free'} />
             <div className="flex justify-center">
               <Button size="lg" onClick={() => setCurrentStep('basic')}>
-                Continue to Add Business <ArrowRight className="ml-2 w-4 h-4" />
+                Continue to Add Business <ArrowRight className="ms-2 w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -241,7 +245,7 @@ export default function AddBusinessProfessional() {
                   <FormItem>
                     <FormLabel>Urdu / Local-Language Name (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="کاروبار کا نام اردو میں" {...field} />
+                      <Input dir={country.localLanguage?.dir || "auto"} lang={country.localLanguage?.code} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -265,6 +269,21 @@ export default function AddBusinessProfessional() {
                 </FormItem>
               )}
             />
+            {SECOND && (
+              <FormField
+                control={form.control}
+                name="descriptionAr"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{tx("Business Description in {0} (Optional)", SECOND!.englishName)}</FormLabel>
+                    <FormControl>
+                      <Textarea dir={SECOND!.dir} lang={SECOND!.code} className="min-h-32" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="shortDescription"
@@ -307,7 +326,7 @@ export default function AddBusinessProfessional() {
                   <FormItem>
                     <FormLabel>Phone Number *</FormLabel>
                     <FormControl>
-                      <Input placeholder={`${country.phonePrefix} XX XXX XXXX`} {...field} />
+                      <Input placeholder={tx("{0} XX XXX XXXX", country.phonePrefix)} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -320,7 +339,7 @@ export default function AddBusinessProfessional() {
                   <FormItem>
                     <FormLabel>WhatsApp (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder={`${country.phonePrefix} XX XXX XXXX`} {...field} />
+                      <Input placeholder={tx("{0} XX XXX XXXX", country.phonePrefix)} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -488,9 +507,7 @@ export default function AddBusinessProfessional() {
                   <h4 className="font-semibold mb-2">Categories</h4>
                   <div className="flex flex-wrap gap-2">
                     {form.watch('categories').map((categoryId, index) => (
-                      <Badge key={index} variant="secondary">
-                        Category {categoryId}
-                      </Badge>
+                      <Badge key={index} variant="secondary">{tj("Category {0}", categoryId)}</Badge>
                     ))}
                   </div>
                 </div>
@@ -523,8 +540,8 @@ export default function AddBusinessProfessional() {
           </div>
 
           <div className="mb-3 flex items-center justify-between text-[13px] text-[#5B6475]">
-            <span>Step {currentStepIndex + 1} of {steps.length}</span>
-            <span>{Math.round(progress)}% Complete</span>
+            <span>{tj("Step {0} of {1}", currentStepIndex + 1, steps.length)}</span>
+            <span>{tj("{0}% Complete", Math.round(progress))}</span>
           </div>
           {/* Step Navigation */}
           <ol className="m-0 flex list-none gap-2 p-0" aria-label="Steps">
@@ -532,7 +549,7 @@ export default function AddBusinessProfessional() {
               <li key={step.key} className="flex min-w-0 flex-1 flex-col gap-2" aria-current={index === currentStepIndex ? "step" : undefined}>
                 <span className={`h-1 rounded-full ${index <= currentStepIndex ? "bg-[#0B6B2E]" : "bg-[#DDE1E8]"}`} />
                 <span className={`hidden truncate text-[13px] md:block ${index === currentStepIndex ? "font-semibold text-[#0A0A0A]" : index < currentStepIndex ? "text-[#05501F]" : "text-[#5B6475]"}`}>
-                  {index < currentStepIndex && <CheckCircle className="mr-1 inline h-3.5 w-3.5 align-[-2px]" />}
+                  {index < currentStepIndex && <CheckCircle className="me-1 inline h-3.5 w-3.5 align-[-2px]" />}
                   {index + 1}. {step.title}
                 </span>
               </li>
@@ -572,7 +589,7 @@ export default function AddBusinessProfessional() {
                         onClick={prevStep}
                         disabled={currentStep === 'basic'}
                       >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        <ArrowLeft className="w-4 h-4 me-2" />
                         Previous
                       </Button>
                       <Button 
@@ -590,7 +607,7 @@ export default function AddBusinessProfessional() {
                         ) : (
                           <>
                             Next
-                            <ArrowRight className="w-4 h-4 ml-2" />
+                            <ArrowRight className="w-4 h-4 ms-2" />
                           </>
                         )}
                       </Button>

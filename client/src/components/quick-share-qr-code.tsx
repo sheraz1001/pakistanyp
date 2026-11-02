@@ -7,6 +7,8 @@ import { toast } from "@/hooks/use-toast";
 import { QrCode, Download, Share2, Copy, Facebook, Twitter, Mail, MessageCircle } from "lucide-react";
 import QRCode from "qrcode";
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Business {
   id: number;
@@ -93,7 +95,7 @@ export default function QuickShareQRCode({
       await navigator.clipboard.writeText(text);
       toast({
         title: "Copied!",
-        description: `${label} copied to clipboard`,
+        description: tx("{0} copied to clipboard", label),
       });
     } catch (error) {
       toast({
@@ -151,9 +153,7 @@ export default function QuickShareQRCode({
       <DialogContent className="max-w-md max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Share2 className="h-5 w-5 text-[#0B6B2E]" />
-            Quick Share - {business.name}
-          </DialogTitle>
+            <Share2 className="h-5 w-5 text-[#0B6B2E]" />{tj("Quick Share - {0}", business.name)}</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">
@@ -171,7 +171,7 @@ export default function QuickShareQRCode({
                 ) : qrCodeUrl ? (
                   <img 
                     src={qrCodeUrl} 
-                    alt={`QR Code for ${business.name}`}
+                    alt={tx("QR Code for {0}", business.name)}
                     className="w-48 h-48"
                   />
                 ) : (
@@ -289,15 +289,13 @@ export default function QuickShareQRCode({
                     href={business.website} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-[#0B6B2E] hover:text-[#05501F] ml-1 break-all"
+                    className="text-[#0B6B2E] hover:text-[#05501F] ms-1 break-all"
                   >
                     {business.website}
                   </a>
                 </div>
               )}
-              <div className="text-xs text-[#5B6475] pt-2 break-all">
-                URL: {businessUrl}
-              </div>
+              <div className="text-xs text-[#5B6475] pt-2 break-all">{tj("URL: {0}", businessUrl)}</div>
             </CardContent>
           </Card>
         </div>

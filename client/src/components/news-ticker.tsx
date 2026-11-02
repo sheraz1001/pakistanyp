@@ -20,11 +20,11 @@ export default function NewsTickerComponent() {
   const getIcon = (category: string) => {
     switch (category?.toLowerCase()) {
       case 'business':
-        return <Building className="w-4 h-4 mr-2" />;
+        return <Building className="w-4 h-4 me-2" />;
       case 'economy':
-        return <TrendingUp className="w-4 h-4 mr-2" />;
+        return <TrendingUp className="w-4 h-4 me-2" />;
       default:
-        return <Newspaper className="w-4 h-4 mr-2" />;
+        return <Newspaper className="w-4 h-4 me-2" />;
     }
   };
 
@@ -32,12 +32,12 @@ export default function NewsTickerComponent() {
     <div className="bg-white text-[#0A0A0A] py-3 overflow-hidden border-y border-[#E7E9EE]">
       <div className="container mx-auto px-4">
         <div className="flex items-center">
-          <div className="yp-pill mr-6 flex-shrink-0 bg-[#E3A82B] text-[#141414]">
+          <div className="yp-pill me-6 flex-shrink-0 bg-[#E3A82B] text-[#141414]">
             🔥 BREAKING NEWS
           </div>
           <div className="flex-1 overflow-hidden">
             <div className="news-ticker whitespace-nowrap">
-              <div className="inline-flex items-center space-x-12 animate-scroll">
+              <div className="inline-flex items-center space-x-12 rtl:space-x-reverse animate-scroll">
                 {newsItems.map((item, index) => (
                   <span key={`${item.id}-${index}`} className="inline-flex items-center px-6 text-[#0B6B2E] py-1 mx-2">
                     {getIcon(item.category)}

@@ -7,6 +7,8 @@ import { PageSEO } from "@/components/page-seo";
 import { breadcrumbLd } from "@/lib/structured-data";
 import { country } from "@shared/country";
 import { ArticleCard, EDITORIAL, EditorialSidebar, FeaturedCard, Pagination, type EditorialItem, type EditorialKind, type EditorialSide } from "@/components/editorial";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface ListResponse extends EditorialSide {
   items: EditorialItem[];
@@ -50,7 +52,7 @@ export default function EditorialList({ kind }: { kind: EditorialKind }) {
         <Header />
         <main className="yp-wrap pt-16 pb-24"><div className="yp-card mx-auto max-w-xl p-10 text-center">
           <h1 className="mb-3 text-2xl font-bold tracking-[-0.03em]">Category not found</h1>
-          <Link href={cfg.base} className="yp-btn yp-btn-primary">All {cfg.label.toLowerCase()}</Link>
+          <Link href={cfg.base} className="yp-btn yp-btn-primary">{tj("All {0}", cfg.label.toLowerCase())}</Link>
         </div></main>
         <Footer />
       </div>
@@ -60,8 +62,8 @@ export default function EditorialList({ kind }: { kind: EditorialKind }) {
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A]">
       <PageSEO
-        title={title.length > 65 ? `${heading} | PakistanYP` : title}
-        description={activeCategory ? `Read ${activeCategory.name.toLowerCase()} ${cfg.nouns} from PakistanYP: ${cfg.lead}` : cfg.lead}
+        title={title.length > 65 ? tx("{0} | PakistanYP", heading) : title}
+        description={activeCategory ? tx("Read {0} {1} from PakistanYP: {2}", activeCategory.name.toLowerCase(), cfg.nouns, cfg.lead) : cfg.lead}
         canonicalUrl={canonical}
         noindex={!!q || !!tag || (!!data && data.total === 0)}
         schemaMarkup={[
@@ -98,11 +100,11 @@ export default function EditorialList({ kind }: { kind: EditorialKind }) {
             {data && !q && <p className="text-sm text-[#5B6475]"><span className="font-semibold text-[#0A0A0A]">{(data.categories.reduce((n, c) => n + c.count, 0)).toLocaleString()}</span> {cfg.nouns} · <span className="font-semibold text-[#0A0A0A]">{data.categories.length}</span> categories</p>}
           </div>
           {data && data.categories.length > 0 && (
-            <nav aria-label={`${cfg.label} categories`} className="-mx-1 mt-7 flex gap-2 overflow-x-auto px-1 pb-1">
+            <nav aria-label={tx("{0} categories", cfg.label)} className="-mx-1 mt-7 flex gap-2 overflow-x-auto px-1 pb-1">
               <Link href={cfg.base} className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium ${!category && !tag && !q ? "bg-[#0B6B2E] text-white" : "border border-[#E7E9EE] bg-white text-[#3A4354] hover:border-[#0B6B2E]"}`}>All</Link>
               {data.categories.map((c) => (
                 <Link key={c.slug} href={`${cfg.base}/category/${c.slug}`} className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium ${c.slug === category ? "bg-[#0B6B2E] text-white" : "border border-[#E7E9EE] bg-white text-[#3A4354] hover:border-[#0B6B2E]"}`}>
-                  {c.name} <span className={`ml-1 tabular-nums ${c.slug === category ? "text-[#CFE8D8]" : "text-[#8A93A3]"}`}>{c.count}</span>
+                  {c.name} <span className={`ms-1 tabular-nums ${c.slug === category ? "text-[#CFE8D8]" : "text-[#8A93A3]"}`}>{c.count}</span>
                 </Link>
               ))}
             </nav>
@@ -122,15 +124,15 @@ export default function EditorialList({ kind }: { kind: EditorialKind }) {
           {isLoading ? (
             <div className="grid gap-6 sm:grid-cols-2" aria-hidden="true">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-80 animate-pulse rounded-[18px] bg-[#EEF0F4]" />)}</div>
           ) : isError ? (
-            <div role="alert" className="yp-card p-8 text-center"><h2 className="mb-2 text-lg font-semibold">We couldn't load {cfg.label.toLowerCase()}</h2><button type="button" className="yp-btn yp-btn-primary" onClick={() => refetch()}>Try again</button></div>
+            <div role="alert" className="yp-card p-8 text-center"><h2 className="mb-2 text-lg font-semibold">{tj("We couldn't load {0}", cfg.label.toLowerCase())}</h2><button type="button" className="yp-btn yp-btn-primary" onClick={() => refetch()}>Try again</button></div>
           ) : data && (data.items.length > 0 || data.featured) ? (
             <>
               {data.featured && <FeaturedCard kind={kind} item={data.featured} />}
               {data.items.length > 0 && (
                 <section aria-labelledby="latest-heading" className="flex flex-col gap-5">
                   <div className="flex items-baseline justify-between gap-3 border-b border-[#E7E9EE] pb-3">
-                    <h2 id="latest-heading" className="text-[20px] font-semibold tracking-[-0.02em]">{activeCategory || tag || q ? `${data.total} ${data.total === 1 ? cfg.noun : cfg.nouns}` : `Latest ${cfg.nouns}`}</h2>
-                    {data.pages > 1 && <span className="text-sm text-[#5B6475]">Page {data.page} of {data.pages}</span>}
+                    <h2 id="latest-heading" className="text-[20px] font-semibold tracking-[-0.02em]">{activeCategory || tag || q ? `${data.total} ${data.total === 1 ? cfg.noun : cfg.nouns}` : tx("Latest {0}", cfg.nouns)}</h2>
+                    {data.pages > 1 && <span className="text-sm text-[#5B6475]">{tj("Page {0} of {1}", data.page, data.pages)}</span>}
                   </div>
                   <div className="grid gap-6 sm:grid-cols-2">
                     {data.items.map((item) => <ArticleCard key={item.id} kind={kind} item={item} />)}
@@ -141,9 +143,9 @@ export default function EditorialList({ kind }: { kind: EditorialKind }) {
             </>
           ) : (
             <div className="yp-card px-6 py-14 text-center">
-              <h2 className="mb-2 text-xl font-semibold">{q ? `No ${cfg.nouns} match “${q}”` : `No ${cfg.nouns} yet`}</h2>
+              <h2 className="mb-2 text-xl font-semibold">{q ? tx("No {0} match “{1}”", cfg.nouns, q) : tx("No {0} yet", cfg.nouns)}</h2>
               <p className="mb-6 text-[#4B5565]">{q ? "Try a different word, or browse the categories." : "New articles will appear here soon."}</p>
-              <Link href={cfg.base} className="yp-btn yp-btn-primary">All {cfg.label.toLowerCase()}</Link>
+              <Link href={cfg.base} className="yp-btn yp-btn-primary">{tj("All {0}", cfg.label.toLowerCase())}</Link>
             </div>
           )}
         </div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Building2, Users, TrendingUp, Heart } from 'lucide-react';
 import { PakistanypMark } from '@/components/brand/pakistanyp-logo';
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 interface AppSplashScreenProps {
   onComplete: () => void;
@@ -90,7 +91,7 @@ export default function AppSplashScreen({
               {country.tagline}
             </h1>
             <p className="text-[15px] text-[#5B6475]">
-              {`Connecting You with the Best of ${country.name}`}
+              {tx("Connecting You with the Best of {0}", country.name)}
             </p>
           </div>
 

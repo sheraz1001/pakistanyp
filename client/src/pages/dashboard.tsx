@@ -1,3 +1,5 @@
+import { dateLocale } from "@shared/i18n";
+import { LanguagePreference } from "@/components/language-switch";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -71,6 +73,8 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 import { OwnerSidebar, OwnerTopBar, CountBadge, OwnerPill, useOwnerLeads } from "@/components/owner-shell";
 import { fmtDate } from "@/components/phase1/api";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 
 const businessSchema = z.object({
@@ -520,7 +524,7 @@ export default function Dashboard() {
                   </button>
 
                   {expandedMenus.includes(menu.id) && (
-                    <div className="mt-1 ml-4 flex flex-col gap-1 border-l border-[#E7E9EE] pl-2">
+                    <div className="mt-1 ms-4 flex flex-col gap-1 border-s border-[#E7E9EE] ps-2">
                       {menu.submenu.map((subitem) => (
                         <button
                           key={subitem.id}
@@ -579,7 +583,7 @@ export default function Dashboard() {
                 </h1>
                 <p className="mt-1.5 text-[15px] text-[#5B6475]">
                   {primary
-                    ? `Here’s how ${businesses.length > 1 ? "your listings are" : `${primary.name} is`} doing on ${country.brand}.`
+                    ? tx("Here’s how {0} doing on {1}.", businesses.length > 1 ? "your listings are" : `${primary.name} is`, country.brand)
                     : "Manage your business listings and track performance."}
                 </p>
               </div>
@@ -641,13 +645,11 @@ export default function Dashboard() {
             {primary && completePct < 100 && (
               <section className="flex flex-wrap items-center gap-6 rounded-[20px] border border-[#CFE8D8] bg-[#F2F9F4] px-6 py-5">
                 <div className="flex min-w-0 flex-[1_1_300px] flex-col gap-2.5">
-                  <span className="font-semibold">Your profile is {completePct}% complete</span>
+                  <span className="font-semibold">{tj("Your profile is {0}% complete", completePct)}</span>
                   <div className="h-2 rounded-full bg-[#CFE8D8]" role="progressbar" aria-valuenow={completePct} aria-valuemin={0} aria-valuemax={100} aria-label="Profile completeness">
                     <div className="h-full rounded-full bg-[#0B6B2E]" style={{ width: `${completePct}%` }} />
                   </div>
-                  <span className="text-sm text-[#3A4354]">
-                    Add {missing.slice(0, 3).join(", ")}{missing.length > 3 ? " and more" : ""} to {primary.name} to rank higher.
-                  </span>
+                  <span className="text-sm text-[#3A4354]">{tj("Add {0}{1} to {2} to rank higher.", missing.slice(0, 3).join(", "), missing.length > 3 ? " and more" : "", primary.name)}</span>
                 </div>
                 <button type="button" className="yp-btn yp-btn-ghost" onClick={() => setLocation(`/add-business-enhanced?edit=${primary.id}`)}>Finish profile</button>
               </section>
@@ -676,7 +678,7 @@ export default function Dashboard() {
                     <h2 className="text-lg font-semibold tracking-[-0.02em]">Profile views by listing</h2>
                     <span className="yp-label">All time</span>
                   </div>
-                  <div className="h-[220px]" role="img" aria-label={`Profile views per listing, ${totalViews.toLocaleString()} in total`}>
+                  <div className="h-[220px]" role="img" aria-label={tx("Profile views per listing, {0} in total", totalViews.toLocaleString())}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={viewsChart} margin={{ top: 4, right: 4, bottom: 0, left: -16 }}>
                         <CartesianGrid vertical={false} stroke="#EEF0F4" />
@@ -707,7 +709,7 @@ export default function Dashboard() {
                       <span className={`${tile} bg-[#FFF4E0] text-[#B45309]`} aria-hidden="true"><MessageCircle className="h-5 w-5" /></span>
                       <span>
                         <span className="block font-semibold">Business claims</span>
-                        <span className="block text-[13px] text-[#B45309]">{stats.pendingClaims} in review</span>
+                        <span className="block text-[13px] text-[#B45309]">{tj("{0} in review", stats.pendingClaims)}</span>
                       </span>
                     </div>
                   )}
@@ -732,7 +734,7 @@ export default function Dashboard() {
                           <td>{l.service_needed || "Quote request"}</td>
                           <td className="text-[#5B6475]">{fmtDate(l.created_at)}</td>
                           <td><OwnerPill value={l.status} /></td>
-                          <td className="text-right"><a className="yp-btn yp-btn-ghost !min-h-[36px]" href="/my-leads">Reply</a></td>
+                          <td className="text-end"><a className="yp-btn yp-btn-ghost !min-h-[36px]" href="/my-leads">Reply</a></td>
                         </tr>
                       ))}
                     </tbody>
@@ -759,7 +761,7 @@ export default function Dashboard() {
                       <div key={business.id} className="flex items-center justify-between gap-3 border-b border-[#EEF0F4] py-3 last:border-b-0">
                         <div className="min-w-0">
                           <p className="truncate font-medium">{business.name}</p>
-                          <p className="text-sm text-[#5B6475]">{business.viewCount} views</p>
+                          <p className="text-sm text-[#5B6475]">{tj("{0} views", business.viewCount)}</p>
                         </div>
                         <OwnerPill value={business.isVerified ? "verified" : "pending"} />
                       </div>
@@ -801,7 +803,7 @@ export default function Dashboard() {
                       <h3 className="text-lg font-semibold tracking-[-0.02em]">{business.name}</h3>
                       <div className="flex flex-wrap gap-1.5">
                         {business.isPremium && (
-                          <span className="yp-pill bg-[#FDECEC] text-[#B3141B]"><Crown className="mr-1 h-3 w-3" />Premium</span>
+                          <span className="yp-pill bg-[#FDECEC] text-[#B3141B]"><Crown className="me-1 h-3 w-3" />Premium</span>
                         )}
                         {business.isVerified && <span className="yp-verified"><ShieldCheck className="h-3 w-3" />Verified</span>}
                         {business.isFeatured && <span className="yp-pill bg-[#E8F4EC] text-[#05501F]">Featured</span>}
@@ -809,7 +811,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className="mb-3 flex items-center">
-                      <div className="mr-2 flex text-sm">
+                      <div className="me-2 flex text-sm">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
@@ -817,21 +819,19 @@ export default function Dashboard() {
                           />
                         ))}
                       </div>
-                      <span className="text-sm text-[#5B6475]">
-                        {business.ratingAverage} ({business.ratingCount} reviews)
-                      </span>
+                      <span className="text-sm text-[#5B6475]">{tj("{0} ({1} reviews)", business.ratingAverage, business.ratingCount)}</span>
                     </div>
 
                     <div className="mb-4 flex items-center text-sm text-[#5B6475]">
-                      <MapPin className="mr-1 h-4 w-4" />
+                      <MapPin className="me-1 h-4 w-4" />
                       <span>{business.locality}</span>
                     </div>
 
                     <div className="mt-auto space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center text-[#5B6475]">
-                          <Eye className="mr-1 h-4 w-4" />
-                          <span>{business.viewCount} views</span>
+                          <Eye className="me-1 h-4 w-4" />
+                          <span>{tj("{0} views", business.viewCount)}</span>
                         </div>
                         <button
                           type="button"
@@ -856,9 +856,7 @@ export default function Dashboard() {
 
                       {business.isPremium && business.premiumExpiresAt && (
                         <div className="rounded-xl bg-[#F2F9F4] p-2 text-center text-xs text-[#05501F]">
-                          <Crown className="mr-1 inline h-3 w-3" />
-                          Premium until {new Date(business.premiumExpiresAt).toLocaleDateString()}
-                        </div>
+                          <Crown className="me-1 inline h-3 w-3" />{tj("Premium until {0}", new Date(business.premiumExpiresAt).toLocaleDateString(dateLocale()))}</div>
                       )}
                     </div>
                   </div>
@@ -944,7 +942,7 @@ export default function Dashboard() {
                       {claims.map((claim: any) => (
                         <div key={claim.id} className="yp-panel p-4">
                           <div className="mb-2 flex items-center justify-between gap-2">
-                            <p className="font-medium">Business Claim #{claim.id}</p>
+                            <p className="font-medium">{tj("Business Claim #{0}", claim.id)}</p>
                             <span className="inline-flex items-center gap-1">
                               {claim.status === 'approved' && <CheckCircle className="h-3.5 w-3.5 text-[#047857]" />}
                               {claim.status === 'rejected' && <XCircle className="h-3.5 w-3.5 text-[#B91C1C]" />}
@@ -953,9 +951,7 @@ export default function Dashboard() {
                             </span>
                           </div>
                           <p className="mb-2 text-sm text-[#3A4354]">{claim.notes}</p>
-                          <p className="text-xs text-[#5B6475]">
-                            Submitted: {new Date(claim.createdAt).toLocaleDateString()}
-                          </p>
+                          <p className="text-xs text-[#5B6475]">{tj("Submitted: {0}", new Date(claim.createdAt).toLocaleDateString(dateLocale()))}</p>
                         </div>
                       ))}
                     </div>
@@ -1029,6 +1025,8 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
+
+                <LanguagePreference />
 
                 <div className="space-y-4">
                   <h3 className="yp-label">Notification Settings</h3>

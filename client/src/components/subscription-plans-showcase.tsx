@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Check, Crown, Star, Building, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface SubscriptionPlan {
   id: string;
@@ -228,9 +230,7 @@ export function SubscriptionPlansShowcase({
       <div className="yp-tint rounded-[20px] p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="font-semibold text-[#0A0A0A]">
-              Current Plan: {plans.find(p => p.name === currentPlan)?.displayName || "Free"}
-            </h3>
+            <h3 className="font-semibold text-[#0A0A0A]">{tj("Current Plan: {0}", plans.find(p => p.name === currentPlan)?.displayName || "Free")}</h3>
             <p className="text-sm text-[#4B5565]">
               {currentPlan === "free" ? "Limited features" : "Premium features unlocked"}
             </p>
@@ -272,7 +272,7 @@ export function SubscriptionPlansShowcase({
           />
           <span className={`text-sm font-medium ${isYearly ? 'text-[#0A0A0A]' : 'text-[#5B6475]'}`}>
             Yearly
-            <span className="yp-pill bg-[#E8F4EC] text-[#05501F] ml-2">Save 20%</span>
+            <span className="yp-pill bg-[#E8F4EC] text-[#05501F] ms-2">Save 20%</span>
           </span>
         </div>
       </div>
@@ -292,7 +292,7 @@ export function SubscriptionPlansShowcase({
             )}
             
             {currentPlan === plan.name && (
-              <div className="absolute -top-3 right-4">
+              <div className="absolute -top-3 end-4">
                 <span className="yp-pill bg-[#0B6B2E] text-white">Current</span>
               </div>
             )}
@@ -311,9 +311,7 @@ export function SubscriptionPlansShowcase({
                   <span className="text-[#5B6475] text-sm">/{isYearly ? 'month' : plan.interval}</span>
                 )}
                 {plan.price > 0 && isYearly && (
-                  <div className="text-sm text-[#0B6B2E] font-medium mt-1">
-                    Save {Math.round((1 - (plan.yearlyPrice / plan.price)) * 100)}% yearly
-                  </div>
+                  <div className="text-sm text-[#0B6B2E] font-medium mt-1">{tj("Save {0}% yearly", Math.round((1 - (plan.yearlyPrice / plan.price)) * 100))}</div>
                 )}
               </div>
             </CardHeader>
@@ -327,7 +325,7 @@ export function SubscriptionPlansShowcase({
                   </div>
                   <div className="flex justify-between">
                     <span>Categories:</span>
-                    <span>{plan.categoryLimit === 999 ? 'Unlimited' : `${plan.categoryLimit} main + ${plan.subcategoryLimit} sub`}</span>
+                    <span>{plan.categoryLimit === 999 ? 'Unlimited' : tx("{0} main + {1} sub", plan.categoryLimit, plan.subcategoryLimit)}</span>
                   </div>
                 </div>
                 
@@ -340,9 +338,7 @@ export function SubscriptionPlansShowcase({
                       </li>
                     ))}
                     {plan.features.length > 5 && (
-                      <li className="text-sm text-[#5B6475] pl-6">
-                        +{plan.features.length - 5} more features
-                      </li>
+                      <li className="text-sm text-[#5B6475] ps-6">{tj("+{0} more features", plan.features.length - 5)}</li>
                     )}
                   </ul>
                 </div>

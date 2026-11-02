@@ -20,6 +20,13 @@ import { Router as WouterRouter } from "wouter";
 import { getQueryFn } from "@/lib/queryClient";
 import App, { preloadRoutes, routesLoaded } from "./App";
 import NotFound from "@/pages/not-found";
+import { SECOND, SECOND_PREFIX, langOfPath, setDictionary, hasDictionary } from "@shared/i18n";
+import { loadDictionary } from "@shared/countries/dictionary";
+
+// Language of the request being rendered (read by t() in shared/i18n.ts)
+const langStore: AsyncLocalStorage<string> = ((globalThis as any).__ypLangStore ||= new AsyncLocalStorage<string>());
+let dictionaryReady: Promise<void> | null = null;
+const ensureDictionary = () => (dictionaryReady ||= SECOND ? loadDictionary().then(setDictionary).catch(() => { dictionaryReady = null; }) : Promise.resolve());
 
 const API_BASE = process.env.SSR_API_BASE || `http://127.0.0.1:${process.env.PORT || 5000}`;
 const MAX_PASSES = 3;
@@ -38,7 +45,8 @@ if (!g.__pakistanypSsrFetchPatched) {
     const raw = typeof input === "string" ? input : input instanceof URL ? input.toString() : input?.url;
     const isRelative = typeof raw === "string" && raw.startsWith("/");
     const target = isRelative ? API_BASE + raw : input;
-    const headers = isRelative ? { ...(init?.headers || {}), "x-ssr-internal": "1", accept: "application/json" } : init?.headers;
+    const lang = ((globalThis as any).__ypLangStore as AsyncLocalStorage<string> | undefined)?.getStore();
+    const headers = isRelative ? { ...(init?.headers || {}), "x-ssr-internal": "1", accept: "application/json", ...(lang && lang !== "en" ? { "x-lang": lang } : {}) } : init?.headers;
     // Prefer the in-process dispatcher installed by the server (no network hop, works
     // when the app is not reachable on 127.0.0.1:$PORT, e.g. behind LiteSpeed/Passenger).
     const dispatch = (globalThis as any).__pakistanypSsrDispatch;
@@ -147,7 +155,14 @@ function slimForHydration(state: any) {
 }
 
 export async function render(url: string): Promise<SSRRenderResult> {
+  const lang = langOfPath(new URL(url, "http://ssr.internal").pathname);
+  if (lang !== "en") await ensureDictionary();
+  return langStore.run(lang, () => renderInLang(url, lang));
+}
+
+async function renderInLang(url: string, lang: string): Promise<SSRRenderResult> {
   const queryClient = createSSRQueryClient();
+  const base = SECOND && lang === SECOND.code ? SECOND_PREFIX : "";
   // Browser location hooks expose pathname only; including ?q=... would select NotFound.
   const parsedUrl = new URL(url, "http://ssr.internal");
   const pathname = parsedUrl.pathname;
@@ -160,7 +175,7 @@ export async function render(url: string): Promise<SSRRenderResult> {
     const tree = (
       <HelmetProvider context={helmetContext}>
         <QueryClientProvider client={queryClient}>
-          <WouterRouter hook={useStaticLocation} ssrSearch={ssrSearch}>
+          <WouterRouter hook={useStaticLocation} ssrSearch={ssrSearch} base={base}>
             {notFoundPage ? <NotFound /> : <App />}
           </WouterRouter>
         </QueryClientProvider>

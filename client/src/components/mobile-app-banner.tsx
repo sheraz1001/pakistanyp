@@ -67,7 +67,7 @@ export function MobileAppBanner() {
   }
 
   return (
-    <Card className="fixed bottom-4 left-4 right-4 z-50 md:max-w-sm md:right-auto shadow-lg">
+    <Card className="fixed bottom-4 start-4 end-4 z-50 md:max-w-sm md:end-auto shadow-lg">
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">

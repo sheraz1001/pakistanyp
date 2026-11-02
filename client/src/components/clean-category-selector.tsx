@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X, Search } from "lucide-react";
 import { getCategoryIcon } from "@/lib/category-icons-clean";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -76,7 +77,7 @@ export function CleanCategorySelector({
     return (
       <button
         onClick={() => handleCategorySelect(category.id)}
-        className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all w-full text-left ${
+        className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all w-full text-start ${
           isSelected 
             ? 'border-blue-500 bg-blue-50 text-blue-800' 
             : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -102,7 +103,7 @@ export function CleanCategorySelector({
       {selectedCategories.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-blue-900">Selected Categories ({selectedCategories.length})</h3>
+            <h3 className="font-semibold text-blue-900">{tj("Selected Categories ({0})", selectedCategories.length)}</h3>
             <Button
               variant="ghost"
               size="sm"
@@ -125,7 +126,7 @@ export function CleanCategorySelector({
                 >
                   <IconComponent className="w-4 h-4" />
                   <span>{category.name}</span>
-                  <X className="w-3 h-3 ml-1" />
+                  <X className="w-3 h-3 ms-1" />
                 </Badge>
               );
             })}
@@ -135,12 +136,12 @@ export function CleanCategorySelector({
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
           placeholder="Search categories..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
+          className="ps-10"
         />
       </div>
 
@@ -198,7 +199,7 @@ export function CleanCategorySelector({
       {/* No Results */}
       {filteredCategories.length === 0 && searchTerm && (
         <div className="text-center py-8 text-gray-500">
-          <p>No categories found matching "{searchTerm}"</p>
+          <p>{tj("No categories found matching \"{0}\"", searchTerm)}</p>
         </div>
       )}
     </div>

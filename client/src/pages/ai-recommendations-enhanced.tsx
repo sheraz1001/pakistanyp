@@ -60,6 +60,8 @@ import {
   TrendingDown
 } from "lucide-react";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 // First city of the first regions, for example queries outside Pakistan
 const [exampleCity1, exampleCity2, exampleCity3] = country.regions.slice(0, 3).map((r) => r.cities?.[0]?.name ?? r.name);
@@ -177,7 +179,7 @@ export default function AIRecommendationsEnhanced() {
       }
       toast({
         title: "AI Recommendations Generated",
-        description: `Found ${data.recommendations?.length || 0} personalized matches`,
+        description: tx("Found {0} personalized matches", data.recommendations?.length || 0),
       });
     },
     onError: (error) => {
@@ -359,19 +361,19 @@ export default function AIRecommendationsEnhanced() {
                 
                 <div className="flex flex-wrap justify-center gap-4 mb-8">
                   <Badge variant="secondary" className="bg-white text-[#05501F] border border-[#CFE8D8] px-4 py-2">
-                    <Cpu className="w-4 h-4 mr-2" />
+                    <Cpu className="w-4 h-4 me-2" />
                     GPT-4 Powered
                   </Badge>
                   <Badge variant="secondary" className="bg-white text-[#05501F] border border-[#CFE8D8] px-4 py-2">
-                    <Mic className="w-4 h-4 mr-2" />
+                    <Mic className="w-4 h-4 me-2" />
                     Voice Search
                   </Badge>
                   <Badge variant="secondary" className="bg-white text-[#05501F] border border-[#CFE8D8] px-4 py-2">
-                    <Activity className="w-4 h-4 mr-2" />
+                    <Activity className="w-4 h-4 me-2" />
                     Real-time Analytics
                   </Badge>
                   <Badge variant="secondary" className="bg-white text-[#05501F] border border-[#CFE8D8] px-4 py-2">
-                    <Radar className="w-4 h-4 mr-2" />
+                    <Radar className="w-4 h-4 me-2" />
                     Smart Matching
                   </Badge>
                 </div>
@@ -482,7 +484,7 @@ export default function AIRecommendationsEnhanced() {
                       </div>
 
                       {/* Advanced Filters Toggle */}
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 rtl:space-x-reverse">
                         <Switch
                           id="advanced-filters"
                           checked={showAdvancedFilters}
@@ -497,9 +499,7 @@ export default function AIRecommendationsEnhanced() {
                       {showAdvancedFilters && (
                         <div className="space-y-4 border-t pt-4">
                           <div>
-                            <label className="block text-sm font-medium mb-2">
-                              Max Distance: {maxDistance[0]} km
-                            </label>
+                            <label className="block text-sm font-medium mb-2">{tj("Max Distance: {0} km", maxDistance[0])}</label>
                             <Slider
                               value={maxDistance}
                               onValueChange={setMaxDistance}
@@ -511,9 +511,7 @@ export default function AIRecommendationsEnhanced() {
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium mb-2">
-                              Price Range: ${priceRange[0]} - ${priceRange[1]}
-                            </label>
+                            <label className="block text-sm font-medium mb-2">{tj("Price Range: ${0} - ${1}", priceRange[0], priceRange[1])}</label>
                             <Slider
                               value={priceRange}
                               onValueChange={setPriceRange}
@@ -525,7 +523,7 @@ export default function AIRecommendationsEnhanced() {
                           </div>
 
                           <div className="space-y-3">
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
                               <Switch
                                 id="verified-only"
                                 checked={showOnlyVerified}
@@ -536,7 +534,7 @@ export default function AIRecommendationsEnhanced() {
                               </label>
                             </div>
 
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
                               <Switch
                                 id="open-now"
                                 checked={showOnlyOpen}
@@ -547,7 +545,7 @@ export default function AIRecommendationsEnhanced() {
                               </label>
                             </div>
 
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-2 rtl:space-x-reverse">
                               <Switch
                                 id="personalized"
                                 checked={personalizedMode}
@@ -586,12 +584,12 @@ export default function AIRecommendationsEnhanced() {
                       >
                         {aiRecommendationsMutation.isPending ? (
                           <>
-                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            <RefreshCw className="h-4 w-4 me-2 animate-spin" />
                             Analyzing...
                           </>
                         ) : (
                           <>
-                            <Brain className="h-4 w-4 mr-2" />
+                            <Brain className="h-4 w-4 me-2" />
                             Get AI Recommendations
                           </>
                         )}
@@ -621,7 +619,7 @@ export default function AIRecommendationsEnhanced() {
                             onClick={() => handleQuickSearch(term)}
                             className="text-xs hover:bg-blue-50 hover:border-blue-300"
                           >
-                            <Search className="h-3 w-3 mr-1" />
+                            <Search className="h-3 w-3 me-1" />
                             {term}
                           </Button>
                         ))}
@@ -701,7 +699,7 @@ export default function AIRecommendationsEnhanced() {
                           <div className="flex flex-wrap gap-2">
                             {analytics.marketTrends.map((trend, index) => (
                               <Badge key={index} variant="outline" className="bg-white">
-                                <TrendingUp className="h-3 w-3 mr-1" />
+                                <TrendingUp className="h-3 w-3 me-1" />
                                 {trend}
                               </Badge>
                             ))}
@@ -715,18 +713,16 @@ export default function AIRecommendationsEnhanced() {
                   {recommendations.length > 0 ? (
                     <div className="space-y-6">
                       <div className="flex justify-between items-center">
-                        <h3 className="text-xl font-bold text-gray-900">
-                          AI Recommendations ({recommendations.length})
-                        </h3>
+                        <h3 className="text-xl font-bold text-gray-900">{tj("AI Recommendations ({0})", recommendations.length)}</h3>
                         <Badge className="bg-blue-500 text-white">
-                          <Brain className="h-3 w-3 mr-1" />
+                          <Brain className="h-3 w-3 me-1" />
                           AI Powered
                         </Badge>
                       </div>
 
                       <div className="grid gap-6">
                         {recommendations.map((business, index) => (
-                          <Card key={business.id} className="hover:shadow-sm transition-all duration-300 border-l-4 border-l-blue-500">
+                          <Card key={business.id} className="hover:shadow-sm transition-all duration-300 border-s-4 border-s-blue-500">
                             <CardContent className="p-6">
                               <div className="flex justify-between items-start mb-4">
                                 <div className="flex-1">
@@ -766,7 +762,7 @@ export default function AIRecommendationsEnhanced() {
                                       </div>
                                     )}
                                     {business.distance && (
-                                      <span className="text-blue-600">{business.distance}km away</span>
+                                      <span className="text-blue-600">{tj("{0}km away", business.distance)}</span>
                                     )}
                                   </div>
 
@@ -777,13 +773,9 @@ export default function AIRecommendationsEnhanced() {
                                   )}
                                 </div>
 
-                                <div className="text-right ml-4">
-                                  <div className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-bold mb-2">
-                                    {business.aiScore}% AI Match
-                                  </div>
-                                  <div className="text-xs text-gray-500">
-                                    Rank #{index + 1}
-                                  </div>
+                                <div className="text-end ms-4">
+                                  <div className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-bold mb-2">{tj("{0}% AI Match", business.aiScore)}</div>
+                                  <div className="text-xs text-gray-500">{tj("Rank #{0}", index + 1)}</div>
                                 </div>
                               </div>
 
@@ -816,13 +808,13 @@ export default function AIRecommendationsEnhanced() {
                                     onClick={() => setLocation(`/business/${business.slug || business.id}`)}
                                     className="bg-blue-600 hover:bg-blue-700"
                                   >
-                                    <Eye className="h-4 w-4 mr-1" />
+                                    <Eye className="h-4 w-4 me-1" />
                                     View Details
                                   </Button>
                                   {business.phone && (
                                     <Button variant="outline" size="sm" asChild>
                                       <a href={`tel:${business.phone}`}>
-                                        <Phone className="h-3 w-3 mr-1" />
+                                        <Phone className="h-3 w-3 me-1" />
                                         Call
                                       </a>
                                     </Button>
@@ -830,7 +822,7 @@ export default function AIRecommendationsEnhanced() {
                                   {business.website && (
                                     <Button variant="outline" size="sm" asChild>
                                       <a href={business.website} target="_blank" rel="noopener noreferrer">
-                                        <Globe className="h-3 w-3 mr-1" />
+                                        <Globe className="h-3 w-3 me-1" />
                                         Website
                                       </a>
                                     </Button>
@@ -873,7 +865,7 @@ export default function AIRecommendationsEnhanced() {
                           variant="outline"
                           className="border-red-300 text-red-700 hover:bg-red-100"
                         >
-                          <RefreshCw className="h-4 w-4 mr-2" />
+                          <RefreshCw className="h-4 w-4 me-2" />
                           Try Again
                         </Button>
                       </CardContent>

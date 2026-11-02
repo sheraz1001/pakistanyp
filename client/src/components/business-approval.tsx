@@ -35,6 +35,7 @@ import {
   Calendar
 } from "lucide-react";
 import { format, isValid } from "date-fns";
+import { tj } from "@/i18n-jsx/tj";
 
 interface PendingBusiness {
   id: number;
@@ -211,7 +212,7 @@ export default function BusinessApproval() {
                         variant="outline"
                         onClick={() => setSelectedBusiness(business)}
                       >
-                        <Eye className="h-4 w-4 mr-1" />
+                        <Eye className="h-4 w-4 me-1" />
                         Review
                       </Button>
                       <Button
@@ -219,7 +220,7 @@ export default function BusinessApproval() {
                         variant="default"
                         onClick={() => handleApprove(business)}
                       >
-                        <CheckCircle className="h-4 w-4 mr-1" />
+                        <CheckCircle className="h-4 w-4 me-1" />
                         Approve
                       </Button>
                       <Button
@@ -230,7 +231,7 @@ export default function BusinessApproval() {
                           setShowRejectDialog(true);
                         }}
                       >
-                        <XCircle className="h-4 w-4 mr-1" />
+                        <XCircle className="h-4 w-4 me-1" />
                         Reject
                       </Button>
                     </div>
@@ -320,7 +321,7 @@ export default function BusinessApproval() {
                 variant="default" 
                 onClick={() => handleApprove(selectedBusiness)}
               >
-                <CheckCircle className="h-4 w-4 mr-1" />
+                <CheckCircle className="h-4 w-4 me-1" />
                 Approve Business
               </Button>
               <Button
@@ -329,7 +330,7 @@ export default function BusinessApproval() {
                   setShowRejectDialog(true);
                 }}
               >
-                <XCircle className="h-4 w-4 mr-1" />
+                <XCircle className="h-4 w-4 me-1" />
                 Reject Business
               </Button>
             </DialogFooter>
@@ -343,9 +344,7 @@ export default function BusinessApproval() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Reject Business</DialogTitle>
-              <DialogDescription>
-                Please provide a reason for rejecting {selectedBusiness.name}
-              </DialogDescription>
+              <DialogDescription>{tj("Please provide a reason for rejecting {0}", selectedBusiness.name)}</DialogDescription>
             </DialogHeader>
             <Textarea
               placeholder="Enter rejection reason..."

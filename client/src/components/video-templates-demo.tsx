@@ -62,7 +62,7 @@ export function VideoTemplatesDemo() {
                 </div>
                 
                 <Button size="sm" className="w-full">
-                  <Play className="h-4 w-4 mr-2" />
+                  <Play className="h-4 w-4 me-2" />
                   Preview Style
                 </Button>
               </div>

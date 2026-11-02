@@ -1,3 +1,4 @@
+import { pathInLang } from "@shared/i18n";
 import { country, regionUrl } from '@shared/country';
 import categoryRedirects from "./categoryRedirects.json";
 import { PRIVATE_PATH } from "./middleware/seoGuards";
@@ -345,13 +346,22 @@ export async function generateNewsSitemap() {
     </news:news>`
         : '';
       const lastmod = day(r.updated_at || r.published_at);
-      return `  <url>
-    <loc>${baseUrl}/news/${xmlEsc(r.slug)}</loc>${lastmod ? `
+      const L = country.secondLanguage;
+      const path = `/news/${xmlEsc(r.slug)}`;
+      const alt = L ? `
+    <xhtml:link rel="alternate" hreflang="en" href="${baseUrl}${path}"/>
+    <xhtml:link rel="alternate" hreflang="${L.code}" href="${baseUrl}${pathInLang(path, L.code)}"/>` : '';
+      const en = `  <url>
+    <loc>${baseUrl}${path}</loc>${alt}${lastmod ? `
     <lastmod>${lastmod}</lastmod>` : ''}${news}
   </url>`;
+      return L ? `${en}\n  <url>
+    <loc>${baseUrl}${pathInLang(path, L.code)}</loc>${alt}${lastmod ? `
+    <lastmod>${lastmod}</lastmod>` : ''}
+  </url>` : en;
     });
     return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join('\n')}
 </urlset>`;
   } catch (error) {
@@ -363,13 +373,20 @@ ${urls.join('\n')}
 // Helper function to generate XML
 function generateSitemapXML(baseUrl: string, pages: SitemapUrl[]): string {
   pages = pages.filter((u: any) => u && u.url && !PRIVATE_PATH.test(u.url.split('?')[0]));
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(page => `  <url>
-    <loc>${baseUrl}${page.url}</loc>
+  // Second language: every page is listed in both languages, each with hreflang alternates
+  const L = country.secondLanguage;
+  const alt = (url: string) => L ? `
+    <xhtml:link rel="alternate" hreflang="en" href="${baseUrl}${xmlEsc(url)}"/>
+    <xhtml:link rel="alternate" hreflang="${L.code}" href="${baseUrl}${xmlEsc(pathInLang(url, L.code))}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${xmlEsc(url)}"/>` : '';
+  const entry = (page: SitemapUrl, loc: string) => `  <url>
+    <loc>${baseUrl}${loc}</loc>${alt(page.url)}
     ${page.lastmod ? `<lastmod>${page.lastmod}</lastmod>` : ''}
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
-  </url>`).join('\n')}
+  </url>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${L ? ' xmlns:xhtml="http://www.w3.org/1999/xhtml"' : ''}>
+${pages.flatMap(page => L ? [entry(page, page.url), entry(page, pathInLang(page.url, L.code))] : [entry(page, page.url)]).join('\n')}
 </urlset>`;
 }

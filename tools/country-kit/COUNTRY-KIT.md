@@ -101,3 +101,38 @@ Then commit and push the country's `main` (Hostinger deploys it). Delete `.kit-l
 3. Write the guides (briefs/guide-brief.md), the launch news and the four blogs.
 4. Put the logo files in `brand/`.
 5. Generate, test on an empty database, push to the new repository, then follow its DEPLOY.md.
+
+## Second language (e.g. Arabic on SaudiYP)
+
+A country can add a full second language: English stays at the main addresses, the second language is
+served under `/<code>/...` (`saudiyp.com/ar/riyadh`), right-to-left when the language is.
+
+Turn it on in the pack:
+- `country-config.ts`: `secondLanguage: { code: "ar", dir: "rtl", name: "العربية", englishName: "Arabic", locale: "ar-SA" }`
+- `i18n/ui.<code>.json`: UI dictionary, English text -> translation (placeholders `{0}`, `{1}` kept)
+- `i18n/categories.<code>.json`: category slug -> name; `i18n/districts.<code>.json`: `"<City>|<Locality>"` -> name
+- `content/**/<name>.<code>.md`: second-language guides, news and blogs (same front matter keys and slug)
+
+How it works (template code, nothing to change per country):
+- `shared/i18n.ts`: `t()`, `num()`, `dateLocale()`, `langPath()`; the language comes from the address.
+- `client/src/i18n-jsx`: the JSX runtime translates text children and text props through the dictionary as
+  elements are created, converts digits, and keeps internal links in the page's language. Sentences that mix
+  text and values are wrapped as `tx("Businesses in {0}", name)` / `tj(...)` by `tools/i18n/wrap.cjs`.
+- `server/i18n.ts`: `/ar/...` is routed like `/...`; admin pages stay English (301 to the English address);
+  API responses for `x-lang: ar` show the `*_ar` twins (descriptions, guides, articles, business names);
+  place and category names stay English in the API and are translated on screen (they are in the dictionary).
+  Arabic search (spelling variants, singular/plural) covers business, category and place names.
+- SEO: `<html lang dir>`, hreflang alternates and `og:locale` on every page, both languages in every sitemap,
+  IndexNow for both.
+- Signed-in users choose their language (`users.preferred_language`, dashboard -> Settings, or the header
+  switch); every page then opens in that language.
+- Layout: logical Tailwind classes (`ms-`, `pe-`, `start-`, `text-start`...) mirror automatically
+  (`tools/i18n/rtl-classes.cjs` converts physical ones); directional icons flip in RTL.
+
+When template text changes, refresh the dictionary:
+```bash
+node tools/i18n/wrap.cjs client/src          # wrap new mixed text+value sentences
+node tools/i18n/rtl-classes.cjs client/src   # logical classes for new markup
+python3 tools/country-kit/build.py tools/country-kit/packs/sa ../saudiyp
+node tools/i18n/extract.cjs ../saudiyp > strings.json   # translate the strings missing from i18n/ui.ar.json
+```

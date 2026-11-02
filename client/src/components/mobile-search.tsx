@@ -40,12 +40,12 @@ export function MobileSearch() {
     <div className="p-4 bg-white border border-[#E7E9EE] rounded-[20px] md:hidden">
       <div className="flex gap-2 items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search businesses..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="ps-10"
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
           />
         </div>

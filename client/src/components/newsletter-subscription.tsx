@@ -4,6 +4,7 @@ import { Send, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 interface NewsletterSubscriptionProps {
   className?: string;
@@ -187,7 +188,7 @@ export default function NewsletterSubscription({
               }}
               disabled={subscribeMutation.isPending || isSuccess}
               aria-invalid={Boolean(errorMessage)}
-              aria-describedby={`${formId}-status ${formId}-privacy`}
+              aria-describedby={tx("{0}-status {1}-privacy", formId, formId)}
               required
             />
           </div>

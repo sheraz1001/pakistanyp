@@ -13,6 +13,7 @@ import SEO from '@/components/seo';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { country, localize } from '@shared/country';
+import { t as tx } from "@shared/i18n";
 
 const advertiseSchema = z.object({
   businessName: z.string().min(2, 'Business name must be at least 2 characters'),
@@ -309,9 +310,9 @@ export default function AdvertiseWithUs() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="essential">{`Essential - ${country.currency} 299/month`}</SelectItem>
-                                <SelectItem value="professional">{`Professional - ${country.currency} 599/month`}</SelectItem>
-                                <SelectItem value="enterprise">{`Enterprise - ${country.currency} 1,199/month`}</SelectItem>
+                                <SelectItem value="essential">{tx("Essential - {0} 299/month", country.currency)}</SelectItem>
+                                <SelectItem value="professional">{tx("Professional - {0} 599/month", country.currency)}</SelectItem>
+                                <SelectItem value="enterprise">{tx("Enterprise - {0} 1,199/month", country.currency)}</SelectItem>
                                 <SelectItem value="custom">Custom Package</SelectItem>
                               </SelectContent>
                             </Select>
@@ -332,11 +333,11 @@ export default function AdvertiseWithUs() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="under-500">{`Under ${country.currency} 500`}</SelectItem>
+                                <SelectItem value="under-500">{tx("Under {0} 500", country.currency)}</SelectItem>
                                 <SelectItem value="500-1000">{`${country.currency} 500 - 1,000`}</SelectItem>
                                 <SelectItem value="1000-2500">{`${country.currency} 1,000 - 2,500`}</SelectItem>
                                 <SelectItem value="2500-5000">{`${country.currency} 2,500 - 5,000`}</SelectItem>
-                                <SelectItem value="above-5000">{`Above ${country.currency} 5,000`}</SelectItem>
+                                <SelectItem value="above-5000">{tx("Above {0} 5,000", country.currency)}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -404,7 +405,7 @@ export default function AdvertiseWithUs() {
 
                     <Button type="submit" size="lg" className="w-full min-h-[52px]" disabled={isSubmitting}>
                       {isSubmitting ? "Sending..." : "Send Advertising Inquiry"}
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight className="ms-2 h-4 w-4" />
                     </Button>
                   </form>
                 </Form>
@@ -420,7 +421,7 @@ export default function AdvertiseWithUs() {
             </div>
             <div className="grid md:grid-cols-3 gap-5">
               {[
-                { icon: Users, tile: 'bg-[#E8F4EC] text-[#0B6B2E]', title: 'Targeted Audience', text: `Reach customers actively searching for businesses like yours across all ${country.regions.length} ${country.adjective} ${country.regionTerm.plural.toLowerCase()}.` },
+                { icon: Users, tile: 'bg-[#E8F4EC] text-[#0B6B2E]', title: 'Targeted Audience', text: tx("Reach customers actively searching for businesses like yours across all {0} {1} {2}.", country.regions.length, country.adjective, country.regionTerm.plural.toLowerCase()) },
                 { icon: Eye, tile: 'bg-[#E6F6F1] text-[#047857]', title: 'High Visibility', text: 'Premium placement ensures your business stands out from competitors in search results.' },
                 { icon: TrendingUp, tile: 'bg-[#FFF4E0] text-[#B45309]', title: 'Measurable Results', text: 'Track your advertising performance with detailed analytics and monthly reports.' },
               ].map((item) => (

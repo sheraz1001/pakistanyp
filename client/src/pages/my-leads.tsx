@@ -9,6 +9,7 @@ import { OwnerShell as OpsShell, OwnerPill as StatusPill } from "@/components/ow
 import { SEO } from "@/components/seo";
 import { country } from "@shared/country";
 import { api, fmtDate } from "@/components/phase1/api";
+import { tj } from "@/i18n-jsx/tj";
 
 const STATUSES = ["new", "contacted", "quoted", "won", "lost"];
 
@@ -35,7 +36,7 @@ export default function MyLeads() {
         ))}
       </div>
       {isLoading ? <p>Loading…</p> : shown.length === 0 ? (
-        <Card><CardContent className="p-8 text-center text-gray-600">No quote requests {filter === "all" ? "yet" : `with status "${filter}"`}. Verified, complete profiles get the most requests – add photos, services and prices to your listing.</CardContent></Card>
+        <Card><CardContent className="p-8 text-center text-gray-600">{tj("No quote requests {0}. Verified, complete profiles get the most requests – add photos, services and prices to your listing.", filter === "all" ? "yet" : `with status "${filter}"`)}</CardContent></Card>
       ) : (
         <div className="space-y-4">
           {shown.map((l) => (
@@ -44,12 +45,12 @@ export default function MyLeads() {
                 <div>
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <StatusPill value={l.status} />
-                    <span className="text-xs text-gray-500">{fmtDate(l.created_at)} · via {l.source === "category" ? "category page" : "your profile"}{l.business_name ? ` · ${l.business_name}` : ""}</span>
+                    <span className="text-xs text-gray-500">{tj("{0} · via {1}{2}", fmtDate(l.created_at), l.source === "category" ? "category page" : "your profile", l.business_name ? ` · ${l.business_name}` : "")}</span>
                   </div>
                   <h2 className="font-semibold text-lg tracking-[-0.02em]">{l.service_needed || "Quote request"}</h2>
                   <p className="text-gray-700 mt-1 whitespace-pre-line">{l.message}</p>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 mt-3">
-                    {l.budget_band && <span>Budget: {l.budget_band}</span>}{l.timeline && <span>Timeline: {l.timeline}</span>}
+                    {l.budget_band && <span>{tj("Budget: {0}", l.budget_band)}</span>}{l.timeline && <span>{tj("Timeline: {0}", l.timeline)}</span>}
                   </div>
                   {l.contactLocked ? (
                     <div className="mt-3 rounded-xl border border-[#CFE8D8] bg-[#F2F9F4] p-4 text-sm">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LanguageSwitch } from "@/components/language-switch";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -23,6 +24,7 @@ import {
    Cloud
 } from "lucide-react";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = { Instagram, Facebook, LinkedIn: Linkedin, X: Twitter };
 
@@ -211,7 +213,8 @@ export default function Header() {
         </nav>
 
         {/* Actions */}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ms-auto flex items-center gap-2">
+          <LanguageSwitch compact className="hidden sm:inline-flex" />
           {isAuthenticated ? (
             <>
               <a
@@ -243,20 +246,20 @@ export default function Header() {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate("/dashboard")}>
-                    <Building2 className="mr-2 h-4 w-4" />
+                    <Building2 className="me-2 h-4 w-4" />
                     Dashboard
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/admin-enhanced")}>
-                    <Shield className="mr-2 h-4 w-4" />
+                    <Shield className="me-2 h-4 w-4" />
                     Admin Panel
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/dashboard")}>
-                    <Settings className="mr-2 h-4 w-4" />
+                    <Settings className="me-2 h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="me-2 h-4 w-4" />
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -289,6 +292,7 @@ export default function Header() {
               <FlagStripe />
               <div className="flex flex-col gap-4 p-5">
                 <PakistanypLogo height={44} />
+                <LanguageSwitch className="self-start" />
 
                 {navItems.length > 0 && (
                   <nav aria-label="Mobile navigation" className="yp-side flex flex-col gap-1 border-t border-[#EEF0F4] pt-4">
@@ -310,7 +314,7 @@ export default function Header() {
                         <item.icon className="h-[18px] w-[18px]" aria-hidden="true" />
                         <span>{item.name}</span>
                         {item.badge && (
-                          <span className="ml-auto rounded-full bg-[#D71920] px-2 py-0.5 text-[11px] font-semibold text-white">
+                          <span className="ms-auto rounded-full bg-[#D71920] px-2 py-0.5 text-[11px] font-semibold text-white">
                             {item.badge}
                           </span>
                         )}
@@ -349,7 +353,7 @@ export default function Header() {
                 {country.social.length > 0 && (
                 <div className="flex items-center gap-3 border-t border-[#EEF0F4] pt-4 text-[#5B6475]">
                   {country.social.map(({ name, href }) => ({ name, href, Icon: SOCIAL_ICONS[name] || Globe })).map(({ name, href, Icon }) => (
-                    <a key={name} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Follow ${country.brand} on ${name}`} className="grid h-11 w-11 place-items-center rounded-xl border border-[#E3E6EC] hover:text-[#0B6B2E]">
+                    <a key={name} href={href} target="_blank" rel="noopener noreferrer" aria-label={tx("Follow {0} on {1}", country.brand, name)} className="grid h-11 w-11 place-items-center rounded-xl border border-[#E3E6EC] hover:text-[#0B6B2E]">
                       <Icon className="h-4 w-4" aria-hidden="true" />
                     </a>
                   ))}

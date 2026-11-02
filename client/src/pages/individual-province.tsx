@@ -16,6 +16,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { Link } from "wouter";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Province {
   id: number;
@@ -80,7 +81,7 @@ export default function IndividualProvincePage() {
           <p className="text-gray-600 mb-6">The requested province could not be found.</p>
           <Link href="/provinces">
             <Button>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-4 w-4 me-2" />
               Back to Provinces
             </Button>
           </Link>
@@ -110,15 +111,9 @@ export default function IndividualProvincePage() {
                 {province.description}
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-2">
-                <span className="yp-pill border border-[#CFE8D8] bg-white text-[#05501F]">
-                  {province.businessCount || 0} Businesses
-                </span>
-                <span className="yp-pill border border-[#CFE8D8] bg-white text-[#05501F]">
-                  {province.localityCount || 0} Areas
-                </span>
-                <span className="yp-pill border border-[#CFE8D8] bg-white text-[#05501F]">
-                  {province.viewCount || 0} Views
-                </span>
+                <span className="yp-pill border border-[#CFE8D8] bg-white text-[#05501F]">{tj("{0} Businesses", province.businessCount || 0)}</span>
+                <span className="yp-pill border border-[#CFE8D8] bg-white text-[#05501F]">{tj("{0} Areas", province.localityCount || 0)}</span>
+                <span className="yp-pill border border-[#CFE8D8] bg-white text-[#05501F]">{tj("{0} Views", province.viewCount || 0)}</span>
               </div>
             </div>
             {province.headerImage && (
@@ -138,9 +133,7 @@ export default function IndividualProvincePage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-blue-600" />
-                    About {province.name}
-                  </CardTitle>
+                    <MapPin className="h-5 w-5 text-blue-600" />{tj("About {0}", province.name)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="prose max-w-none">
@@ -186,9 +179,7 @@ export default function IndividualProvincePage() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Economic Sectors</CardTitle>
-                    <CardDescription>
-                      Key industries and business sectors in {province.name}
-                    </CardDescription>
+                    <CardDescription>{tj("Key industries and business sectors in {0}", province.name)}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -246,21 +237,21 @@ export default function IndividualProvincePage() {
                 <CardContent className="space-y-3">
                   <Link href={`/businesses?province=${province.id}`}>
                     <Button className="w-full justify-start" variant="outline">
-                      <Building2 className="h-4 w-4 mr-2" />
+                      <Building2 className="h-4 w-4 me-2" />
                       Browse Businesses
                     </Button>
                   </Link>
                   
                   <Link href={`/localities?province=${province.id}`}>
                     <Button className="w-full justify-start" variant="outline">
-                      <MapPin className="h-4 w-4 mr-2" />
+                      <MapPin className="h-4 w-4 me-2" />
                       Explore Areas
                     </Button>
                   </Link>
                   
                   <Link href="/add-business-enhanced">
                     <Button className="w-full justify-start">
-                      <Building2 className="h-4 w-4 mr-2" />
+                      <Building2 className="h-4 w-4 me-2" />
                       Add Your Business
                     </Button>
                   </Link>
@@ -275,7 +266,7 @@ export default function IndividualProvincePage() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {province.keyFacts.map((fact: any, index: number) => (
-                      <div key={index} className="border-l-4 border-blue-600 pl-4">
+                      <div key={index} className="border-s-4 border-blue-600 ps-4">
                         <h4 className="font-medium text-gray-900 text-sm">{fact.title}</h4>
                         <p className="text-sm text-gray-600">{fact.value}</p>
                       </div>

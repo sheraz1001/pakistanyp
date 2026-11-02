@@ -38,7 +38,7 @@ function MobileHeader() {
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-4 mt-6">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 rtl:space-x-reverse">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={user?.profileImageUrl} />
                       <AvatarFallback>

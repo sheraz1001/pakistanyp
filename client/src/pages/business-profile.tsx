@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useState, useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -36,6 +37,8 @@ import {
   Calendar
 } from "lucide-react";
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -187,7 +190,7 @@ export default function BusinessProfile() {
       <div className="bg-white">
         <div className="yp-wrap pt-6">
           <nav className="text-sm">
-            <ol className="flex items-center space-x-2">
+            <ol className="flex items-center space-x-2 rtl:space-x-reverse">
               <li><a href="/" className="text-[#0B6B2E] hover:text-[#05501F]">Home</a></li>
               <li className="text-gray-500">/</li>
               <li><a href="/categories" className="text-[#0B6B2E] hover:text-[#05501F]">Categories</a></li>
@@ -216,7 +219,7 @@ export default function BusinessProfile() {
                       
                       <div className="flex items-center gap-4 flex-wrap">
                         <div className="flex items-center">
-                          <div className="flex text-[#F59E0B] mr-2">
+                          <div className="flex text-[#F59E0B] me-2">
                             {[...Array(5)].map((_, i) => (
                               <Star 
                                 key={i} 
@@ -225,12 +228,12 @@ export default function BusinessProfile() {
                             ))}
                           </div>
                           <span className="font-medium">{business.ratingAverage}</span>
-                          <span className="text-gray-500 ml-1">({business.ratingCount} reviews)</span>
+                          <span className="text-gray-500 ms-1">{tj("({0} reviews)", business.ratingCount)}</span>
                         </div>
                         
                         <div className="flex items-center text-gray-500">
-                          <Eye className="w-4 h-4 mr-1" />
-                          <span>{business.viewCount} views</span>
+                          <Eye className="w-4 h-4 me-1" />
+                          <span>{tj("{0} views", business.viewCount)}</span>
                         </div>
                       </div>
                     </div>
@@ -246,16 +249,14 @@ export default function BusinessProfile() {
                   </div>
                   
                   <div className="flex items-center text-gray-600 mb-2">
-                    <MapPin className="w-5 h-5 mr-2" />
+                    <MapPin className="w-5 h-5 me-2" />
                     <span>{business.address}, {business.locality}</span>
                   </div>
                   
                   {workingHours[currentDay] && (
                     <div className="flex items-center text-gray-600">
-                      <Clock className="w-5 h-5 mr-2" />
-                      <span>
-                        Open today: {workingHours[currentDay].open} - {workingHours[currentDay].close}
-                      </span>
+                      <Clock className="w-5 h-5 me-2" />
+                      <span>{tj("Open today: {0} - {1}", workingHours[currentDay].open, workingHours[currentDay].close)}</span>
                     </div>
                   )}
                 </div>
@@ -271,7 +272,7 @@ export default function BusinessProfile() {
                 <CardContent className="space-y-4">
                   {business.phone && (
                     <div className="flex items-center">
-                      <Phone className="w-5 h-5 mr-3 text-[#5B6475]" />
+                      <Phone className="w-5 h-5 me-3 text-[#5B6475]" />
                       <div>
                         <div className="font-medium">Phone</div>
                         <div className="text-gray-600">{business.phone}</div>
@@ -281,7 +282,7 @@ export default function BusinessProfile() {
                   
                   {business.email && (
                     <div className="flex items-center">
-                      <Mail className="w-5 h-5 mr-3 text-[#5B6475]" />
+                      <Mail className="w-5 h-5 me-3 text-[#5B6475]" />
                       <div>
                         <div className="font-medium">Email</div>
                         <div className="text-gray-600">{business.email}</div>
@@ -291,7 +292,7 @@ export default function BusinessProfile() {
                   
                   {business.website && (
                     <div className="flex items-center">
-                      <Globe className="w-5 h-5 mr-3 text-[#5B6475]" />
+                      <Globe className="w-5 h-5 me-3 text-[#5B6475]" />
                       <div>
                         <div className="font-medium">Website</div>
                         <a 
@@ -310,7 +311,7 @@ export default function BusinessProfile() {
                   
                   <div className="space-y-2">
                     <Button className="w-full">
-                      <MessageCircle className="w-4 h-4 mr-2" />
+                      <MessageCircle className="w-4 h-4 me-2" />
                       Send Message
                     </Button>
                     <QuickShareQRCode business={business} size="sm" showShareButtons={false} />
@@ -328,7 +329,7 @@ export default function BusinessProfile() {
           <nav className="flex gap-6 overflow-x-auto" aria-label="Sections">
             {[
               { id: 'overview', label: 'Overview' },
-              { id: 'reviews', label: `Reviews (${reviews.length})` },
+              { id: 'reviews', label: tx("Reviews ({0})", reviews.length) },
               { id: 'contact', label: 'Contact' },
             ].map((tab) => (
               <button
@@ -433,13 +434,11 @@ export default function BusinessProfile() {
                                       {[5, 4, 3, 2, 1].map((rating) => (
                                         <SelectItem key={rating} value={rating.toString()}>
                                           <div className="flex items-center">
-                                            <div className="flex text-[#F59E0B] mr-2">
+                                            <div className="flex text-[#F59E0B] me-2">
                                               {[...Array(rating)].map((_, i) => (
                                                 <Star key={i} className="w-4 h-4 fill-current" />
                                               ))}
-                                            </div>
-                                            {rating} star{rating !== 1 ? 's' : ''}
-                                          </div>
+                                            </div>{tj("{0} star{1}", rating, rating !== 1 ? 's' : '')}</div>
                                         </SelectItem>
                                       ))}
                                     </SelectContent>
@@ -503,7 +502,7 @@ export default function BusinessProfile() {
                           <div className="flex items-start justify-between mb-3">
                             <div>
                               <div className="flex items-center mb-2">
-                                <div className="flex text-[#F59E0B] mr-2">
+                                <div className="flex text-[#F59E0B] me-2">
                                   {[...Array(5)].map((_, i) => (
                                     <Star 
                                       key={i} 
@@ -516,7 +515,7 @@ export default function BusinessProfile() {
                               <p className="text-gray-700">{review.content}</p>
                             </div>
                             <div className="text-sm text-gray-500">
-                              {new Date(review.createdAt).toLocaleDateString()}
+                              {new Date(review.createdAt).toLocaleDateString(dateLocale())}
                             </div>
                           </div>
                           
@@ -649,7 +648,7 @@ export default function BusinessProfile() {
               <CardContent className="space-y-3">
                 {business.establishedYear && (
                   <div className="flex items-center">
-                    <Calendar className="w-5 h-5 mr-3 text-[#5B6475]" />
+                    <Calendar className="w-5 h-5 me-3 text-[#5B6475]" />
                     <div>
                       <div className="font-medium">Established</div>
                       <div className="text-gray-600">{business.establishedYear}</div>
@@ -659,17 +658,17 @@ export default function BusinessProfile() {
                 
                 {business.employeeCount && (
                   <div className="flex items-center">
-                    <Building className="w-5 h-5 mr-3 text-[#5B6475]" />
+                    <Building className="w-5 h-5 me-3 text-[#5B6475]" />
                     <div>
                       <div className="font-medium">Company Size</div>
-                      <div className="text-gray-600">{business.employeeCount} employees</div>
+                      <div className="text-gray-600">{tj("{0} employees", business.employeeCount)}</div>
                     </div>
                   </div>
                 )}
                 
                 {business.tradeLicense && (
                   <div className="flex items-center">
-                    <Flag className="w-5 h-5 mr-3 text-[#5B6475]" />
+                    <Flag className="w-5 h-5 me-3 text-[#5B6475]" />
                     <div>
                       <div className="font-medium">{country.licenceAuthority.charAt(0).toUpperCase() + country.licenceAuthority.slice(1)}</div>
                       <div className="text-gray-600">{business.tradeLicense}</div>

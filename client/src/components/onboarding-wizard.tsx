@@ -25,6 +25,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { country, localize } from '@shared/country';
 import { useToast } from '@/hooks/use-toast';
+import { tj } from "@/i18n-jsx/tj";
 
 interface OnboardingStep {
   id: string;
@@ -77,7 +78,7 @@ function WelcomeStep({ onNext }: OnboardingStepProps) {
           { icon: <MapPin className="w-6 h-6" />, title: "Location & Interests", desc: "Choose your areas" },
           { icon: <Bell className="w-6 h-6" />, title: "Notifications", desc: "Stay updated" }
         ].map((feature, index) => (
-          <div key={index} className="yp-panel p-5 text-left">
+          <div key={index} className="yp-panel p-5 text-start">
             <div className="w-12 h-12 rounded-[14px] bg-[#E8F4EC] text-[#0B6B2E] grid place-items-center mb-3">{feature.icon}</div>
             <h3 className="font-semibold text-[#0A0A0A]">{feature.title}</h3>
             <p className="text-sm text-[#4B5565]">{feature.desc}</p>
@@ -87,7 +88,7 @@ function WelcomeStep({ onNext }: OnboardingStepProps) {
 
       <Button onClick={onNext} size="lg" className="h-12 rounded-xl px-6 text-[15px]">
         Get Started
-        <ArrowRight className="w-4 h-4 ml-2" />
+        <ArrowRight className="w-4 h-4 ms-2" />
       </Button>
     </div>
   );
@@ -134,7 +135,7 @@ function ProfileStep({ onNext, onPrevious, userData, setUserData }: OnboardingSt
             onClick={() => setRole(roleOption.id)}
           >
             <CardContent className="p-6">
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4 rtl:space-x-reverse">
                 <div className={`w-12 h-12 grid place-items-center shrink-0 rounded-[14px] ${
                   role === roleOption.id ? 'bg-[#0B6B2E] text-white' : 'bg-[#F1F2F6] text-[#334155]'
                 }`}>
@@ -159,12 +160,12 @@ function ProfileStep({ onNext, onPrevious, userData, setUserData }: OnboardingSt
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrevious}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="w-4 h-4 me-2" />
           Previous
         </Button>
         <Button onClick={handleNext} disabled={!role}>
           Next
-          <ArrowRight className="w-4 h-4 ml-2" />
+          <ArrowRight className="w-4 h-4 ms-2" />
         </Button>
       </div>
     </div>
@@ -225,7 +226,7 @@ function LocationStep({ onNext, onPrevious, userData, setUserData }: OnboardingS
       {/* Provinces Selection */}
       <div className="space-y-3">
         <h3 className="text-lg font-semibold text-[#0A0A0A] flex items-center">
-          <MapPin className="w-5 h-5 mr-2 text-blue-500" />
+          <MapPin className="w-5 h-5 me-2 text-blue-500" />
           {localize("Preferred Provinces")}
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -249,7 +250,7 @@ function LocationStep({ onNext, onPrevious, userData, setUserData }: OnboardingS
       {/* Categories Selection */}
       <div className="space-y-3">
         <h3 className="text-lg font-semibold text-[#0A0A0A] flex items-center">
-          <Heart className="w-5 h-5 mr-2 text-red-500" />
+          <Heart className="w-5 h-5 me-2 text-red-500" />
           Interested Categories
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
@@ -272,12 +273,12 @@ function LocationStep({ onNext, onPrevious, userData, setUserData }: OnboardingS
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrevious}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="w-4 h-4 me-2" />
           Previous
         </Button>
         <Button onClick={handleNext} disabled={selectedProvinces.length === 0}>
           Next
-          <ArrowRight className="w-4 h-4 ml-2" />
+          <ArrowRight className="w-4 h-4 ms-2" />
         </Button>
       </div>
     </div>
@@ -333,7 +334,7 @@ function NotificationsStep({ onNext, onPrevious, userData, setUserData }: Onboar
       {/* Notification Preferences */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-[#0A0A0A] flex items-center">
-          <Bell className="w-5 h-5 mr-2 text-green-500" />
+          <Bell className="w-5 h-5 me-2 text-green-500" />
           Notification Preferences
         </h3>
         <div className="space-y-3">
@@ -364,7 +365,7 @@ function NotificationsStep({ onNext, onPrevious, userData, setUserData }: Onboar
       {/* Goals Selection */}
       <div className="space-y-3">
         <h3 className="text-lg font-semibold text-[#0A0A0A] flex items-center">
-          <Target className="w-5 h-5 mr-2 text-purple-500" />
+          <Target className="w-5 h-5 me-2 text-purple-500" />
           Your Goals
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -395,12 +396,12 @@ function NotificationsStep({ onNext, onPrevious, userData, setUserData }: Onboar
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onPrevious}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="w-4 h-4 me-2" />
           Previous
         </Button>
         <Button onClick={handleNext}>
           Next
-          <ArrowRight className="w-4 h-4 ml-2" />
+          <ArrowRight className="w-4 h-4 ms-2" />
         </Button>
       </div>
     </div>
@@ -452,32 +453,26 @@ function CompletionStep({ onComplete, userData }: OnboardingStepProps) {
       </div>
 
       {/* Summary of selections */}
-      <div className="yp-panel p-6 space-y-4 text-left">
+      <div className="yp-panel p-6 space-y-4 text-start">
         <h3 className="font-semibold text-[#0A0A0A]">Your Profile Summary:</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <span className="font-medium text-[#3A4354]">Role:</span>
-            <span className="ml-2 text-[#4B5565] capitalize">
+            <span className="ms-2 text-[#4B5565] capitalize">
               {userData.businessRole?.replace('_', ' ')}
             </span>
           </div>
           <div>
             <span className="font-medium text-[#3A4354]">{localize("Provinces:")}</span>
-            <span className="ml-2 text-[#4B5565]">
-              {userData.preferredProvinces?.length || 0} selected
-            </span>
+            <span className="ms-2 text-[#4B5565]">{tj("{0} selected", userData.preferredProvinces?.length || 0)}</span>
           </div>
           <div>
             <span className="font-medium text-[#3A4354]">Interests:</span>
-            <span className="ml-2 text-[#4B5565]">
-              {userData.interestedCategories?.length || 0} categories
-            </span>
+            <span className="ms-2 text-[#4B5565]">{tj("{0} categories", userData.interestedCategories?.length || 0)}</span>
           </div>
           <div>
             <span className="font-medium text-[#3A4354]">Goals:</span>
-            <span className="ml-2 text-[#4B5565]">
-              {userData.goals?.length || 0} selected
-            </span>
+            <span className="ms-2 text-[#4B5565]">{tj("{0} selected", userData.goals?.length || 0)}</span>
           </div>
         </div>
       </div>
@@ -489,7 +484,7 @@ function CompletionStep({ onComplete, userData }: OnboardingStepProps) {
         disabled={saveMutation.isPending}
       >
         {saveMutation.isPending ? 'Saving...' : 'Complete Setup'}
-        <CheckCircle className="w-4 h-4 ml-2" />
+        <CheckCircle className="w-4 h-4 ms-2" />
       </Button>
     </div>
   );
@@ -572,7 +567,7 @@ export function OnboardingWizard() {
       <FlagStripe />
       <header className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-[clamp(24px,4vw,48px)] py-6">
         <PakistanypLogo href="/" />
-        <span className="yp-label">Step {currentStep + 1} of {steps.length}</span>
+        <span className="yp-label">{tj("Step {0} of {1}", currentStep + 1, steps.length)}</span>
       </header>
       <div className="px-4 sm:px-6 pt-2 pb-16">
         {/* Progress Header */}
@@ -601,7 +596,7 @@ export function OnboardingWizard() {
               </li>
             ))}
           </ol>
-          <span className="sr-only">{Math.round(progress)}% complete</span>
+          <span className="sr-only">{tj("{0}% complete", Math.round(progress))}</span>
         </div>
 
         {/* Main Content */}

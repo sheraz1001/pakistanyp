@@ -61,12 +61,12 @@ export function AuthAside({
   footnote?: string;
 }) {
   return (
-    <aside className="hidden lg:flex flex-[1_1_480px] min-w-0 relative overflow-hidden flex-col justify-between gap-12 bg-[#F2F9F4] border-l border-[#DCEBE1] p-[clamp(32px,5vw,72px)]">
+    <aside className="hidden lg:flex flex-[1_1_480px] min-w-0 relative overflow-hidden flex-col justify-between gap-12 bg-[#F2F9F4] border-s border-[#DCEBE1] p-[clamp(32px,5vw,72px)]">
       <svg
         width="520"
         height="520"
         viewBox="0 0 520 520"
-        className="absolute -right-[140px] -top-[140px] opacity-50 pointer-events-none"
+        className="absolute -end-[140px] -top-[140px] opacity-50 pointer-events-none"
         aria-hidden="true"
       >
         <circle cx="260" cy="260" r="259" fill="none" stroke="#CFE8D8" />
@@ -126,7 +126,7 @@ export function AuthAsideCard({
   );
 }
 
-/** Top bar for the create-account page: flag stripe, logo and a right-hand slot. */
+/** Top bar for the create-account page: flag stripe, logo and a end-hand slot. */
 export function AuthTopBar({ right }: { right?: ReactNode }) {
   return (
     <>

@@ -11,6 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { Star, MapPin, Calendar, Users, CreditCard, Check } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface HotelBookingModalProps {
   isOpen: boolean;
@@ -172,11 +174,11 @@ export default function HotelBookingModal({
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-600">Guests</Label>
-                    <p className="font-semibold">{searchParams.adults} Adults{searchParams.children > 0 && `, ${searchParams.children} Children`}</p>
+                    <p className="font-semibold">{tj("{0} Adults", searchParams.adults)}{searchParams.children > 0 && `, ${searchParams.children} Children`}</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-gray-600">Total Paid</Label>
-                    <p className="text-lg font-bold">${totalPrice.toFixed(2)} USD</p>
+                    <p className="text-lg font-bold">{tj("${0} USD", totalPrice.toFixed(2))}</p>
                   </div>
                 </div>
               </CardContent>
@@ -185,7 +187,7 @@ export default function HotelBookingModal({
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="font-semibold mb-2">What's Next?</h4>
               <ul className="text-sm space-y-1 text-blue-800">
-                <li>• A confirmation email has been sent to {guestInfo.email}</li>
+                <li>{tj("• A confirmation email has been sent to {0}", guestInfo.email)}</li>
                 <li>• Please arrive at the hotel with a valid ID and this confirmation number</li>
                 <li>• Contact the hotel directly for any special requests or changes</li>
               </ul>
@@ -234,7 +236,7 @@ export default function HotelBookingModal({
                       <Star key={i} className="h-4 w-4 fill-[#F59E0B] text-[#F59E0B]" />
                     ))}
                   </div>
-                  <Badge variant="secondary">{hotel.stars || 5} Star Hotel</Badge>
+                  <Badge variant="secondary">{tj("{0} Star Hotel", hotel.stars || 5)}</Badge>
                 </div>
                 <div className="flex items-center gap-1 mt-2 text-sm text-gray-600">
                   <MapPin className="h-4 w-4" />
@@ -255,11 +257,11 @@ export default function HotelBookingModal({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Duration</span>
-                  <span className="font-semibold">{nights} night{nights > 1 ? 's' : ''}</span>
+                  <span className="font-semibold">{tj("{0} night{1}", nights, nights > 1 ? 's' : '')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Guests</span>
-                  <span className="font-semibold">{searchParams.adults} Adults{searchParams.children > 0 && `, ${searchParams.children} Children`}</span>
+                  <span className="font-semibold">{tj("{0} Adults", searchParams.adults)}{searchParams.children > 0 && `, ${searchParams.children} Children`}</span>
                 </div>
               </div>
 
@@ -267,7 +269,7 @@ export default function HotelBookingModal({
 
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Room Rate ({nights} night{nights > 1 ? 's' : ''})</span>
+                  <span>{tj("Room Rate ({0} night{1})", nights, nights > 1 ? 's' : '')}</span>
                   <span>${basePrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -277,7 +279,7 @@ export default function HotelBookingModal({
                 <Separator />
                 <div className="flex justify-between font-semibold text-lg">
                   <span>Total</span>
-                  <span>${totalPrice.toFixed(2)} USD</span>
+                  <span>{tj("${0} USD", totalPrice.toFixed(2))}</span>
                 </div>
               </div>
             </CardContent>
@@ -360,7 +362,7 @@ export default function HotelBookingModal({
                   size="lg"
                   disabled={!stripe || isProcessing}
                 >
-                  {isProcessing ? "Processing..." : `Pay $${totalPrice.toFixed(2)} & Confirm Booking`}
+                  {isProcessing ? "Processing..." : tx("Pay ${0} & Confirm Booking", totalPrice.toFixed(2))}
                 </Button>
               </form>
             </CardContent>

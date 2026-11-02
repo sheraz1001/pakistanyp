@@ -17,6 +17,8 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import SEO from "@/components/seo";
 import { country } from "@shared/country";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 // Stripe loading disabled to prevent error overlay
 const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
@@ -309,7 +311,7 @@ export default function UpgradePremium() {
                         </div>
                         {business.isPremium && (
                           <Badge variant="secondary" className="bg-[#E8F4EC] text-[#05501F]">
-                            <Crown className="h-3 w-3 mr-1" />
+                            <Crown className="h-3 w-3 me-1" />
                             Premium
                           </Badge>
                         )}
@@ -334,7 +336,7 @@ export default function UpgradePremium() {
                 onClick={() => handlePlanSelect(plan.id)}
               >
                 {plan.recommended && (
-                  <span className="yp-pill bg-[#E3A82B] text-[#141414] gap-1 absolute -top-3 left-6">
+                  <span className="yp-pill bg-[#E3A82B] text-[#141414] gap-1 absolute -top-3 start-6">
                     <Star className="h-3 w-3" aria-hidden="true" />
                     Recommended
                   </span>
@@ -379,9 +381,7 @@ export default function UpgradePremium() {
             <Card className="rounded-[24px]">
               <CardHeader>
                 <CardTitle>Complete Your Upgrade</CardTitle>
-                <CardDescription>
-                  Upgrade your business to {selectedPlanData.name} for {selectedPlanData.price}{" " + country.currency}
-                </CardDescription>
+                <CardDescription>{tj("Upgrade your business to {0} for {1}{2}", selectedPlanData.name, selectedPlanData.price, " " + country.currency)}</CardDescription>
               </CardHeader>
               <CardContent>
                 {!clientSecret ? (
@@ -394,11 +394,11 @@ export default function UpgradePremium() {
                     >
                       {createPaymentMutation.isPending ? (
                         <>
-                          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full me-2" />
                           Creating Payment...
                         </>
                       ) : (
-                        `Start Payment - ${selectedPlanData.price} ${country.currency}`
+                        tx("Start Payment - {0} {1}", selectedPlanData.price, country.currency)
                       )}
                     </Button>
                   </div>

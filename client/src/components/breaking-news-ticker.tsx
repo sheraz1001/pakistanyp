@@ -37,9 +37,9 @@ export default function BreakingNewsTicker() {
       {/* Animated background pattern */}
       
       <div className="container mx-auto px-4 py-3 relative">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 rtl:space-x-reverse">
           {/* Breaking News Badge */}
-          <div className="flex items-center space-x-2 flex-shrink-0 bg-[#E3A82B] text-[#141414] px-3 py-1 rounded-full">
+          <div className="flex items-center space-x-2 rtl:space-x-reverse flex-shrink-0 bg-[#E3A82B] text-[#141414] px-3 py-1 rounded-full">
             <div className="w-2 h-2 bg-white rounded-full"></div>
             <span className="text-xs font-semibold uppercase tracking-[.06em]">Breaking</span>
             <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
@@ -51,7 +51,7 @@ export default function BreakingNewsTicker() {
               <div className="animate-marquee whitespace-nowrap">
                 <a 
                   href={`/news/${currentNews.slug}`}
-                  className="text-[15px] font-semibold text-[#0A0A0A] hover:text-[#0B6B2E] transition-colors duration-200 inline-flex items-center space-x-2"
+                  className="text-[15px] font-semibold text-[#0A0A0A] hover:text-[#0B6B2E] transition-colors duration-200 inline-flex items-center space-x-2 rtl:space-x-reverse"
                 >
                   <span>{currentNews.title}</span>
                   <ChevronRight className="w-4 h-4 opacity-70" />
@@ -62,8 +62,8 @@ export default function BreakingNewsTicker() {
 
           {/* News Counter */}
           {breakingNews.length > 1 && (
-            <div className="flex items-center space-x-2 flex-shrink-0">
-              <div className="flex space-x-1">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse flex-shrink-0">
+              <div className="flex space-x-1 rtl:space-x-reverse">
                 {breakingNews.map((_, index) => (
                   <button
                     key={index}

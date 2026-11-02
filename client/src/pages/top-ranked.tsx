@@ -9,6 +9,8 @@ import { QuoteRequestCard } from "@/components/phase1/quote-request";
 import { api } from "@/components/phase1/api";
 import { breadcrumbLd } from "@/lib/structured-data";
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 const YEAR = new Date().getFullYear();
 const plain = (s?: string | null, n = 180) => (s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, n);
@@ -30,13 +32,13 @@ function Row({ b, rank, sponsored }: { b: any; rank?: number; sponsored?: boolea
         <div className="text-sm text-[#5B6475] mt-1">{[b.locality_name, b.province_name].filter(Boolean).join(", ")}{b.category_name ? ` · ${b.category_name}` : ""}</div>
         <p className="text-sm leading-[1.55] text-[#4B5565] mt-2 line-clamp-2">{plain(b.short_description || b.description)}</p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm mt-2">
-          {Number(b.review_avg || b.rating_average) > 0 && <span className="inline-flex items-center gap-1"><Star className="h-4 w-4 fill-[#F59E0B] text-[#F59E0B]" /> {Number(b.review_avg || b.rating_average).toFixed(1)}{b.reviews ? ` (${b.reviews} review${b.reviews === 1 ? "" : "s"})` : ""}</span>}
+          {Number(b.review_avg || b.rating_average) > 0 && <span className="inline-flex items-center gap-1"><Star className="h-4 w-4 fill-[#F59E0B] text-[#F59E0B]" /> {Number(b.review_avg || b.rating_average).toFixed(1)}{b.reviews ? tx(" ({0} review{1})", b.reviews, b.reviews === 1 ? "" : "s") : ""}</span>}
           {b.phone && <a className="inline-flex items-center gap-1 text-[#0B6B2E] hover:text-[#05501F]" href={`tel:${b.phone}`}><Phone className="h-4 w-4" /> {b.phone}</a>}
           {b.website && <a className="inline-flex items-center gap-1 text-[#0B6B2E] hover:text-[#05501F]" href={b.website} target="_blank" rel="noopener nofollow"><Globe className="h-4 w-4" /> Website</a>}
-          {typeof b.score === "number" && <span className="font-mono text-xs text-[#5B6475]" title={`Verified ${b.breakdown.verified} · Claimed ${b.breakdown.claimed} · Reviews ${b.breakdown.reviews} · Rating ${b.breakdown.rating} · Profile ${b.breakdown.completeness} · Membership ${b.breakdown.tier}`}>Score {b.score}/100</span>}
+          {typeof b.score === "number" && <span className="font-mono text-xs text-[#5B6475]" title={tx("Verified {0} · Claimed {1} · Reviews {2} · Rating {3} · Profile {4} · Membership {5}", b.breakdown.verified, b.breakdown.claimed, b.breakdown.reviews, b.breakdown.rating, b.breakdown.completeness, b.breakdown.tier)}>{tj("Score {0}/100", b.score)}</span>}
         </div>
       </div>
-      <div className="hidden sm:flex items-center"><Button asChild variant="outline"><Link href={`/business/${b.slug}`}>View <ArrowRight className="h-4 w-4 ml-1" /></Link></Button></div>
+      <div className="hidden sm:flex items-center"><Button asChild variant="outline"><Link href={`/business/${b.slug}`}>View <ArrowRight className="h-4 w-4 ms-1" /></Link></Button></div>
     </article>
   );
 }
@@ -77,15 +79,14 @@ export default function TopRanked() {
               <Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/categories">Categories</Link><span aria-hidden="true">/</span><Link href={`/categories/${cat.slug}`}>{cat.name}</Link>{em ? <><span aria-hidden="true">/</span><span>{em.name}</span></> : null}
             </nav>
             <span className="yp-label">Ranked list</span>
-            <h1 className="mt-2 text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-[-0.04em] text-[#0A0A0A]">Top {n >= 3 ? n : ""} {cat.name} in {where} <span className="text-[#5B6475] font-normal">({YEAR})</span></h1>
-            <p className="text-[#3A4354] text-[18px] leading-[1.6] mt-3 max-w-3xl">
-              Looking for {cat.name.toLowerCase()} in {where}? {total > 0 ? <>We compared {total} {total === 1 ? "listed company" : "listed companies"}</> : <>We compare listed companies</>}{` and ranked them on what matters when you hire: a verified ${country.licenceAuthority}, a claimed and complete profile, and the number and quality of client reviews.`}
+            <h1 className="mt-2 text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-[-0.04em] text-[#0A0A0A]">{tj("Top {0} {1} in {2}", n >= 3 ? n : "", cat.name, where)}{" "}<span className="text-[#5B6475] font-normal">({YEAR})</span></h1>
+            <p className="text-[#3A4354] text-[18px] leading-[1.6] mt-3 max-w-3xl">{tj("Looking for {0} in {1}?", cat.name.toLowerCase(), where)}{" "}{total > 0 ? <>{tj("We compared {0} {1}", total, total === 1 ? "listed company" : "listed companies")}</> : <>We compare listed companies</>}{tx(" and ranked them on what matters when you hire: a verified {0}, a claimed and complete profile, and the number and quality of client reviews.", country.licenceAuthority)}
             </p>
-            <p className="text-[#5B6475] text-[15px] leading-[1.6] mt-2 max-w-3xl">Updated {data.updatedAt}. Membership adds at most 10 points and sponsored listings are always labelled, so the order reflects quality, not payment.</p>
+            <p className="text-[#5B6475] text-[15px] leading-[1.6] mt-2 max-w-3xl">{tj("Updated {0}. Membership adds at most 10 points and sponsored listings are always labelled, so the order reflects quality, not payment.", data.updatedAt)}</p>
             <div className="flex flex-wrap gap-2 mt-6">
-              <Link href={`/top/${cat.slug}`} className="yp-chip" aria-current={!em ? "page" : undefined}>{`All ${country.shortName}`}</Link>
+              <Link href={`/top/${cat.slug}`} className="yp-chip" aria-current={!em ? "page" : undefined}>{tx("All {0}", country.shortName)}</Link>
               {data.provinces.filter((e: any) => e.n > 0).map((e: any) => (
-                <Link key={e.id} href={`/top/${cat.slug}/${e.slug}`} className="yp-chip" aria-current={em?.id === e.id ? "page" : undefined}>{e.name} <span className="ml-1 opacity-70">({e.n})</span></Link>
+                <Link key={e.id} href={`/top/${cat.slug}/${e.slug}`} className="yp-chip" aria-current={em?.id === e.id ? "page" : undefined}>{e.name} <span className="ms-1 opacity-70">({e.n})</span></Link>
               ))}
             </div>
             <div className="flex flex-col gap-3.5 mt-7">

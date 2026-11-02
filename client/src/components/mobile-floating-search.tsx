@@ -53,16 +53,16 @@ export function MobileFloatingSearch({ onSearch, className }: MobileFloatingSear
       )}>
         <div className="flex items-center p-4 border-b">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder={localize("Search businesses, categories, provinces...")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-10 pr-12"
+              className="ps-10 pe-12"
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               autoFocus
             />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+            <div className="absolute end-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
@@ -77,7 +77,7 @@ export function MobileFloatingSearch({ onSearch, className }: MobileFloatingSear
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(false)}
-            className="ml-2"
+            className="ms-2"
           >
             <X className="h-5 w-5" />
           </Button>
@@ -112,7 +112,7 @@ export function MobileFloatingSearch({ onSearch, className }: MobileFloatingSear
     <Button
       onClick={() => setIsExpanded(true)}
       className={cn(
-        "fixed bottom-20 right-4 w-14 h-14 rounded-full shadow-lg bg-blue-600 text-white md:hidden z-40",
+        "fixed bottom-20 end-4 w-14 h-14 rounded-full shadow-lg bg-blue-600 text-white md:hidden z-40",
         className
       )}
     >

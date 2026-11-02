@@ -27,6 +27,7 @@ import {
   applyTheme,
   type RegionalTheme
 } from "@/lib/regional-themes";
+import { tj } from "@/i18n-jsx/tj";
 
 interface ThemeCustomizerProps {
   onThemeChange?: (theme: RegionalTheme) => void;
@@ -121,7 +122,7 @@ export default function ThemeCustomizer({ onThemeChange, isAdminMode = false }: 
   }) => (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 rtl:space-x-reverse">
         <div 
           className="w-8 h-8 rounded border cursor-pointer"
           style={{ backgroundColor: `rgb(${value})` }}
@@ -330,8 +331,8 @@ export default function ThemeCustomizer({ onThemeChange, isAdminMode = false }: 
               <div className="space-y-6">
                 {Object.entries(customTheme.gradients).map(([key, value]) => (
                   <div key={key} className="space-y-2">
-                    <Label className="capitalize">{key} Gradient</Label>
-                    <div className="flex items-center space-x-2">
+                    <Label className="capitalize">{tj("{0} Gradient", key)}</Label>
+                    <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <div 
                         className="w-16 h-8 rounded border"
                         style={{ background: value }}
@@ -432,14 +433,14 @@ export default function ThemeCustomizer({ onThemeChange, isAdminMode = false }: 
       <div className="flex items-center justify-between pt-4 border-t">
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleResetTheme}>
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <RefreshCw className="w-4 h-4 me-2" />
             Reset
           </Button>
           <Button 
             variant="outline"
             onClick={() => setPreviewMode(!previewMode)}
           >
-            <Eye className="w-4 h-4 mr-2" />
+            <Eye className="w-4 h-4 me-2" />
             {previewMode ? 'Exit Preview' : 'Preview'}
           </Button>
         </div>
@@ -449,7 +450,7 @@ export default function ThemeCustomizer({ onThemeChange, isAdminMode = false }: 
             onClick={handleSaveTheme}
             disabled={saveThemeSettings.isPending}
           >
-            <Save className="w-4 h-4 mr-2" />
+            <Save className="w-4 h-4 me-2" />
             {isAdminMode ? 'Save System Theme' : 'Save Preference'}
           </Button>
         </div>
@@ -462,9 +463,7 @@ export default function ThemeCustomizer({ onThemeChange, isAdminMode = false }: 
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-semibold">Theme Preview Mode</h4>
-                <p className="text-sm text-gray-600">
-                  Currently previewing: {customTheme.name}
-                </p>
+                <p className="text-sm text-gray-600">{tj("Currently previewing: {0}", customTheme.name)}</p>
               </div>
               <Button 
                 variant="outline" 

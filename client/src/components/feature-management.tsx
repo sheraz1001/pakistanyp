@@ -27,6 +27,8 @@ import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { FeatureFlag, InsertFeatureFlag } from "@shared/schema";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface FeatureManagementProps {
   userId?: string;
@@ -241,7 +243,7 @@ export default function FeatureManagement({ userId }: FeatureManagementProps) {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center space-x-2 pt-6">
+          <div className="flex items-center space-x-2 rtl:space-x-reverse pt-6">
             <Switch
               id="enabled"
               checked={formData.isEnabled}
@@ -263,7 +265,7 @@ export default function FeatureManagement({ userId }: FeatureManagementProps) {
 
         <DialogFooter>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : null}
+            {isLoading ? <RefreshCw className="h-4 w-4 animate-spin me-2" /> : null}
             {feature ? "Update Feature" : "Create Feature"}
           </Button>
         </DialogFooter>
@@ -284,13 +286,13 @@ export default function FeatureManagement({ userId }: FeatureManagementProps) {
             onClick={() => initializeFeaturesMutation.mutate()}
             disabled={initializeFeaturesMutation.isPending}
           >
-            {initializeFeaturesMutation.isPending ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : null}
+            {initializeFeaturesMutation.isPending ? <RefreshCw className="h-4 w-4 animate-spin me-2" /> : null}
             Initialize Defaults
           </Button>
           <Dialog open={showCreateFeature} onOpenChange={setShowCreateFeature}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 me-2" />
                 Add Feature
               </Button>
             </DialogTrigger>
@@ -374,10 +376,7 @@ export default function FeatureManagement({ userId }: FeatureManagementProps) {
             {Object.entries(categoryCounts).map(([category, count]) => (
               <Card key={category}>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 capitalize">
-                    {getCategoryIcon(category)}
-                    {category} Features
-                    <Badge variant="secondary">{count}</Badge>
+                  <CardTitle className="flex items-center gap-2 capitalize">{tj("{0}{1} Features", getCategoryIcon(category), category)}<Badge variant="secondary">{count}</Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -464,9 +463,7 @@ export default function FeatureManagement({ userId }: FeatureManagementProps) {
                           <div className="text-sm text-muted-foreground truncate max-w-md">
                             {feature.description}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            Key: {feature.key}
-                          </div>
+                          <div className="text-xs text-muted-foreground">{tj("Key: {0}", feature.key)}</div>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -524,7 +521,7 @@ export default function FeatureManagement({ userId }: FeatureManagementProps) {
                             variant="ghost" 
                             size="sm"
                             onClick={() => {
-                              if (confirm(`Are you sure you want to delete "${feature.name}"?`)) {
+                              if (confirm(tx("Are you sure you want to delete \"{0}\"?", feature.name))) {
                                 deleteFeatureMutation.mutate(feature.id);
                               }
                             }}

@@ -16,6 +16,8 @@ import { getCategoryIcon } from "@/lib/category-icons-clean";
 import { breadcrumbLd } from "@/lib/structured-data";
 import BusinessListing from "@/components/business-listing";
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 const TILE_TINTS = [
   "bg-[#E8F4EC] text-[#0B6B2E]",
@@ -132,8 +134,8 @@ export default function CategoryDetail() {
           <div className="yp-card mx-auto max-w-xl p-10 text-center">
             <h1 className="text-2xl font-bold tracking-[-0.03em] text-[#0A0A0A] mb-4">Category Not Found</h1>
             <p className="text-[#4B5565] mb-4">The category you're looking for doesn't exist or has been moved.</p>
-            <p className="text-sm text-[#5B6475]">Slug: {categorySlug}</p>
-            <p className="text-sm text-[#5B6475]">Error: {(categoryError as Error)?.message}</p>
+            <p className="text-sm text-[#5B6475]">{tj("Slug: {0}", categorySlug)}</p>
+            <p className="text-sm text-[#5B6475]">{tj("Error: {0}", (categoryError as Error)?.message)}</p>
             <Button onClick={() => setLocation('/categories')} className="mt-4">
               Browse All Categories
             </Button>
@@ -195,12 +197,12 @@ export default function CategoryDetail() {
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A]">
       {/* Page SEO using actual category data */}
       <PageSEO 
-        title={(category.metaTitle && category.metaTitle.length <= 65) ? category.metaTitle : `${category.name} in Pakistan – Companies & Services | PakistanYP`}
-        description={category.metaDescription || `Find the best ${category.name.toLowerCase()} businesses across all provinces and territories in Pakistan. Browse verified listings with reviews and contact information.`}
-        keywords={category.keywords || `${category.name}, Pakistan, business directory, ${(provinces as any[]).map((e: any) => e.name).join(', ')}`}
-        canonicalUrl={`https://pakistanyp.com/categories/${category.slug}`}
-        ogTitle={category.metaTitle || `${category.name} in Pakistan | Business Directory`}
-        ogDescription={category.metaDescription || `Discover ${category.name.toLowerCase()} businesses in Pakistan with verified reviews and contact details.`}
+        title={(category.metaTitle && category.metaTitle.length <= 65) ? category.metaTitle : tx("{0} in Pakistan – Companies & Services | PakistanYP", category.name)}
+        description={category.metaDescription || tx("Find the best {0} businesses across all provinces and territories in Pakistan. Browse verified listings with reviews and contact information.", category.name.toLowerCase())}
+        keywords={category.keywords || tx("{0}, Pakistan, business directory, {1}", category.name, (provinces as any[]).map((e: any) => e.name).join(', '))}
+        canonicalUrl={tx("https://pakistanyp.com/categories/{0}", category.slug)}
+        ogTitle={category.metaTitle || tx("{0} in Pakistan | Business Directory", category.name)}
+        ogDescription={category.metaDescription || tx("Discover {0} businesses in Pakistan with verified reviews and contact details.", category.name.toLowerCase())}
         noindex={!isMainCategory && category.level !== 2 && !businessesLoading && !!businessData && totalBusinesses === 0 && (subcategories as any[]).every((c: any) => !Number(c.businessCount))}
         schemaMarkup={[
           category.schemaMarkup,
@@ -236,7 +238,7 @@ export default function CategoryDetail() {
             })()}
             <div className="min-w-0">
               <h1 className="text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-[-0.04em]">{category.name}</h1>
-              <p className="mt-2 text-[15px] text-[#5B6475]">{isMainCategory ? `${subcategories.length} sub-categories · ${totalBusinesses} ${totalBusinesses === 1 ? 'business' : 'businesses'}` : `${totalBusinesses} ${totalBusinesses === 1 ? 'business' : 'businesses'} found`}</p>
+              <p className="mt-2 text-[15px] text-[#5B6475]">{isMainCategory ? tx("{0} sub-categories · {1} {2}", subcategories.length, totalBusinesses, totalBusinesses === 1 ? 'business' : 'businesses') : tx("{0} {1} found", totalBusinesses, totalBusinesses === 1 ? 'business' : 'businesses')}</p>
             </div>
           </div>
           <Button 
@@ -244,7 +246,7 @@ export default function CategoryDetail() {
             className="min-h-[44px]"
             onClick={() => setLocation('/categories')}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="h-4 w-4 me-2" />
             Back to Categories
           </Button>
         </div>
@@ -256,7 +258,7 @@ export default function CategoryDetail() {
         {isMainCategory && (
           <section aria-labelledby="subcategories-heading">
             <div className="mb-5">
-              <h2 id="subcategories-heading" className="text-[22px] font-semibold tracking-[-0.02em]">Sub-categories in {category.name}</h2>
+              <h2 id="subcategories-heading" className="text-[22px] font-semibold tracking-[-0.02em]">{tj("Sub-categories in {0}", category.name)}</h2>
               <p className="mt-1 text-sm text-[#5B6475]">Choose a sub-category to see its businesses.</p>
             </div>
             {subcategoriesLoading ? (
@@ -280,7 +282,7 @@ export default function CategoryDetail() {
                         ))}
                       </ul>
                     )}
-                    <Link href={`/categories/${group.slug}`} className="mt-auto text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">View {group.name} →</Link>
+                    <Link href={`/categories/${group.slug}`} className="mt-auto text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{tj("View {0} →", group.name)}</Link>
                   </section>
                 ))}
               </div>
@@ -293,12 +295,8 @@ export default function CategoryDetail() {
           <section className="mb-10" aria-labelledby="subcategories-heading">
             <div className="mb-4">
               <div className="yp-label">Refine</div>
-              <h2 id="subcategories-heading" className="mt-1.5 text-[22px] font-semibold tracking-[-0.02em]">
-                Subcategories in {category.name}
-              </h2>
-              <p className="mt-1 text-sm text-[#5B6475]">
-                Explore more specific categories within {category.name}
-              </p>
+              <h2 id="subcategories-heading" className="mt-1.5 text-[22px] font-semibold tracking-[-0.02em]">{tj("Subcategories in {0}", category.name)}</h2>
+              <p className="mt-1 text-sm text-[#5B6475]">{tj("Explore more specific categories within {0}", category.name)}</p>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {subcategories.map((subcategory: any) => (
@@ -338,12 +336,12 @@ export default function CategoryDetail() {
             <div className="flex flex-col gap-2">
               <span className="yp-label">Keyword</span>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5B6475]" />
+                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5B6475]" />
                 <Input
-                  placeholder={`Search in ${category.name}...`}
+                  placeholder={tx("Search in {0}...", category.name)}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="ps-10"
                 />
               </div>
             </div>
@@ -351,10 +349,10 @@ export default function CategoryDetail() {
               <span className="yp-label">{country.regionTerm.singular}</span>
               <Select value={selectedProvince} onValueChange={setSelectedProvince}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={`All ${country.regionTerm.plural}`} />
+                  <SelectValue placeholder={tx("All {0}", country.regionTerm.plural)} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{`All ${country.regionTerm.plural}`}</SelectItem>
+                  <SelectItem value="all">{tx("All {0}", country.regionTerm.plural)}</SelectItem>
                   {(provinces as any[]).map((province: any) => (
                     <SelectItem key={province.id} value={province.id.toString()}>
                       {province.name}
@@ -407,12 +405,8 @@ export default function CategoryDetail() {
           {/* Businesses Section */}
           <section className="flex min-w-0 flex-[999_1_560px] flex-col gap-4" aria-label="Results">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-[22px] font-semibold tracking-[-0.02em]">
-                Businesses in {category.name}
-              </h2>
-              <span className="yp-tag">
-                {totalBusinesses} results
-              </span>
+              <h2 className="text-[22px] font-semibold tracking-[-0.02em]">{tj("Businesses in {0}", category.name)}</h2>
+              <span className="yp-tag">{tj("{0} results", totalBusinesses)}</span>
             </div>
 
             {businessesLoading ? (
@@ -430,9 +424,7 @@ export default function CategoryDetail() {
                 <span className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-[14px] bg-[#F1F2F6] text-[#334155]">
                   <Building2 className="h-6 w-6" />
                 </span>
-                <h3 className="mb-2 text-lg font-semibold">
-                  No businesses found in {category.name}
-                </h3>
+                <h3 className="mb-2 text-lg font-semibold">{tj("No businesses found in {0}", category.name)}</h3>
                 <p className="mb-6 text-[#4B5565]">
                   Be the first to add your business to this category.
                 </p>

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Building2, MapPin, Search, Users, Settings, Star, TrendingUp, FileText } from 'lucide-react';
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 interface PageTransitionLoaderProps {
   isLoading: boolean;
@@ -49,7 +50,7 @@ export default function PageTransitionLoader({ isLoading, pageType = 'home' }: P
       case 'provinces':
         return {
           icon: MapPin,
-          title: `Loading ${country.regionTerm.plural}`,
+          title: tx("Loading {0}", country.regionTerm.plural),
           color: "bg-[#E8F4EC]",
           bgColor: "bg-[#FAF8F3]"
         };
@@ -111,7 +112,7 @@ export default function PageTransitionLoader({ isLoading, pageType = 'home' }: P
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="flex justify-center space-x-1"
+              className="flex justify-center space-x-1 rtl:space-x-reverse"
             >
               {[0, 1, 2].map((i) => (
                 <motion.div
@@ -205,7 +206,7 @@ export function CardLoader({ className = "" }: { className?: string }) {
   return (
     <div className={`p-6 border rounded-xl shadow-sm ${className}`}>
       <div className="animate-pulse">
-        <div className="flex items-center space-x-4 mb-4">
+        <div className="flex items-center space-x-4 rtl:space-x-reverse mb-4">
           <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
           <div className="flex-1 space-y-2">
             <div className="h-4 bg-gray-200 rounded w-3/4"></div>

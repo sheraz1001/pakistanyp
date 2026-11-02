@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { getCategoryIcon } from "@/lib/category-icons-clean";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -86,7 +87,7 @@ export function DropdownCategorySelector({
       {selectedCategories.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-blue-900">Selected Categories ({selectedCategories.length})</h3>
+            <h3 className="font-semibold text-blue-900">{tj("Selected Categories ({0})", selectedCategories.length)}</h3>
             <Button
               variant="ghost"
               size="sm"
@@ -109,7 +110,7 @@ export function DropdownCategorySelector({
                 >
                   <IconComponent className="w-4 h-4" />
                   <span>{category.name}</span>
-                  <X className="w-3 h-3 ml-1" />
+                  <X className="w-3 h-3 ms-1" />
                 </Badge>
               );
             })}

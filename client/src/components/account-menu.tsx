@@ -53,20 +53,20 @@ export function AccountMenu({ tone = "green" }: { tone?: "green" | "tint" }) {
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate("/dashboard")}>
-          <Building2 className="mr-2 h-4 w-4" />
+          <Building2 className="me-2 h-4 w-4" />
           Dashboard
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/admin-enhanced")}>
-          <Shield className="mr-2 h-4 w-4" />
+          <Shield className="me-2 h-4 w-4" />
           Admin Panel
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/")}>
-          <Globe className="mr-2 h-4 w-4" />
+          <Globe className="me-2 h-4 w-4" />
           View site
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="me-2 h-4 w-4" />
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

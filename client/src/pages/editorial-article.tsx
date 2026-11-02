@@ -8,6 +8,8 @@ import { breadcrumbLd } from "@/lib/structured-data";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { country } from "@shared/country";
 import { ArticleCard, CategoryChip, Cover, EDITORIAL, EditorialSidebar, ShareBar, formatDate, tagSlug, type EditorialItem, type EditorialKind, type EditorialSide } from "@/components/editorial";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface ArticleResponse extends EditorialSide {
   article: EditorialItem & { content?: string | null; metaTitle?: string | null; metaDescription?: string | null; source?: string | null; sourceUrl?: string | null };
@@ -56,8 +58,8 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
         <main className="yp-wrap pt-16 pb-24"><div className="yp-card mx-auto max-w-xl p-10 text-center">
           <h1 className="mb-3 text-2xl font-bold tracking-[-0.03em]">{missing ? "Article not found" : "We couldn't load this article"}</h1>
           <p className="mb-6 text-[#4B5565]">{missing ? "It may have been moved or removed." : "Please try again."}</p>
-          {!missing && <button type="button" className="yp-btn yp-btn-primary mr-2" onClick={() => refetch()}>Try again</button>}
-          <Link href={cfg.base} className="yp-btn yp-btn-ghost">All {cfg.label.toLowerCase()}</Link>
+          {!missing && <button type="button" className="yp-btn yp-btn-primary me-2" onClick={() => refetch()}>Try again</button>}
+          <Link href={cfg.base} className="yp-btn yp-btn-ghost">{tj("All {0}", cfg.label.toLowerCase())}</Link>
         </div></main>
         <Footer />
       </div>
@@ -74,7 +76,7 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A]">
       <PageSEO
-        title={a.metaTitle || `${a.title} | PakistanYP`}
+        title={a.metaTitle || tx("{0} | PakistanYP", a.title)}
         description={a.metaDescription || a.summary || cfg.lead}
         canonicalUrl={url}
         ogTitle={a.title}
@@ -127,7 +129,7 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
                   </p>
                 </div>
               </div>
-              {a.readingTime ? <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F1F2F6] px-3 py-1.5 text-sm text-[#3A4354]"><Clock className="h-4 w-4" aria-hidden="true" />{a.readingTime} min read</span> : null}
+              {a.readingTime ? <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F1F2F6] px-3 py-1.5 text-sm text-[#3A4354]"><Clock className="h-4 w-4" aria-hidden="true" />{tj("{0} min read", a.readingTime)}</span> : null}
             </div>
           </div>
         </div>
@@ -168,7 +170,7 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
           </section>
 
           {(data.previous || data.next) && (
-            <nav className="mt-6 grid gap-4 sm:grid-cols-2" aria-label={`More ${cfg.nouns}`}>
+            <nav className="mt-6 grid gap-4 sm:grid-cols-2" aria-label={tx("More {0}", cfg.nouns)}>
               {data.previous ? (
                 <Link href={`${cfg.base}/${data.previous.slug}`} className="group rounded-[18px] border border-[#E7E9EE] bg-white p-5 hover:border-[#9FD3B3]">
                   <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#5B6475]"><ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />Previous</span>
@@ -176,7 +178,7 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
                 </Link>
               ) : <span />}
               {data.next && (
-                <Link href={`${cfg.base}/${data.next.slug}`} className="group rounded-[18px] border border-[#E7E9EE] bg-white p-5 text-right hover:border-[#9FD3B3]">
+                <Link href={`${cfg.base}/${data.next.slug}`} className="group rounded-[18px] border border-[#E7E9EE] bg-white p-5 text-end hover:border-[#9FD3B3]">
                   <span className="flex items-center justify-end gap-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#5B6475]">Next<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
                   <span className="mt-2 block font-semibold leading-snug group-hover:text-[#0B6B2E]">{data.next.title}</span>
                 </Link>
@@ -193,7 +195,7 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
           <div className="yp-wrap-wide py-14">
             <div className="mb-6 flex items-end justify-between gap-4">
               <h2 id="related-heading" className="text-[26px] font-bold tracking-[-0.03em]">{kind === "news" ? "More news" : "Keep reading"}</h2>
-              <Link href={cfg.base} className="inline-flex items-center gap-1 text-sm font-semibold text-[#0B6B2E]">All {cfg.label.toLowerCase()}<ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+              <Link href={cfg.base} className="inline-flex items-center gap-1 text-sm font-semibold text-[#0B6B2E]">{tj("All {0}", cfg.label.toLowerCase())}<ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {data.related.map((item) => <ArticleCard key={item.id} kind={kind} item={item} />)}

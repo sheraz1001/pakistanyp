@@ -29,6 +29,8 @@ export const sessions = pgTable(
 
 // User storage table - mandatory for Replit Auth
 export const users = pgTable("users", {
+  // translated twins (second site language, see shared/i18n.ts)
+  preferredLanguage: varchar("preferred_language"),
   id: varchar("id").primaryKey().notNull(),
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
@@ -249,6 +251,13 @@ export const blogCategories = pgTable("blog_categories", {
 
 // Blog System with Auto-Blogging
 export const blogPosts = pgTable("blog_posts", {
+  // translated twins (second site language, see shared/i18n.ts)
+  titleAr: text("title_ar"),
+  excerptAr: text("excerpt_ar"),
+  contentAr: text("content_ar"),
+  metaTitleAr: text("meta_title_ar"),
+  metaDescriptionAr: text("meta_description_ar"),
+  categoryAr: text("category_ar"),
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
@@ -436,6 +445,11 @@ export const pageComponents = pgTable("page_components", {
 
 // Provinces table - Enhanced for admin management
 export const provinces = pgTable("provinces", {
+  // translated twins (second site language, see shared/i18n.ts)
+  descriptionAr: text("description_ar"),
+  detailedDescriptionAr: text("detailed_description_ar"),
+  metaTitleAr: text("meta_title_ar"),
+  metaDescriptionAr: text("meta_description_ar"),
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull().unique(),
   arabicName: varchar("arabic_name", { length: 100 }),
@@ -489,6 +503,11 @@ export const provinces = pgTable("provinces", {
 
 // Localities table (areas within each province)
 export const localities = pgTable("localities", {
+  // translated twins (second site language, see shared/i18n.ts)
+  descriptionAr: text("description_ar"),
+  detailedDescriptionAr: text("detailed_description_ar"),
+  metaTitleAr: text("meta_title_ar"),
+  metaDescriptionAr: text("meta_description_ar"),
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 200 }).notNull(),
   arabicName: varchar("arabic_name", { length: 200 }),
@@ -528,6 +547,10 @@ export const localities = pgTable("localities", {
 
 // Business Categories table
 export const categories = pgTable("categories", {
+  // translated twins (second site language, see shared/i18n.ts)
+  descriptionAr: text("description_ar"),
+  metaTitleAr: text("meta_title_ar"),
+  metaDescriptionAr: text("meta_description_ar"),
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 200 }).notNull(),
   arabicName: varchar("arabic_name", { length: 200 }),
@@ -564,6 +587,9 @@ export const categories = pgTable("categories", {
 
 // Businesses table
 export const businesses = pgTable("businesses", {
+  // translated twins (second site language, see shared/i18n.ts)
+  descriptionAr: text("description_ar"),
+  shortDescriptionAr: text("short_description_ar"),
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 200 }).notNull(),
   arabicName: varchar("arabic_name", { length: 200 }),
@@ -719,6 +745,13 @@ export const newsCategories = pgTable("news_categories", {
 
 // News Articles table
 export const newsArticles = pgTable("news_articles", {
+  // translated twins (second site language, see shared/i18n.ts)
+  titleAr: text("title_ar"),
+  summaryAr: text("summary_ar"),
+  contentAr: text("content_ar"),
+  metaTitleAr: text("meta_title_ar"),
+  metaDescriptionAr: text("meta_description_ar"),
+  categoryAr: text("category_ar"),
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 300 }).notNull(),
   slug: varchar("slug", { length: 300 }).notNull().unique(),

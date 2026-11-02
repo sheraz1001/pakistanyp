@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { api, BUDGET_BANDS, TIMELINES } from "./api";
 import { country } from "@shared/country";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface Props {
   /** Profile page: the one business that receives the request. */
@@ -43,7 +45,7 @@ export function QuoteRequestCard({ businessId, businessName, categoryId, categor
         <p className="mt-1.5 text-sm leading-[1.55] text-[#5B6475]">{businessId ? "Describe what you need and the business will reply by email or phone. Free, no obligation." : "Tell us what you need once – we send it to up to 5 matching businesses and they come back to you with quotes."}</p>
       </div>
       {done ? (
-        <div className="yp-tint flex items-start gap-2.5 rounded-[14px] p-4 text-sm text-[#05501F]"><Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /><span>{done} We've emailed you a copy for your records.</span></div>
+        <div className="yp-tint flex items-start gap-2.5 rounded-[14px] p-4 text-sm text-[#05501F]"><Check className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /><span>{tj("{0} We've emailed you a copy for your records.", done)}</span></div>
       ) : (
         <form className={`grid gap-3.5 ${two}`} onSubmit={(e) => { e.preventDefault(); send.mutate(); }}>
           <label className={`${fld} ${full}`}>What do you need?
@@ -64,7 +66,7 @@ export function QuoteRequestCard({ businessId, businessName, categoryId, categor
           {!businessId && (
             <label className={fld}>{country.regionTerm.singular}
               <select className={selectCls} value={f.provinceId} onChange={(e) => set("provinceId", e.target.value)}>
-                <option value="">{`Any ${country.regionTerm.singular.toLowerCase()}`}</option>
+                <option value="">{tx("Any {0}", country.regionTerm.singular.toLowerCase())}</option>
                 {provinces.map((em: any) => <option key={em.id} value={em.id}>{em.name}</option>)}
               </select>
             </label>

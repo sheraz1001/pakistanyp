@@ -43,6 +43,7 @@ import {
   Sparkles
 } from "lucide-react";
 import AIMetaGenerator from "./ai-meta-generator";
+import { tj } from "@/i18n-jsx/tj";
 
 interface SEOData {
   title: string;
@@ -286,17 +287,11 @@ export default function EnhancedSEOPanel({ seoData, onSEODataChange, className }
           {/* Quick Status */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
             <div className="flex items-center gap-1 text-green-600">
-              <CheckCircle className="w-3 h-3" />
-              {analysis.passed.length} Passed
-            </div>
+              <CheckCircle className="w-3 h-3" />{tj("{0} Passed", analysis.passed.length)}</div>
             <div className="flex items-center gap-1 text-[#B45309]">
-              <AlertTriangle className="w-3 h-3" />
-              {analysis.suggestions.length} Suggestions
-            </div>
+              <AlertTriangle className="w-3 h-3" />{tj("{0} Suggestions", analysis.suggestions.length)}</div>
             <div className="flex items-center gap-1 text-red-600">
-              <XCircle className="w-3 h-3" />
-              {analysis.warnings.length} Warnings
-            </div>
+              <XCircle className="w-3 h-3" />{tj("{0} Warnings", analysis.warnings.length)}</div>
           </div>
         </CardContent>
       </Card>
@@ -346,9 +341,7 @@ export default function EnhancedSEOPanel({ seoData, onSEODataChange, className }
 
               {/* Meta Title */}
               <div className="space-y-2">
-                <Label htmlFor="metaTitle">
-                  Meta Title ({seoData.metaTitle.length}/60)
-                </Label>
+                <Label htmlFor="metaTitle">{tj("Meta Title ({0}/60)", seoData.metaTitle.length)}</Label>
                 <Input
                   id="metaTitle"
                   value={seoData.metaTitle}
@@ -372,9 +365,7 @@ export default function EnhancedSEOPanel({ seoData, onSEODataChange, className }
 
               {/* Meta Description */}
               <div className="space-y-2">
-                <Label htmlFor="metaDescription">
-                  Meta Description ({seoData.metaDescription.length}/160)
-                </Label>
+                <Label htmlFor="metaDescription">{tj("Meta Description ({0}/160)", seoData.metaDescription.length)}</Label>
                 <Textarea
                   id="metaDescription"
                   value={seoData.metaDescription}

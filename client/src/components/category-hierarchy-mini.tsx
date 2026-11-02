@@ -13,6 +13,7 @@ import {
   Eye
 } from 'lucide-react';
 import { Link } from 'wouter';
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -115,7 +116,7 @@ export default function CategoryHierarchyMini() {
             
             <span className="font-medium text-xs truncate">{category.name}</span>
             
-            <Badge variant="secondary" className="ml-auto text-xs h-4">
+            <Badge variant="secondary" className="ms-auto text-xs h-4">
               {category.businessCount || 0}
             </Badge>
           </div>
@@ -128,11 +129,9 @@ export default function CategoryHierarchyMini() {
             ))}
             {category.children!.length > 5 && (
               <div 
-                className="text-xs text-gray-500 pl-8 py-1 cursor-pointer hover:text-blue-500"
+                className="text-xs text-gray-500 ps-8 py-1 cursor-pointer hover:text-blue-500"
                 style={{ paddingLeft: `${(depth + 1) * 16 + 8}px` }}
-              >
-                +{category.children!.length - 5} more...
-              </div>
+              >{tj("+{0} more...", category.children!.length - 5)}</div>
             )}
           </div>
         )}
@@ -174,13 +173,13 @@ export default function CategoryHierarchyMini() {
               <div>
                 <h4 className="font-semibold text-sm">{selectedCategory.name}</h4>
                 <div className="flex gap-2 mt-1">
-                  <Badge variant="outline" className="text-xs">Level {selectedCategory.level}</Badge>
-                  <Badge variant="secondary" className="text-xs">{selectedCategory.businessCount || 0} businesses</Badge>
+                  <Badge variant="outline" className="text-xs">{tj("Level {0}", selectedCategory.level)}</Badge>
+                  <Badge variant="secondary" className="text-xs">{tj("{0} businesses", selectedCategory.businessCount || 0)}</Badge>
                 </div>
               </div>
               <Link href={`/categories/${selectedCategory.slug}`}>
                 <Button size="sm" variant="outline">
-                  <Eye className="h-3 w-3 mr-1" />
+                  <Eye className="h-3 w-3 me-1" />
                   View
                 </Button>
               </Link>

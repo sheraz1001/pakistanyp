@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Search, X, ChevronRight, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { getCategoryIcon } from '@/lib/category-icons-clean';
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -158,9 +159,7 @@ export default function ThreeLevelCategoryFilter({
             <Filter className="h-4 w-4" />
             Category Filters
             {selectedCategories.length > 0 && (
-              <Badge variant="secondary" className="text-xs">
-                {selectedCategories.length} selected
-              </Badge>
+              <Badge variant="secondary" className="text-xs">{tj("{0} selected", selectedCategories.length)}</Badge>
             )}
           </CardTitle>
           {compact && (
@@ -232,12 +231,12 @@ export default function ThreeLevelCategoryFilter({
             <div className="space-y-2">
               <Label className="text-xs font-medium text-gray-600">Search Categories</Label>
               <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-3 w-3 text-gray-400" />
+                <Search className="absolute start-2 top-2.5 h-3 w-3 text-gray-400" />
                 <Input
                   placeholder="Search categories..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-7 h-8 text-sm"
+                  className="ps-7 h-8 text-sm"
                 />
               </div>
               
@@ -331,7 +330,7 @@ export default function ThreeLevelCategoryFilter({
 
                         {/* Sub Categories */}
                         {isMainExpanded && mainCategory.subcategories && (
-                          <div className="ml-4 space-y-1">
+                          <div className="ms-4 space-y-1">
                             {mainCategory.subcategories.map((subCategory: Category) => {
                               const isSubExpanded = expandedSubCategories.has(subCategory.id);
                               const isSubSelected = selectedCategories.includes(subCategory.id);
@@ -373,7 +372,7 @@ export default function ThreeLevelCategoryFilter({
 
                                   {/* Sub-Sub Categories */}
                                   {isSubExpanded && subCategory.subSubcategories && (
-                                    <div className="ml-4 space-y-1">
+                                    <div className="ms-4 space-y-1">
                                       {subCategory.subSubcategories.map((subSubCategory: Category) => {
                                         const isSubSubSelected = selectedCategories.includes(subSubCategory.id);
                                         

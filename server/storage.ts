@@ -1,3 +1,4 @@
+import { arabicSearchCondition } from "./i18n";
 import { normalizeLocalitySlug, publicLocality } from "../shared/locality-slug";
 import {
   users,
@@ -1140,11 +1141,13 @@ export class DatabaseStorage implements IStorage {
       conditions.push(sql`${businesses.localityId} IN (SELECT id FROM localities WHERE id = ${filters.localityId} OR parent_id = ${filters.localityId})`);
     }
     if (filters?.query) {
+      const arabic = arabicSearchCondition(filters.query);
       conditions.push(
         or(
           ilike(businesses.name, `%${filters.query}%`),
           ilike(businesses.description, `%${filters.query}%`),
-          ilike(businesses.address, `%${filters.query}%`)
+          ilike(businesses.address, `%${filters.query}%`),
+          ...(arabic ? [arabic] : [])
         )!
       );
     }

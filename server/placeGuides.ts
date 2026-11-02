@@ -1,3 +1,4 @@
+import { country } from "@shared/country";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
@@ -17,7 +18,8 @@ import { regionSlug } from "@shared/country";
  * so anything edited in the admin panel is never overwritten.
  */
 
-interface Guide { slug: string; body: string; meta: Record<string, string> }
+interface Guide { slug: string; body: string; meta: Record<string, string>; second?: { body: string; meta: Record<string, string> } }
+const L2 = country.secondLanguage?.code; // "<slug>.<code>.md" holds the second-language guide
 
 const ROOT = path.resolve(import.meta.dirname, "..", "content", "places");
 const hash = (s: string | null | undefined) => crypto.createHash("sha1").update(String(s ?? "")).digest("hex");
@@ -25,7 +27,7 @@ const hash = (s: string | null | undefined) => crypto.createHash("sha1").update(
 function readGuides(kind: "provinces" | "cities"): Guide[] {
   const dir = path.join(ROOT, kind);
   if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir).filter((f) => f.endsWith(".md")).map((file) => {
+  const parse = (file: string) => {
     const raw = fs.readFileSync(path.join(dir, file), "utf8").replace(/\r\n/g, "\n");
     const meta: Record<string, string> = {};
     let body = raw;
@@ -37,8 +39,21 @@ function readGuides(kind: "provinces" | "cities"): Guide[] {
       }
       body = raw.slice(m[0].length);
     }
-    return { slug: file.replace(/\.md$/, ""), body: body.trim(), meta };
+    return { body: body.trim(), meta };
+  };
+  const files = fs.readdirSync(dir);
+  return files.filter((f) => /^[^.]+\.md$/.test(f)).map((file) => {
+    const slug = file.replace(/\.md$/, "");
+    const second = L2 && files.includes(`${slug}.${L2}.md`) ? parse(`${slug}.${L2}.md`) : undefined;
+    return { slug, ...parse(file), second };
   });
+}
+
+/** [column, value] pairs a guide writes (second-language twins end in _<code>). */
+function guideFields(g: Guide): [string, string | undefined][] {
+  const f: [string, string | undefined][] = [["detailed_description", g.body], ["meta_title", g.meta.metaTitle], ["meta_description", g.meta.metaDescription], ["description", g.meta.summary]];
+  if (g.second && L2) f.push([`detailed_description_${L2}`, g.second.body], [`meta_title_${L2}`, g.second.meta.metaTitle], [`meta_description_${L2}`, g.second.meta.metaDescription], [`description_${L2}`, g.second.meta.summary]);
+  return f;
 }
 
 /** Write `value` to table.column for the row, unless someone has edited it since the last sync. */
@@ -47,7 +62,8 @@ async function syncField(table: "provinces" | "localities", id: number, column: 
   const key = `${table}:${id}:${column}`;
   // Empty, still the text we wrote last time, or the seed default ("Businesses and services in X, Y.")
   const untouched = !current || !String(current).trim() || state.get(key) === hash(current)
-    || (column === "description" && /^Businesses and services in [^.]+\.$/.test(String(current).trim()));
+    || (column === "description" && /^Businesses and services in [^.]+\.$/.test(String(current).trim()))
+    || (column.startsWith("description_") && /^الشركات والخدمات في [^.]+\.$/.test(String(current).trim()));
   if (!untouched || current === value) {
     if (current === value) await pool.query("insert into place_guide_sync (key, hash) values ($1, $2) on conflict (key) do update set hash = excluded.hash", [key, hash(value)]);
     return false;
@@ -66,22 +82,22 @@ export async function syncPlaceGuides(): Promise<void> {
     const state = new Map<string, string>((await pool.query("select key, hash from place_guide_sync")).rows.map((r: any) => [r.key, r.hash]));
     let written = 0;
 
-    const provinces = (await pool.query("select id, name, detailed_description, meta_title, meta_description, description from provinces")).rows;
+    const provinces = (await pool.query("select * from provinces")).rows;
     for (const g of provinceGuides) {
       const row = provinces.find((p: any) => regionSlug(p.name) === g.slug);
       if (!row) { console.warn(`[guides] no province for ${g.slug}.md`); continue; }
-      for (const [col, val] of [["detailed_description", g.body], ["meta_title", g.meta.metaTitle], ["meta_description", g.meta.metaDescription], ["description", g.meta.summary]] as const) {
+      for (const [col, val] of guideFields(g)) {
         if (await syncField("provinces", row.id, col, row[col], val, state)) written++;
       }
     }
 
     for (const g of cityGuides) {
       const { rows } = await pool.query(
-        `select id, detailed_description, meta_title, meta_description, description from localities
+        `select * from localities
          where is_main_area = true and parent_id is null and split_part(slug, '/', 2) = $1 order by id limit 1`, [g.slug]);
       const row = rows[0];
       if (!row) { console.warn(`[guides] no city for ${g.slug}.md`); continue; }
-      for (const [col, val] of [["detailed_description", g.body], ["meta_title", g.meta.metaTitle], ["meta_description", g.meta.metaDescription], ["description", g.meta.summary]] as const) {
+      for (const [col, val] of guideFields(g)) {
         if (await syncField("localities", row.id, col, row[col], val, state)) written++;
       }
     }

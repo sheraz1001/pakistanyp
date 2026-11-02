@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Business } from "@shared/schema";
 import { localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 export default function NewBusinessesRegistered() {
   const { data: businesses, isLoading } = useQuery<Business[]>({
@@ -114,7 +115,7 @@ export default function NewBusinessesRegistered() {
                   <button
                     type="button"
                     className="grid h-9 w-9 place-items-center rounded-[10px] border border-[#E3E6EC] text-[#0B6B2E] hover:border-[#0B6B2E]"
-                    aria-label={`Call ${business.name}`}
+                    aria-label={tx("Call {0}", business.name)}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();

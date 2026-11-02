@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Crown, Star, Shield, Zap, AlertTriangle, CheckCircle } from "lucide-react";
 import { useLocation } from "wouter";
+import { tj } from "@/i18n-jsx/tj";
 
 type SubscriptionLimits = {
   listings: number;
@@ -146,16 +147,13 @@ export function SubscriptionChecker({
         <AlertTriangle className="h-4 w-4" />
         <AlertDescription>
           <div className="flex items-center justify-between">
-            <span>
-              You've reached your {featureName.toLowerCase()} limit. 
-              Upgrade to add more.
-            </span>
+            <span>{tj("You've reached your {0} limit. Upgrade to add more.", featureName.toLowerCase())}</span>
             <Button
               size="sm"
               onClick={handleUpgrade}
-              className="ml-4"
+              className="ms-4"
             >
-              <Crown className="h-4 w-4 mr-2" />
+              <Crown className="h-4 w-4 me-2" />
               Upgrade Plan
             </Button>
           </div>
@@ -171,15 +169,13 @@ export function SubscriptionChecker({
         <AlertDescription>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span>
-                You're close to your {featureName.toLowerCase()} limit.
-              </span>
+              <span>{tj("You're close to your {0} limit.", featureName.toLowerCase())}</span>
               <Button
                 size="sm"
                 variant="outline"
                 onClick={handleUpgrade}
               >
-                <Crown className="h-4 w-4 mr-2" />
+                <Crown className="h-4 w-4 me-2" />
                 Upgrade
               </Button>
             </div>
@@ -194,7 +190,7 @@ export function SubscriptionChecker({
     <Card className="mb-4">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <PlanIcon className="h-5 w-5" />
             <CardTitle className="text-sm">Current Plan</CardTitle>
             <Badge className={planColorClass}>
@@ -206,7 +202,7 @@ export function SubscriptionChecker({
             variant="outline"
             onClick={handleUpgrade}
           >
-            <Crown className="h-4 w-4 mr-2" />
+            <Crown className="h-4 w-4 me-2" />
             Upgrade
           </Button>
         </div>
@@ -221,7 +217,7 @@ export function SubscriptionChecker({
           
           <div className="flex items-center justify-between text-sm">
             <span>Images per Business</span>
-            <span>Up to {subscription.limits.images}</span>
+            <span>{tj("Up to {0}", subscription.limits.images)}</span>
           </div>
           
           <div className="flex items-center justify-between text-sm">
@@ -230,7 +226,7 @@ export function SubscriptionChecker({
           </div>
           
           <div className="grid grid-cols-2 gap-3 pt-2">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               {subscription.limits.premium_badge ? (
                 <CheckCircle className="h-4 w-4 text-green-500" />
               ) : (
@@ -238,7 +234,7 @@ export function SubscriptionChecker({
               )}
               <span className="text-sm">Premium Badge</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               {subscription.limits.analytics ? (
                 <CheckCircle className="h-4 w-4 text-green-500" />
               ) : (
@@ -246,7 +242,7 @@ export function SubscriptionChecker({
               )}
               <span className="text-sm">Analytics</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               {subscription.limits.api_access ? (
                 <CheckCircle className="h-4 w-4 text-green-500" />
               ) : (
@@ -254,7 +250,7 @@ export function SubscriptionChecker({
               )}
               <span className="text-sm">API Access</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               {subscription.limits.priority_support ? (
                 <CheckCircle className="h-4 w-4 text-green-500" />
               ) : (
@@ -308,7 +304,7 @@ export function UsageStatsCard() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <PlanIcon className="h-5 w-5" />
             <CardTitle>Subscription Usage</CardTitle>
           </div>
@@ -336,7 +332,7 @@ export function UsageStatsCard() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-2">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               {subscription.limits.premium_badge ? (
                 <CheckCircle className="h-4 w-4 text-green-500" />
               ) : (
@@ -344,7 +340,7 @@ export function UsageStatsCard() {
               )}
               <span className="text-sm">Premium Badge</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               {subscription.limits.analytics ? (
                 <CheckCircle className="h-4 w-4 text-green-500" />
               ) : (
@@ -359,7 +355,7 @@ export function UsageStatsCard() {
             variant="outline"
             onClick={() => setLocation("/pricing")}
           >
-            <Crown className="h-4 w-4 mr-2" />
+            <Crown className="h-4 w-4 me-2" />
             Manage Subscription
           </Button>
         </div>

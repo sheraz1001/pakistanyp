@@ -41,6 +41,8 @@ import {
   Code
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface SEOData {
   title: string;
@@ -284,7 +286,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Target className="h-5 w-5" />
                 <span>SEO Analysis</span>
                 {isAnalyzing && <RefreshCw className="h-4 w-4 animate-spin" />}
@@ -293,7 +295,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
                 Real-time SEO optimization analysis and recommendations
               </p>
             </div>
-            <div className={`text-right p-4 rounded-lg ${getScoreBg(analysis.score)}`}>
+            <div className={`text-end p-4 rounded-lg ${getScoreBg(analysis.score)}`}>
               <div className={`text-3xl font-bold ${getScoreColor(analysis.score)}`}>
                 {analysis.score}/100
               </div>
@@ -341,14 +343,14 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         {analysis.passed.length > 0 && (
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center space-x-2 text-green-600">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse text-green-600">
                 <CheckCircle className="h-4 w-4" />
-                <span className="text-sm">Passed ({analysis.passed.length})</span>
+                <span className="text-sm">{tj("Passed ({0})", analysis.passed.length)}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {analysis.passed.map((item, index) => (
-                <div key={index} className="flex items-center space-x-2 text-sm">
+                <div key={index} className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
                   <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                   <span>{item}</span>
                 </div>
@@ -360,14 +362,14 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         {analysis.suggestions.length > 0 && (
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center space-x-2 text-[#B45309]">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse text-[#B45309]">
                 <Lightbulb className="h-4 w-4" />
-                <span className="text-sm">Suggestions ({analysis.suggestions.length})</span>
+                <span className="text-sm">{tj("Suggestions ({0})", analysis.suggestions.length)}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {analysis.suggestions.map((item, index) => (
-                <div key={index} className="flex items-center space-x-2 text-sm">
+                <div key={index} className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
                   <Lightbulb className="h-3 w-3 text-[#B45309] flex-shrink-0" />
                   <span>{item}</span>
                 </div>
@@ -379,14 +381,14 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         {analysis.warnings.length > 0 && (
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center space-x-2 text-red-600">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse text-red-600">
                 <AlertTriangle className="h-4 w-4" />
-                <span className="text-sm">Issues ({analysis.warnings.length})</span>
+                <span className="text-sm">{tj("Issues ({0})", analysis.warnings.length)}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {analysis.warnings.map((item, index) => (
-                <div key={index} className="flex items-center space-x-2 text-sm">
+                <div key={index} className="flex items-center space-x-2 rtl:space-x-reverse text-sm">
                   <AlertTriangle className="h-3 w-3 text-red-500 flex-shrink-0" />
                   <span>{item}</span>
                 </div>
@@ -408,7 +410,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         <TabsContent value="overview" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Search className="h-4 w-4" />
                 <span>Basic SEO</span>
               </CardTitle>
@@ -424,7 +426,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
                   maxLength={60}
                 />
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>{seoData.title.length}/60 characters</span>
+                  <span>{tj("{0}/60 characters", seoData.title.length)}</span>
                   <span className={seoData.title.length > 60 ? 'text-red-500' : seoData.title.length > 50 ? 'text-[#B45309]' : 'text-green-500'}>
                     {seoData.title.length <= 60 ? 'Good' : 'Too long'}
                   </span>
@@ -442,7 +444,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
                   maxLength={160}
                 />
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>{seoData.metaDescription.length}/160 characters</span>
+                  <span>{tj("{0}/160 characters", seoData.metaDescription.length)}</span>
                   <span className={seoData.metaDescription.length > 160 ? 'text-red-500' : seoData.metaDescription.length > 120 ? 'text-green-500' : 'text-[#B45309]'}>
                     {seoData.metaDescription.length >= 120 && seoData.metaDescription.length <= 160 ? 'Perfect' : seoData.metaDescription.length > 160 ? 'Too long' : 'Too short'}
                   </span>
@@ -465,7 +467,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         <TabsContent value="keywords" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Target className="h-4 w-4" />
                 <span>Keyword Optimization</span>
               </CardTitle>
@@ -482,7 +484,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-semibold mb-3 flex items-center space-x-2">
+                <h4 className="font-semibold mb-3 flex items-center space-x-2 rtl:space-x-reverse">
                   <BarChart3 className="h-4 w-4" />
                   <span>Keyword Analysis</span>
                 </h4>
@@ -494,9 +496,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
                     </Badge>
                   </div>
                   <Progress value={Math.min(100, analysis.keywordDensity * 33.33)} />
-                  <p className="text-xs text-gray-600">
-                    Optimal range: 0.5% - 3.0%. Current: {analysis.keywordDensity.toFixed(2)}%
-                  </p>
+                  <p className="text-xs text-gray-600">{tj("Optimal range: 0.5% - 3.0%. Current: {0}%", analysis.keywordDensity.toFixed(2))}</p>
                 </div>
               </div>
 
@@ -518,7 +518,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         <TabsContent value="social" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Share2 className="h-4 w-4" />
                 <span>Social Media Optimization</span>
               </CardTitle>
@@ -526,7 +526,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
             <CardContent className="space-y-6">
               {/* Open Graph */}
               <div className="space-y-4">
-                <h4 className="font-semibold flex items-center space-x-2">
+                <h4 className="font-semibold flex items-center space-x-2 rtl:space-x-reverse">
                   <Globe className="h-4 w-4" />
                   <span>Open Graph (Facebook, LinkedIn)</span>
                 </h4>
@@ -567,7 +567,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
 
               {/* Twitter Cards */}
               <div className="space-y-4">
-                <h4 className="font-semibold flex items-center space-x-2">
+                <h4 className="font-semibold flex items-center space-x-2 rtl:space-x-reverse">
                   <MessageSquare className="h-4 w-4" />
                   <span>Twitter Cards</span>
                 </h4>
@@ -609,7 +609,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
           {/* Social Media Preview */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Eye className="h-4 w-4" />
                 <span>Social Media Preview</span>
               </CardTitle>
@@ -655,7 +655,7 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
         <TabsContent value="technical" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Settings className="h-4 w-4" />
                 <span>Technical SEO</span>
               </CardTitle>
@@ -694,28 +694,12 @@ export default function AdvancedSEOPanel({ seoData, onSEODataChange }: AdvancedS
               </div>
 
               <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-semibold mb-2 flex items-center space-x-2">
+                <h4 className="font-semibold mb-2 flex items-center space-x-2 rtl:space-x-reverse">
                   <Code className="h-4 w-4" />
                   <span>Generated Schema Markup</span>
                 </h4>
                 <pre className="text-xs bg-white p-3 rounded border overflow-x-auto">
-{`{
-  "@context": "https://schema.org",
-  "@type": "${seoData.schema || 'Article'}",
-  "headline": "${seoData.title || 'Your Title'}",
-  "description": "${seoData.metaDescription || 'Your description'}",
-  "image": "${seoData.featuredImage || ''}",
-  "author": {
-    "@type": "Person",
-    "name": "Author Name"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Pakistan Yellow Pages"
-  },
-  "datePublished": "${new Date().toISOString()}",
-  "dateModified": "${new Date().toISOString()}"
-}`}
+{tx("\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"{0}\",\n  \"headline\": \"{1}\",\n  \"description\": \"{2}\",\n  \"image\": \"{3}\",\n  \"author\": \n    \"@type\": \"Person\",\n    \"name\": \"Author Name\"\n  ,\n  \"publisher\": \n    \"@type\": \"Organization\",\n    \"name\": \"Pakistan Yellow Pages\"\n  ,\n  \"datePublished\": \"{4}\",\n  \"dateModified\": \"{5}\"\n", seoData.schema || 'Article', seoData.title || 'Your Title', seoData.metaDescription || 'Your description', seoData.featuredImage || '', new Date().toISOString(), new Date().toISOString())}
                 </pre>
               </div>
             </CardContent>

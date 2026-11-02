@@ -34,6 +34,8 @@ import {
 } from "lucide-react";
 import { format, subDays, subMonths, subYears } from "date-fns";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface ReportFilters {
   dateRange: {
@@ -250,7 +252,7 @@ export function AdvancedReporting() {
             <Filter className="h-4 w-4" />
             Filters
             {(filters.provinces.length > 0 || filters.categories.length > 0) && (
-              <Badge variant="secondary" className="ml-1">
+              <Badge variant="secondary" className="ms-1">
                 {filters.provinces.length + filters.categories.length}
               </Badge>
             )}
@@ -335,7 +337,7 @@ export function AdvancedReporting() {
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="w-full text-xs">
-                        <CalendarIcon className="h-3 w-3 mr-2" />
+                        <CalendarIcon className="h-3 w-3 me-2" />
                         Custom Range
                       </Button>
                     </PopoverTrigger>
@@ -362,7 +364,7 @@ export function AdvancedReporting() {
                 <Label>Provinces</Label>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
                   {PROVINCES.map((province) => (
-                    <div key={province} className="flex items-center space-x-2">
+                    <div key={province} className="flex items-center space-x-2 rtl:space-x-reverse">
                       <Checkbox
                         id={`province-${province}`}
                         checked={filters.provinces.includes(province)}
@@ -387,7 +389,7 @@ export function AdvancedReporting() {
                 <Label>Categories</Label>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
                   {CATEGORIES.map((category) => (
-                    <div key={category} className="flex items-center space-x-2">
+                    <div key={category} className="flex items-center space-x-2 rtl:space-x-reverse">
                       <Checkbox
                         id={`category-${category}`}
                         checked={filters.categories.includes(category)}
@@ -419,7 +421,7 @@ export function AdvancedReporting() {
                     { id: 'traffic', label: 'Traffic Sources' },
                     { id: 'demographics', label: 'Demographics' }
                   ].map((metric) => (
-                    <div key={metric.id} className="flex items-center space-x-2">
+                    <div key={metric.id} className="flex items-center space-x-2 rtl:space-x-reverse">
                       <Checkbox
                         id={`metric-${metric.id}`}
                         checked={filters.metrics.includes(metric.id)}
@@ -441,9 +443,7 @@ export function AdvancedReporting() {
             </div>
             
             <div className="flex items-center justify-between mt-6 pt-4 border-t">
-              <div className="text-sm text-gray-600">
-                Showing data from {format(filters.dateRange.from, 'MMM dd, yyyy')} to {format(filters.dateRange.to, 'MMM dd, yyyy')}
-              </div>
+              <div className="text-sm text-gray-600">{tj("Showing data from {0} to {1}", format(filters.dateRange.from, 'MMM dd, yyyy'), format(filters.dateRange.to, 'MMM dd, yyyy'))}</div>
               <Button
                 variant="outline"
                 size="sm"
@@ -786,15 +786,15 @@ function PerformanceAnalysis({ data }: { data: any }) {
               {(data.topPerformers || []).slice(0, 5).map((business: any, index: number) => (
                 <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
-                    <h4 className="font-medium">{business.name || `Business ${index + 1}`}</h4>
+                    <h4 className="font-medium">{business.name || tx("Business {0}", index + 1)}</h4>
                     <p className="text-sm text-gray-600">{business.category || 'Restaurant'}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-end">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-[#F59E0B] text-[#F59E0B]" />
                       <span className="font-medium">{business.rating || (4.5 + Math.random() * 0.5).toFixed(1)}</span>
                     </div>
-                    <p className="text-sm text-gray-600">{business.views || Math.floor(Math.random() * 1000) + 500} views</p>
+                    <p className="text-sm text-gray-600">{tj("{0} views", business.views || Math.floor(Math.random() * 1000) + 500)}</p>
                   </div>
                 </div>
               ))}
@@ -825,7 +825,7 @@ function PerformanceAnalysis({ data }: { data: any }) {
                         style={{ width: `${source.percentage}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm text-gray-600 w-16 text-right">
+                    <span className="text-sm text-gray-600 w-16 text-end">
                       {source.percentage}%
                     </span>
                   </div>
@@ -942,13 +942,13 @@ function DetailedDataTable({ businesses }: { businesses: any[] }) {
           <table className="w-full border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-50">
-                <th className="border border-gray-200 px-4 py-2 text-left">Business Name</th>
-                <th className="border border-gray-200 px-4 py-2 text-left">Category</th>
-                <th className="border border-gray-200 px-4 py-2 text-left">Province</th>
-                <th className="border border-gray-200 px-4 py-2 text-left">Rating</th>
-                <th className="border border-gray-200 px-4 py-2 text-left">Reviews</th>
-                <th className="border border-gray-200 px-4 py-2 text-left">Views</th>
-                <th className="border border-gray-200 px-4 py-2 text-left">Status</th>
+                <th className="border border-gray-200 px-4 py-2 text-start">Business Name</th>
+                <th className="border border-gray-200 px-4 py-2 text-start">Category</th>
+                <th className="border border-gray-200 px-4 py-2 text-start">Province</th>
+                <th className="border border-gray-200 px-4 py-2 text-start">Rating</th>
+                <th className="border border-gray-200 px-4 py-2 text-start">Reviews</th>
+                <th className="border border-gray-200 px-4 py-2 text-start">Views</th>
+                <th className="border border-gray-200 px-4 py-2 text-start">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -1009,14 +1009,12 @@ function ExportCenter({ formats, onExport, isGenerating, data }: any) {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      <RefreshCw className="h-4 w-4 me-2 animate-spin" />
                       Generating...
                     </>
                   ) : (
                     <>
-                      <Download className="h-4 w-4 mr-2" />
-                      Export {format.name}
-                    </>
+                      <Download className="h-4 w-4 me-2" />{tj("Export {0}", format.name)}</>
                   )}
                 </Button>
               </div>
@@ -1036,7 +1034,7 @@ function ExportCenter({ formats, onExport, isGenerating, data }: any) {
               Configure automatic reports to be sent to your email on a regular schedule.
             </p>
             <Button variant="outline" className="w-full">
-              <Settings className="h-4 w-4 mr-2" />
+              <Settings className="h-4 w-4 me-2" />
               Configure Scheduled Reports
             </Button>
           </div>

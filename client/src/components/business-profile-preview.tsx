@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { useQuery } from '@tanstack/react-query';
 import { localize } from '@shared/country';
+import { tj } from "@/i18n-jsx/tj";
 
 interface BusinessProfilePreviewProps {
   formData: any;
@@ -215,7 +216,7 @@ export default function BusinessProfilePreview({ formData, categories, provinces
           <div className="space-y-2">
             <Progress value={completionScore} className="h-2" />
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{getScoreLabel(completionScore)} Profile</span>
+              <span>{tj("{0} Profile", getScoreLabel(completionScore))}</span>
               <span>{completionScore >= 80 ? 'Ready to publish!' : 'Keep improving'}</span>
             </div>
           </div>
@@ -355,13 +356,13 @@ export default function BusinessProfilePreview({ formData, categories, provinces
                 {formData.establishedYear && (
                   <div>
                     <span className="text-gray-500">Established:</span>
-                    <span className="ml-2 font-medium">{formData.establishedYear}</span>
+                    <span className="ms-2 font-medium">{formData.establishedYear}</span>
                   </div>
                 )}
                 {formData.employeeCount && (
                   <div>
                     <span className="text-gray-500">Team Size:</span>
-                    <span className="ml-2 font-medium">{formData.employeeCount}</span>
+                    <span className="ms-2 font-medium">{formData.employeeCount}</span>
                   </div>
                 )}
               </div>
@@ -375,9 +376,7 @@ export default function BusinessProfilePreview({ formData, categories, provinces
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Lightbulb className="h-5 w-5" />
-              Profile Suggestions ({suggestions.length})
-            </CardTitle>
+              <Lightbulb className="h-5 w-5" />{tj("Profile Suggestions ({0})", suggestions.length)}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {suggestions.slice(0, 5).map((suggestion, idx) => (
@@ -394,17 +393,13 @@ export default function BusinessProfilePreview({ formData, categories, provinces
                       {suggestion.description}
                     </AlertDescription>
                   </div>
-                  <Badge variant="outline" className="text-xs">
-                    {suggestion.impact} impact
-                  </Badge>
+                  <Badge variant="outline" className="text-xs">{tj("{0} impact", suggestion.impact)}</Badge>
                 </div>
               </Alert>
             ))}
             
             {suggestions.length > 5 && (
-              <p className="text-sm text-gray-500 text-center">
-                +{suggestions.length - 5} more suggestions available
-              </p>
+              <p className="text-sm text-gray-500 text-center">{tj("+{0} more suggestions available", suggestions.length - 5)}</p>
             )}
           </CardContent>
         </Card>

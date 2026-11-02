@@ -3,6 +3,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { AlertTriangle } from 'lucide-react';
 import { country, localize } from '@shared/country';
+import { t as tx } from "@shared/i18n";
 
 export default function TermsOfService() {
   const schemaMarkup = {
@@ -203,7 +204,7 @@ export default function TermsOfService() {
                     <ul>
                       <li>Premium features are available for monthly or yearly subscriptions</li>
                       <li>Payments are processed securely through Stripe</li>
-                      <li>{`All prices are in ${country.currency} and include applicable taxes`}</li>
+                      <li>{tx("All prices are in {0} and include applicable taxes", country.currency)}</li>
                       <li>Premium features activate immediately upon successful payment</li>
                     </ul>
                   </div>
@@ -276,7 +277,7 @@ export default function TermsOfService() {
 
                 <div>
                   <p>
-                    {`These Terms of Service are governed by the laws of ${country.name}. Any disputes arising from these terms or your use of the platform will be subject to the exclusive jurisdiction of the competent courts of ${country.name}.`}
+                    {tx("These Terms of Service are governed by the laws of {0}. Any disputes arising from these terms or your use of the platform will be subject to the exclusive jurisdiction of the competent courts of {1}.", country.name, country.name)}
                   </p>
 
                   <div>

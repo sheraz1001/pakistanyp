@@ -18,6 +18,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { Link } from "wouter";
+import { tj } from "@/i18n-jsx/tj";
 
 interface BusinessRecommendation {
   business: {
@@ -109,7 +110,7 @@ export function AIRecommendations({
           <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 mb-4">Unable to load AI recommendations</p>
           <Button onClick={() => refetch()} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 me-2" />
             Try Again
           </Button>
         </CardContent>
@@ -137,7 +138,7 @@ export function AIRecommendations({
           className="flex-1"
         />
         <Button onClick={handleGetRecommendations}>
-          <Search className="h-4 w-4 mr-2" />
+          <Search className="h-4 w-4 me-2" />
           Get AI Recommendations
         </Button>
       </div>
@@ -207,7 +208,7 @@ export function AIRecommendations({
                             <Star className="h-3 w-3 fill-[#F59E0B] text-[#F59E0B]" />
                             <span>{rec.business.averageRating.toFixed(1)}</span>
                             {rec.business.reviewCount && (
-                              <span className="text-gray-500">({rec.business.reviewCount} reviews)</span>
+                              <span className="text-gray-500">{tj("({0} reviews)", rec.business.reviewCount)}</span>
                             )}
                           </div>
                         )}
@@ -220,13 +221,9 @@ export function AIRecommendations({
                       )}
                     </div>
 
-                    <div className="text-right ml-4">
-                      <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold mb-2">
-                        {rec.score}% Match
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        #{index + 1} Recommendation
-                      </div>
+                    <div className="text-end ms-4">
+                      <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold mb-2">{tj("{0}% Match", rec.score)}</div>
+                      <div className="text-xs text-gray-500">{tj("#{0} Recommendation", index + 1)}</div>
                     </div>
                   </div>
 
@@ -262,7 +259,7 @@ export function AIRecommendations({
                     {rec.business.phoneNumber && (
                       <Button variant="outline" size="sm" asChild>
                         <a href={`tel:${rec.business.phoneNumber}`}>
-                          <Phone className="h-3 w-3 mr-1" />
+                          <Phone className="h-3 w-3 me-1" />
                           Call
                         </a>
                       </Button>
@@ -270,7 +267,7 @@ export function AIRecommendations({
                     {rec.business.website && (
                       <Button variant="outline" size="sm" asChild>
                         <a href={rec.business.website} target="_blank" rel="noopener noreferrer">
-                          <Globe className="h-3 w-3 mr-1" />
+                          <Globe className="h-3 w-3 me-1" />
                           Website
                         </a>
                       </Button>
@@ -290,7 +287,7 @@ export function AIRecommendations({
                   Try adjusting your search terms or location preferences for better results.
                 </p>
                 <Button onClick={handleGetRecommendations} variant="outline">
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className="h-4 w-4 me-2" />
                   Try Different Search
                 </Button>
               </CardContent>

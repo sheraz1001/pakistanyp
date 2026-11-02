@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { pathInLang } from "@shared/i18n";
 import type { Express } from "express";
 import { pool } from "./db";
 import { country, regionUrl } from "@shared/country";
@@ -60,6 +61,9 @@ export async function changedUrlsSince(since: Date): Promise<string[]> {
       where slug is not null and coalesce(is_active, true) and greatest(updated_at, created_at) > $1 limit 2000`)) urls.add(placePath(r.slug, !!r.is_city));
   for (const r of await q(`select name from provinces where coalesce(is_active, true) and greatest(updated_at, created_at) > $1`)) urls.add(regionUrl(r.name));
 
+  // Second language: the same pages under "/<code>"
+  const L = country.secondLanguage;
+  if (L) for (const u of [...urls]) urls.add(pathInLang(u, L.code));
   return [...urls];
 }
 

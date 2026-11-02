@@ -209,7 +209,7 @@ export default function Register() {
             >
               {resendVerificationMutation.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="me-2 h-4 w-4 animate-spin" />
                   Sending...
                 </>
               ) : (
@@ -287,16 +287,16 @@ export default function Register() {
                           type="email"
                           autoComplete="email"
                           placeholder="you@company.pk"
-                          className={`${authInputClass} pr-12`}
+                          className={`${authInputClass} pe-12`}
                         />
                         {checkingEmail && (
-                          <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin text-[#5B6475]" />
+                          <Loader2 className="absolute end-4 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin text-[#5B6475]" />
                         )}
                         {!checkingEmail && emailAvailable === true && (
-                          <CheckCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#0B6B2E]" />
+                          <CheckCircle className="absolute end-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#0B6B2E]" />
                         )}
                         {!checkingEmail && emailAvailable === false && (
-                          <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#D71920]" />
+                          <AlertCircle className="absolute end-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#D71920]" />
                         )}
                       </div>
                     </FormControl>
@@ -307,7 +307,7 @@ export default function Register() {
                     )}
                     {emailAvailable === true && (
                       <p className="text-sm text-[#047857] mt-1 flex items-center">
-                        <CheckCircle className="mr-1 h-3 w-3" />
+                        <CheckCircle className="me-1 h-3 w-3" />
                         Email is available
                       </p>
                     )}
@@ -329,13 +329,13 @@ export default function Register() {
                           type={showPassword ? "text" : "password"}
                           autoComplete="new-password"
                           placeholder="Create a strong password"
-                          className={`${authInputClass} pr-12`}
+                          className={`${authInputClass} pe-12`}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           aria-label={showPassword ? "Hide password" : "Show password"}
-                          className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-10 h-10 rounded-lg text-[#5B6475] hover:text-[#0A0A0A]"
+                          className="absolute end-1 top-1/2 -translate-y-1/2 grid place-items-center w-10 h-10 rounded-lg text-[#5B6475] hover:text-[#0A0A0A]"
                         >
                           {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
@@ -368,13 +368,13 @@ export default function Register() {
                           type={showConfirmPassword ? "text" : "password"}
                           autoComplete="new-password"
                           placeholder="Confirm your password"
-                          className={`${authInputClass} pr-12`}
+                          className={`${authInputClass} pe-12`}
                         />
                         <button
                           type="button"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                          className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-10 h-10 rounded-lg text-[#5B6475] hover:text-[#0A0A0A]"
+                          className="absolute end-1 top-1/2 -translate-y-1/2 grid place-items-center w-10 h-10 rounded-lg text-[#5B6475] hover:text-[#0A0A0A]"
                         >
                           {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>

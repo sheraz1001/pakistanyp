@@ -62,10 +62,10 @@ export function SmartSearchSuggestions({
             <Button
               key={index}
               variant="ghost"
-              className="w-full justify-start text-left h-auto p-2 hover:bg-purple-50"
+              className="w-full justify-start text-start h-auto p-2 hover:bg-purple-50"
               onClick={() => onSuggestionClick(suggestion)}
             >
-              <Search className="h-3 w-3 mr-2 text-gray-400" />
+              <Search className="h-3 w-3 me-2 text-gray-400" />
               <span className="text-sm">{suggestion}</span>
             </Button>
           ))}

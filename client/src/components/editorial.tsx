@@ -1,6 +1,9 @@
+import { dateLocale } from "@shared/i18n";
 import { Link } from "wouter";
 import { useState, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, Copy, Facebook, Linkedin, Search, Twitter, Tag as TagIcon } from "lucide-react";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 /** Blogs and News share one editorial design. */
 export type EditorialKind = "blogs" | "news";
@@ -48,7 +51,7 @@ export const EDITORIAL: Record<EditorialKind, {
 export const formatDate = (d?: string | null, short = false) => {
   if (!d) return "";
   try {
-    return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: short ? "short" : "long", year: "numeric", timeZone: "Asia/Karachi" });
+    return new Date(d).toLocaleDateString(dateLocale("en-GB"), { day: "numeric", month: short ? "short" : "long", year: "numeric", timeZone: "Asia/Karachi" });
   } catch { return ""; }
 };
 
@@ -78,7 +81,7 @@ export function Meta({ item, kind }: { item: EditorialItem; kind: EditorialKind 
   return (
     <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-[#5B6475]">
       <time dateTime={item.publishedAt}>{formatDate(item.publishedAt)}</time>
-      {kind === "blogs" && item.readingTime ? <><span aria-hidden="true">·</span><span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" aria-hidden="true" />{item.readingTime} min read</span></> : null}
+      {kind === "blogs" && item.readingTime ? <><span aria-hidden="true">·</span><span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" aria-hidden="true" />{tj("{0} min read", item.readingTime)}</span></> : null}
       {item.author && <><span aria-hidden="true">·</span><span>{item.author}</span></>}
     </p>
   );
@@ -103,8 +106,7 @@ export function FeaturedCard({ kind, item }: { kind: EditorialKind; item: Editor
         </h2>
         {item.summary && <p className="line-clamp-3 text-[16px] leading-relaxed text-[#4B5565]">{item.summary}</p>}
         <Meta item={item} kind={kind} />
-        <Link href={href} className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">
-          Read {kind === "news" ? "story" : "article"}<ArrowRight className="h-4 w-4" aria-hidden="true" />
+        <Link href={href} className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">{tj("Read {0}", kind === "news" ? "story" : "article")}<ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
     </article>
@@ -137,7 +139,7 @@ export function MiniItem({ kind, item, index }: { kind: EditorialKind; item: Edi
     <li>
       <Link href={`${EDITORIAL[kind].base}/${item.slug}`} className="group flex items-start gap-3 rounded-[12px] p-2 hover:bg-[#F7F8FA]">
         {index !== undefined ? (
-          <span className="w-6 shrink-0 pt-0.5 text-right font-mono text-sm font-semibold text-[#B07D10]">{String(index + 1).padStart(2, "0")}</span>
+          <span className="w-6 shrink-0 pt-0.5 text-end font-mono text-sm font-semibold text-[#B07D10]">{String(index + 1).padStart(2, "0")}</span>
         ) : null}
         <span className="h-14 w-20 shrink-0 overflow-hidden rounded-[8px] bg-[#EEF0F4]"><Cover item={item} /></span>
         <span className="min-w-0">
@@ -165,22 +167,22 @@ export function EditorialSidebar({ kind, side, activeCategory, toc, query }: {
   const cfg = EDITORIAL[kind];
   const total = (side?.categories || []).reduce((n, c) => n + c.count, 0);
   return (
-    <aside className="flex min-w-0 flex-col gap-5" aria-label={`${cfg.label} sidebar`}>
+    <aside className="flex min-w-0 flex-col gap-5" aria-label={tx("{0} sidebar", cfg.label)}>
       {toc && toc.length > 1 && (
         <Panel title="On this page" id="toc-heading">
-          <ol className="flex flex-col gap-1 border-l-2 border-[#E7E9EE]">
+          <ol className="flex flex-col gap-1 border-s-2 border-[#E7E9EE]">
             {toc.map((h) => (
-              <li key={h.id}><a href={`#${h.id}`} className="-ml-[2px] block border-l-2 border-transparent py-1 pl-3 text-[14px] text-[#3A4354] hover:border-[#0B6B2E] hover:text-[#0B6B2E]">{h.text}</a></li>
+              <li key={h.id}><a href={`#${h.id}`} className="-ms-[2px] block border-s-2 border-transparent py-1 ps-3 text-[14px] text-[#3A4354] hover:border-[#0B6B2E] hover:text-[#0B6B2E]">{h.text}</a></li>
             ))}
           </ol>
         </Panel>
       )}
 
-      <Panel title={`Search ${cfg.label.toLowerCase()}`} id="side-search-heading">
+      <Panel title={tx("Search {0}", cfg.label.toLowerCase())} id="side-search-heading">
         <form action={cfg.base} method="get" role="search" className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5B6475]" aria-hidden="true" />
-          <label htmlFor={`${kind}-search`} className="sr-only">Search {cfg.label.toLowerCase()}</label>
-          <input id={`${kind}-search`} name="q" type="search" defaultValue={query || ""} placeholder={`Search ${cfg.nouns}…`} className="yp-input pl-9 text-[15px]" />
+          <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5B6475]" aria-hidden="true" />
+          <label htmlFor={`${kind}-search`} className="sr-only">{tj("Search {0}", cfg.label.toLowerCase())}</label>
+          <input id={`${kind}-search`} name="q" type="search" defaultValue={query || ""} placeholder={tx("Search {0}…", cfg.nouns)} className="yp-input ps-9 text-[15px]" />
         </form>
       </Panel>
 
@@ -189,7 +191,7 @@ export function EditorialSidebar({ kind, side, activeCategory, toc, query }: {
           <ul className="-mx-2 flex flex-col">
             <li>
               <Link href={cfg.base} className={`flex min-h-[40px] items-center justify-between gap-2 rounded-[10px] px-2 text-[14px] ${!activeCategory ? "bg-[#F2F9F4] font-semibold text-[#05501F]" : "text-[#3A4354] hover:bg-[#F7F8FA]"}`} aria-current={!activeCategory ? "page" : undefined}>
-                <span>All {cfg.label.toLowerCase()}</span>
+                <span>{tj("All {0}", cfg.label.toLowerCase())}</span>
                 <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold tabular-nums ring-1 ring-[#E7E9EE]">{total}</span>
               </Link>
             </li>
@@ -265,9 +267,9 @@ export function ShareBar({ url, title }: { url: string; title: string }) {
   };
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="mr-1 text-sm font-medium text-[#5B6475]">Share</span>
+      <span className="me-1 text-sm font-medium text-[#5B6475]">Share</span>
       {links.map((l) => (
-        <a key={l.name} href={l.href} target="_blank" rel="noopener noreferrer" aria-label={`Share on ${l.name}`} className="grid h-10 w-10 place-items-center rounded-full border border-[#E7E9EE] text-[#3A4354] hover:border-[#0B6B2E] hover:text-[#0B6B2E]">
+        <a key={l.name} href={l.href} target="_blank" rel="noopener noreferrer" aria-label={tx("Share on {0}", l.name)} className="grid h-10 w-10 place-items-center rounded-full border border-[#E7E9EE] text-[#3A4354] hover:border-[#0B6B2E] hover:text-[#0B6B2E]">
           {l.icon}
         </a>
       ))}

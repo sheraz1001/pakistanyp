@@ -5,6 +5,7 @@ import { MapPin } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Province } from '@shared/schema';
+import { tj } from "@/i18n-jsx/tj";
 
 interface MobileProvincesSelectorProps {
   onProvinceSelect?: (province: Province) => void;
@@ -60,9 +61,7 @@ export function MobileProvincesSelector({
                       <p className="text-sm text-gray-600">{province.arabicName}</p>
                     </div>
                   </div>
-                  <Badge variant={isSelected ? 'default' : 'secondary'} className="text-xs">
-                    {province.businessCount || 0} businesses
-                  </Badge>
+                  <Badge variant={isSelected ? 'default' : 'secondary'} className="text-xs">{tj("{0} businesses", province.businessCount || 0)}</Badge>
                 </div>
               </CardContent>
             </Card>

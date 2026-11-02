@@ -1,6 +1,7 @@
 import { pool } from "./db";
 import { country } from "@shared/country";
 import { parseCategoryTree } from "@shared/countries/categories";
+import { CATEGORY_NAMES, LOCALITY_NAMES } from "@shared/countries/translations";
 
 /**
  * Keeps the database's reference data in step with the data files, on every start:
@@ -128,10 +129,74 @@ async function syncCategories(): Promise<{ added: number; updated: number; remov
   return { added, updated, removed, hidden };
 }
 
+/**
+ * Second-language names and descriptions (only fills empty fields, so admin edits are kept).
+ * Localities are named like the English ones: "<Locality>، <City>".
+ */
+async function syncTranslations(): Promise<number> {
+  const L = country.secondLanguage;
+  if (!L) return 0;
+  let n = 0;
+  const ar = country.nameAr;
+  const brand = country.brand;
+  // categories
+  const cats = (await pool.query("select id, slug, level, arabic_name, description_ar from categories")).rows;
+  for (const c of cats) {
+    const name = c.arabic_name || CATEGORY_NAMES[c.slug];
+    if (!name) continue;
+    const desc = Number(c.level) === 1
+      ? `${name} في ${ar}: ابحث عن الشركات والخدمات وقارن بينها حسب المدينة والحي، مع بيانات التواصل والتقييمات على ${brand}.`
+      : `ابحث عن ${name} بالقرب منك في ${ar}. قارن بين الأنشطة التجارية وبيانات التواصل والتقييمات على ${brand}.`;
+    if (!c.arabic_name || !c.description_ar) {
+      await pool.query("update categories set arabic_name = coalesce(nullif(arabic_name, ''), $2), description_ar = coalesce(nullif(description_ar, ''), $3) where id = $1", [c.id, name, desc]);
+      n++;
+    }
+  }
+  // regions, cities and localities
+  const regionAr = new Map<string, string>();
+  for (const r of country.regions) regionAr.set(r.name, r.nameAr);
+  const cityAr = new Map<string, string>();
+  for (const r of country.regions) for (const c of r.cities || []) if (!c.locality && c.nameAr) cityAr.set(c.name, c.nameAr);
+  const provs = (await pool.query("select id, name, arabic_name, description_ar from provinces")).rows;
+  const provAr = new Map<number, string>();
+  for (const p of provs) {
+    const name = p.arabic_name || regionAr.get(p.name);
+    if (!name) continue;
+    provAr.set(p.id, name);
+    if (!p.arabic_name || !p.description_ar) {
+      await pool.query("update provinces set arabic_name = coalesce(nullif(arabic_name, ''), $2), description_ar = coalesce(nullif(description_ar, ''), $3) where id = $1",
+        [p.id, name, `الشركات والخدمات في ${name}، ${ar}.`]);
+      n++;
+    }
+  }
+  const locs = (await pool.query("select id, name, arabic_name, description_ar, province_id, is_main_area, parent_id from localities")).rows;
+  for (const l of locs) {
+    let name = l.arabic_name as string | null;
+    if (!name) {
+      const i = l.name.lastIndexOf(", ");
+      if (i > 0) {
+        const city = l.name.slice(i + 2), loc = l.name.slice(0, i);
+        const a = LOCALITY_NAMES[`${city}|${loc}`], ca = cityAr.get(city);
+        if (a && ca) name = `${a}، ${ca}`;
+      } else name = cityAr.get(l.name) || null;
+    }
+    if (!name) continue;
+    if (!l.arabic_name || !l.description_ar) {
+      const region = provAr.get(l.province_id);
+      await pool.query("update localities set arabic_name = coalesce(nullif(arabic_name, ''), $2), description_ar = coalesce(nullif(description_ar, ''), $3) where id = $1",
+        [l.id, name, `الشركات والخدمات في ${name}${region ? `، ${region}` : ""}.`]);
+      n++;
+    }
+  }
+  return n;
+}
+
 export async function syncCatalog(): Promise<void> {
   try {
     const places = await syncPlaces();
     const cats = await syncCategories();
+    const translated = await syncTranslations();
+    if (translated) console.log(`[catalog] ${country.secondLanguage?.englishName} names: ${translated} updated`);
     if (places.provinces || places.places || places.linked || cats.added || cats.updated || cats.removed || cats.hidden) {
       console.log(`[catalog] places: +${places.provinces} provinces, +${places.places} cities/localities, ${places.linked} linked; ` +
         `categories: +${cats.added}, ${cats.updated} updated, ${cats.removed} removed, ${cats.hidden} hidden`);

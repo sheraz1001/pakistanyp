@@ -60,7 +60,7 @@ export default function ForgotPassword() {
           />
           <Button asChild className={authBtnClass}>
             <Link href="/login">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="me-2 h-4 w-4" />
               Back to Login
             </Link>
           </Button>
@@ -93,13 +93,13 @@ export default function ForgotPassword() {
             />
 
             <Button type="submit" className={authBtnClass} disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
               Send Reset Link
             </Button>
 
             <Button asChild variant="outline" className={authBtnClass}>
               <Link href="/login">
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ArrowLeft className="me-2 h-4 w-4" />
                 Back to Login
               </Link>
             </Button>

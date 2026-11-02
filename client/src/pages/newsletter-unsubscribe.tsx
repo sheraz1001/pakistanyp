@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { CheckCircle, XCircle, Loader2, ArrowLeft, Home, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PakistanypLogo, FlagStripe } from "@/components/brand/pakistanyp-logo";
+import { t as tx } from "@shared/i18n";
 
 export default function NewsletterUnsubscribe() {
   const [location] = useLocation();
@@ -101,7 +102,7 @@ export default function NewsletterUnsubscribe() {
 
         {/* Success Message */}
         {status === 'success' && (
-          <div className="yp-panel p-4 mb-8 text-left">
+          <div className="yp-panel p-4 mb-8 text-start">
             <h3 className="font-semibold text-[#0A0A0A] mb-2">We'll Miss You!</h3>
             <p className="text-sm text-[#3A4354]">
               {localize("Your unsubscribe request has been processed. If you change your mind, you can always subscribe again to stay updated with Pakistani business news and opportunities.")}
@@ -144,7 +145,7 @@ export default function NewsletterUnsubscribe() {
 
         {/* Alternative Options */}
         {status === 'success' && (
-          <div className="mt-6 p-4 yp-panel text-left">
+          <div className="mt-6 p-4 yp-panel text-start">
             <h4 className="font-medium text-gray-800 mb-2">Stay Connected</h4>
             <p className="text-sm text-gray-600 mb-3">
               Even without our newsletter, you can still:
@@ -160,7 +161,7 @@ export default function NewsletterUnsubscribe() {
         {/* Footer */}
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()}{` ${country.brand}. All rights reserved.`}
+            © {new Date().getFullYear()}{tx(" {0}. All rights reserved.", country.brand)}
           </p>
         </div>
       </div>

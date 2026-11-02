@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'wouter';
+import { t as tx } from "@shared/i18n";
 
 // AI Assistant Character component
 const AIAssistantCharacter = ({ isListening, isProcessing, emotion = 'happy' }: {
@@ -56,7 +57,7 @@ const AIAssistantCharacter = ({ isListening, isProcessing, emotion = 'happy' }: 
       {/* Processing animation */}
       {isProcessing && (
         <motion.div
-          className="absolute -top-2 -right-2 w-6 h-6 bg-[#D71920] rounded-full flex items-center justify-center"
+          className="absolute -top-2 -end-2 w-6 h-6 bg-[#D71920] rounded-full flex items-center justify-center"
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1 }}
         >
@@ -288,7 +289,7 @@ const VoiceSearchAssistant = ({ compact = false }: { compact?: boolean }) => {
         ) : (
           <Mic className="w-4 h-4" />
         )}
-        <span className="ml-1">Voice</span>
+        <span className="ms-1">Voice</span>
       </Button>
     );
   }
@@ -308,17 +309,17 @@ const VoiceSearchAssistant = ({ compact = false }: { compact?: boolean }) => {
             transition={{ repeat: Infinity, duration: 1 }}
             className="flex items-center"
           >
-            <Mic className="w-5 h-5 mr-2" />
+            <Mic className="w-5 h-5 me-2" />
             Listening...
           </motion.div>
         ) : isProcessing ? (
           <>
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            <Loader2 className="w-5 h-5 me-2 animate-spin" />
             Processing...
           </>
         ) : (
           <>
-            <Mic className="w-5 h-5 mr-2" />
+            <Mic className="w-5 h-5 me-2" />
             Voice Search
           </>
         )}
@@ -326,7 +327,7 @@ const VoiceSearchAssistant = ({ compact = false }: { compact?: boolean }) => {
         {/* Listening indicator */}
         {isListening && (
           <motion.div
-            className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
+            className="absolute -top-1 -end-1 w-3 h-3 bg-red-500 rounded-full"
             animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
             transition={{ repeat: Infinity, duration: 1 }}
           />
@@ -370,7 +371,7 @@ const VoiceSearchAssistant = ({ compact = false }: { compact?: boolean }) => {
               {transcript && (
                 <div className="mb-4">
                   <Badge variant="outline" className="mb-2">
-                    {confidence > 0 ? `${Math.round(confidence * 100)}% confident` : 'Listening...'}
+                    {confidence > 0 ? tx("{0}% confident", Math.round(confidence * 100)) : 'Listening...'}
                   </Badge>
                   <div className="bg-blue-50 rounded-lg p-3 text-sm text-blue-800">
                     "{transcript}"
@@ -386,24 +387,24 @@ const VoiceSearchAssistant = ({ compact = false }: { compact?: boolean }) => {
               )}
 
               {/* Control Buttons */}
-              <div className="flex justify-center space-x-3">
+              <div className="flex justify-center space-x-3 rtl:space-x-reverse">
                 {isListening ? (
                   <Button onClick={stopListening} variant="outline" size="sm">
-                    <MicOff className="w-4 h-4 mr-1" />
+                    <MicOff className="w-4 h-4 me-1" />
                     Stop
                   </Button>
                 ) : (
                   <Button onClick={startListening} disabled={isProcessing} size="sm">
-                    <Mic className="w-4 h-4 mr-1" />
+                    <Mic className="w-4 h-4 me-1" />
                     Try Again
                   </Button>
                 )}
                 
                 <Button onClick={toggleSpeech} variant="outline" size="sm">
                   {isSpeaking ? (
-                    <VolumeX className="w-4 h-4 mr-1" />
+                    <VolumeX className="w-4 h-4 me-1" />
                   ) : (
-                    <Volume2 className="w-4 h-4 mr-1" />
+                    <Volume2 className="w-4 h-4 me-1" />
                   )}
                   {isSpeaking ? 'Mute' : 'Speak'}
                 </Button>

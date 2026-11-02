@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Plus, X, Search, Crown, AlertCircle } from "lucide-react";
 import { getCategoryIcon } from "@/lib/category-icons-clean";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -127,9 +128,7 @@ export function ProfessionalCategorySelector({
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Badge variant="secondary" className="text-sm">
-                {selectedCategories.length} Selected
-              </Badge>
+              <Badge variant="secondary" className="text-sm">{tj("{0} Selected", selectedCategories.length)}</Badge>
               Selected Categories
             </CardTitle>
           </CardHeader>
@@ -150,7 +149,7 @@ export function ProfessionalCategorySelector({
                     <span>{category.name}</span>
                     <button
                       onClick={() => handleRemoveCategory(category.id)}
-                      className="ml-1 hover:bg-black/20 rounded-full p-0.5"
+                      className="ms-1 hover:bg-black/20 rounded-full p-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -184,7 +183,7 @@ export function ProfessionalCategorySelector({
             </div>
             <div className="mt-3 pt-3 border-t border-[#F5DDB0]">
               <Button size="sm" variant="outline" className="w-full text-[#B45309] border-[#F5DDB0] hover:bg-[#FFF4E0]">
-                <Crown className="w-4 h-4 mr-2" />
+                <Crown className="w-4 h-4 me-2" />
                 Upgrade for Unlimited Categories
               </Button>
             </div>
@@ -198,12 +197,12 @@ export function ProfessionalCategorySelector({
           <CardTitle className="text-lg">Select Categories</CardTitle>
           <div className="flex gap-2 mt-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="Search categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="ps-10"
               />
             </div>
           </div>
@@ -269,7 +268,7 @@ export function ProfessionalCategorySelector({
                       <div className="flex-1">
                         <h4 className="font-medium text-sm">{category.name}</h4>
                         {category.businessCount && (
-                          <p className="text-xs text-gray-500">{category.businessCount} businesses</p>
+                          <p className="text-xs text-gray-500">{tj("{0} businesses", category.businessCount)}</p>
                         )}
                       </div>
                       {isSelected && (
@@ -306,7 +305,7 @@ export function ProfessionalCategorySelector({
                       <div className="flex-1">
                         <h4 className="font-medium text-sm">{category.name}</h4>
                         {category.businessCount && (
-                          <p className="text-xs text-gray-500">{category.businessCount} businesses</p>
+                          <p className="text-xs text-gray-500">{tj("{0} businesses", category.businessCount)}</p>
                         )}
                       </div>
                       {isSelected && (
@@ -340,7 +339,7 @@ export function ProfessionalCategorySelector({
                       <div className="flex-1">
                         <h4 className="font-medium text-sm">{category.name}</h4>
                         {category.businessCount && (
-                          <p className="text-xs text-gray-500">{category.businessCount} businesses</p>
+                          <p className="text-xs text-gray-500">{tj("{0} businesses", category.businessCount)}</p>
                         )}
                       </div>
                       {isSelected && (

@@ -14,6 +14,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { trackEvent } from '@/lib/analytics';
 import { country, localize } from '@shared/country';
+import { t as tx } from "@shared/i18n";
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -121,7 +122,7 @@ export default function ContactUs() {
             <span className="yp-label !text-[#0B6B2E]">Contact us</span>
             <h1 className="yp-h1">Get in Touch</h1>
             <p className="yp-lead max-w-2xl">
-              {`Have questions about listing your business or need support? We're here to help you succeed in the ${country.adjective} market.`}
+              {tx("Have questions about listing your business or need support? We're here to help you succeed in the {0} market.", country.adjective)}
             </p>
           </div>
         </div>
@@ -194,7 +195,7 @@ export default function ContactUs() {
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input placeholder={`${country.phonePrefix} XX XXX XXXX`} {...field} />
+                          <Input placeholder={tx("{0} XX XXX XXXX", country.phonePrefix)} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -265,7 +266,7 @@ export default function ContactUs() {
                     "Sending..."
                   ) : (
                     <>
-                      <Send className="w-4 h-4 mr-2" />
+                      <Send className="w-4 h-4 me-2" />
                       Send Message
                     </>
                   )}

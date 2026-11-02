@@ -14,6 +14,8 @@ import { MobileSearch } from '@/components/mobile-search';
 import { useMobile } from '@/hooks/use-mobile';
 import { useSearchLoading } from '@/hooks/use-loading';
 import { country, localize } from '@shared/country';
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 export default function SearchPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
@@ -78,10 +80,10 @@ export default function SearchPage() {
   return (
     <>
       <SEO
-        title={`${searchTitle} | PakistanYP Directory`}
+        title={tx("{0} | PakistanYP Directory", searchTitle)}
         description={searchDescription}
-        keywords={`Pakistani business search, find businesses Pakistan, ${searchQuery || 'business directory'}, ${selectedProvince || 'all provinces'}`}
-        canonical={`https://pakistanyp.com/search${location.includes('?') ? location.substring(location.indexOf('?')) : ''}`}
+        keywords={tx("Pakistani business search, find businesses Pakistan, {0}, {1}", searchQuery || 'business directory', selectedProvince || 'all provinces')}
+        canonical={tx("https://pakistanyp.com/search{0}", location.includes('?') ? location.substring(location.indexOf('?')) : '')}
         ogTitle={searchTitle}
         schemaType="SearchResultsPage"
       />
@@ -100,7 +102,7 @@ export default function SearchPage() {
               <span>Search</span>
             </nav>
             <h1 className="mb-6 mt-4 text-[clamp(30px,3.6vw,44px)] font-bold leading-[1.1] tracking-[-0.04em] text-[#0A0A0A] break-words">
-              {searchQuery ? `Results for “${searchQuery}”` : localize('Search Pakistani businesses')}
+              {searchQuery ? tx("Results for “{0}”", searchQuery) : localize('Search Pakistani businesses')}
             </h1>
             <form
               role="search"
@@ -120,7 +122,7 @@ export default function SearchPage() {
               </label>
               
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="h-10 flex-[1_1_160px] border-0 border-l border-[#DDE1E8] bg-transparent shadow-none rounded-none" aria-label="Category">
+                <SelectTrigger className="h-10 flex-[1_1_160px] border-0 border-s border-[#DDE1E8] bg-transparent shadow-none rounded-none" aria-label="Category">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -134,7 +136,7 @@ export default function SearchPage() {
               </Select>
 
               <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                <SelectTrigger className="h-10 flex-[1_1_140px] border-0 border-l border-[#DDE1E8] bg-transparent shadow-none rounded-none" aria-label={country.regionTerm.singular}>
+                <SelectTrigger className="h-10 flex-[1_1_140px] border-0 border-s border-[#DDE1E8] bg-transparent shadow-none rounded-none" aria-label={country.regionTerm.singular}>
                   <SelectValue placeholder={country.regionTerm.singular} />
                 </SelectTrigger>
                 <SelectContent>
@@ -148,7 +150,7 @@ export default function SearchPage() {
               </Select>
 
               <Button type="submit" className="min-h-[40px] rounded-[10px]">
-                <Search className="h-4 w-4 mr-2" />
+                <Search className="h-4 w-4 me-2" />
                 Search
               </Button>
             </form>
@@ -166,9 +168,7 @@ export default function SearchPage() {
         ) : searchResults?.businesses.length ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-[15px] font-medium text-[#5B6475]">
-                {searchResults.total} businesses found
-              </h2>
+              <h2 className="text-[15px] font-medium text-[#5B6475]">{tj("{0} businesses found", searchResults.total)}</h2>
               <BusinessViewToggle value={viewMode} onChange={setViewMode} />
             </div>
             

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CheckCircle, X } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
 
 interface PasswordStrengthMeterProps {
   password: string;
@@ -75,8 +76,8 @@ export function PasswordStrengthMeter({ password, onStrengthChange, className = 
           ))}
         </div>
         <div className="flex justify-between items-center">
-          <span className={`text-[13px] font-medium ${tone.text}`}>{getStrengthLabel()} password</span>
-          <span className="text-xs text-[#5B6475]">{metCount}/{requirements.length} requirements</span>
+          <span className={`text-[13px] font-medium ${tone.text}`}>{tj("{0} password", getStrengthLabel())}</span>
+          <span className="text-xs text-[#5B6475]">{tj("{0}/{1} requirements", metCount, requirements.length)}</span>
         </div>
       </div>
 

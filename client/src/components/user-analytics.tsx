@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { tj } from "@/i18n-jsx/tj";
 
 interface UserAnalytics {
   totalUsers: number;
@@ -151,7 +152,7 @@ export const UserAnalytics: React.FC = () => {
               <p className="text-lg font-semibold mb-2">Failed to Load Analytics</p>
               <p className="mb-4">Unable to fetch user analytics data.</p>
               <Button onClick={handleRefresh} variant="outline">
-                <RefreshCw className="mr-2 h-4 w-4" />
+                <RefreshCw className="me-2 h-4 w-4" />
                 Try Again
               </Button>
             </div>
@@ -212,7 +213,7 @@ export const UserAnalytics: React.FC = () => {
             size="sm"
             disabled={refreshing}
           >
-            <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`me-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
           
@@ -221,7 +222,7 @@ export const UserAnalytics: React.FC = () => {
             variant="outline"
             size="sm"
           >
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="me-2 h-4 w-4" />
             Export
           </Button>
         </div>
@@ -237,9 +238,9 @@ export const UserAnalytics: React.FC = () => {
                 <p className="text-2xl font-bold text-gray-900">{safeData.totalUsers.toLocaleString()}</p>
                 <div className="flex items-center mt-1">
                   {safeData.userGrowthRate >= 0 ? (
-                    <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+                    <TrendingUp className="h-4 w-4 text-green-500 me-1" />
                   ) : (
-                    <TrendingDown className="h-4 w-4 text-red-500 mr-1" />
+                    <TrendingDown className="h-4 w-4 text-red-500 me-1" />
                   )}
                   <span className={`text-sm ${safeData.userGrowthRate >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                     {safeData.userGrowthRate >= 0 ? '+' : ''}{safeData.userGrowthRate.toFixed(1)}%
@@ -259,9 +260,7 @@ export const UserAnalytics: React.FC = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Active Users</p>
                 <p className="text-2xl font-bold text-gray-900">{safeData.activeUsers.toLocaleString()}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {safeData.totalUsers > 0 ? ((safeData.activeUsers / safeData.totalUsers) * 100).toFixed(1) : 0}% of total
-                </p>
+                <p className="text-sm text-gray-500 mt-1">{tj("{0}% of total", safeData.totalUsers > 0 ? ((safeData.activeUsers / safeData.totalUsers) * 100).toFixed(1) : 0)}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-full">
                 <UserCheck className="h-6 w-6 text-green-600" />
@@ -276,7 +275,7 @@ export const UserAnalytics: React.FC = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">New Users</p>
                 <p className="text-2xl font-bold text-gray-900">{safeData.newUsers.toLocaleString()}</p>
-                <p className="text-sm text-gray-500 mt-1">This {timeRange}</p>
+                <p className="text-sm text-gray-500 mt-1">{tj("This {0}", timeRange)}</p>
               </div>
               <div className="p-3 bg-[#FFF4E0] rounded-full">
                 <UserPlus className="h-6 w-6 text-[#B45309]" />
@@ -291,9 +290,7 @@ export const UserAnalytics: React.FC = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Premium Users</p>
                 <p className="text-2xl font-bold text-gray-900">{safeData.premiumUsers.toLocaleString()}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {safeData.totalUsers > 0 ? ((safeData.premiumUsers / safeData.totalUsers) * 100).toFixed(1) : 0}% conversion
-                </p>
+                <p className="text-sm text-gray-500 mt-1">{tj("{0}% conversion", safeData.totalUsers > 0 ? ((safeData.premiumUsers / safeData.totalUsers) * 100).toFixed(1) : 0)}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
                 <Crown className="h-6 w-6 text-purple-600" />
@@ -308,9 +305,7 @@ export const UserAnalytics: React.FC = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Verified Users</p>
                 <p className="text-2xl font-bold text-gray-900">{safeData.verifiedUsers.toLocaleString()}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {safeData.totalUsers > 0 ? ((safeData.verifiedUsers / safeData.totalUsers) * 100).toFixed(1) : 0}% verified
-                </p>
+                <p className="text-sm text-gray-500 mt-1">{tj("{0}% verified", safeData.totalUsers > 0 ? ((safeData.verifiedUsers / safeData.totalUsers) * 100).toFixed(1) : 0)}</p>
               </div>
               <div className="p-3 bg-teal-100 rounded-full">
                 <Shield className="h-6 w-6 text-teal-600" />
@@ -325,9 +320,7 @@ export const UserAnalytics: React.FC = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Business Owners</p>
                 <p className="text-2xl font-bold text-gray-900">{safeData.businessOwners.toLocaleString()}</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {safeData.totalUsers > 0 ? ((safeData.businessOwners / safeData.totalUsers) * 100).toFixed(1) : 0}% of users
-                </p>
+                <p className="text-sm text-gray-500 mt-1">{tj("{0}% of users", safeData.totalUsers > 0 ? ((safeData.businessOwners / safeData.totalUsers) * 100).toFixed(1) : 0)}</p>
               </div>
               <div className="p-3 bg-indigo-100 rounded-full">
                 <Globe className="h-6 w-6 text-indigo-600" />
@@ -456,7 +449,7 @@ export const UserAnalytics: React.FC = () => {
                     <p className="text-sm text-gray-600">Retention Rate</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-blue-600">{safeData.averageSessionDuration.toFixed(1)}min</p>
+                    <p className="text-2xl font-bold text-blue-600">{tj("{0}min", safeData.averageSessionDuration.toFixed(1))}</p>
                     <p className="text-sm text-gray-600">Avg Session</p>
                   </div>
                 </div>
@@ -534,7 +527,7 @@ export const UserAnalytics: React.FC = () => {
                   <div key={province.province} className="flex items-center justify-between p-2 border rounded">
                     <span className="font-medium">{province.province}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600">{province.count} users</span>
+                      <span className="text-sm text-gray-600">{tj("{0} users", province.count)}</span>
                       <Badge variant="secondary">{province.percentage.toFixed(1)}%</Badge>
                     </div>
                   </div>
@@ -604,7 +597,7 @@ export const UserAnalytics: React.FC = () => {
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                       <span className="font-medium">Highly Engaged</span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="font-semibold">{Math.floor(safeData.totalUsers * 0.15)}</p>
                       <p className="text-sm text-gray-600">15% of users</p>
                     </div>
@@ -615,7 +608,7 @@ export const UserAnalytics: React.FC = () => {
                       <div className="w-3 h-3 bg-[#B45309] rounded-full"></div>
                       <span className="font-medium">Moderately Engaged</span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="font-semibold">{Math.floor(safeData.totalUsers * 0.35)}</p>
                       <p className="text-sm text-gray-600">35% of users</p>
                     </div>
@@ -626,7 +619,7 @@ export const UserAnalytics: React.FC = () => {
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                       <span className="font-medium">Low Engagement</span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="font-semibold">{Math.floor(safeData.totalUsers * 0.5)}</p>
                       <p className="text-sm text-gray-600">50% of users</p>
                     </div>
@@ -642,22 +635,22 @@ export const UserAnalytics: React.FC = () => {
               <CardContent>
                 <div className="space-y-3">
                   <Button className="w-full justify-start" variant="outline">
-                    <Mail className="mr-2 h-4 w-4" />
+                    <Mail className="me-2 h-4 w-4" />
                     Send Re-engagement Campaign
                   </Button>
                   
                   <Button className="w-full justify-start" variant="outline">
-                    <UserPlus className="mr-2 h-4 w-4" />
+                    <UserPlus className="me-2 h-4 w-4" />
                     Target Inactive Users
                   </Button>
                   
                   <Button className="w-full justify-start" variant="outline">
-                    <Crown className="mr-2 h-4 w-4" />
+                    <Crown className="me-2 h-4 w-4" />
                     Promote Premium Features
                   </Button>
                   
                   <Button className="w-full justify-start" variant="outline">
-                    <Eye className="mr-2 h-4 w-4" />
+                    <Eye className="me-2 h-4 w-4" />
                     View Detailed Reports
                   </Button>
                 </div>

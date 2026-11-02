@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { OwnerShell } from '@/components/owner-shell';
+import { tj } from "@/i18n-jsx/tj";
 
 interface BusinessClaim {
   id: number;
@@ -169,10 +170,10 @@ export default function DashboardBusinessClaims() {
       {/* Claims Management */}
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="all">All Claims ({claims.length})</TabsTrigger>
-          <TabsTrigger value="pending">Pending ({pendingClaims.length})</TabsTrigger>
-          <TabsTrigger value="approved">Approved ({approvedClaims.length})</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected ({rejectedClaims.length})</TabsTrigger>
+          <TabsTrigger value="all">{tj("All Claims ({0})", claims.length)}</TabsTrigger>
+          <TabsTrigger value="pending">{tj("Pending ({0})", pendingClaims.length)}</TabsTrigger>
+          <TabsTrigger value="approved">{tj("Approved ({0})", approvedClaims.length)}</TabsTrigger>
+          <TabsTrigger value="rejected">{tj("Rejected ({0})", rejectedClaims.length)}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all">
@@ -249,12 +250,12 @@ function ClaimsTable({
                   <TableCell>
                     <div>
                       <p className="font-medium">{claim.businessName}</p>
-                      <p className="text-sm text-gray-500">ID: {claim.businessId}</p>
+                      <p className="text-sm text-gray-500">{tj("ID: {0}", claim.businessId)}</p>
                     </div>
                   </TableCell>
                   <TableCell>
                     <Badge className={`${status.color} border-0 rounded-full capitalize`}>
-                      <StatusIcon className="mr-1 h-3 w-3" />
+                      <StatusIcon className="me-1 h-3 w-3" />
                       {claim.status}
                     </Badge>
                   </TableCell>
@@ -274,12 +275,12 @@ function ClaimsTable({
                         size="sm"
                         onClick={() => onViewDetails(claim)}
                       >
-                        <Eye className="mr-1 h-3 w-3" />
+                        <Eye className="me-1 h-3 w-3" />
                         Details
                       </Button>
                       <Link href={`/business/${claim.businessId}`}>
                         <Button variant="ghost" size="sm">
-                          <Building2 className="mr-1 h-3 w-3" />
+                          <Building2 className="me-1 h-3 w-3" />
                           View Business
                         </Button>
                       </Link>
@@ -315,7 +316,7 @@ function ClaimDetailsModal({
                 <Building2 className="h-5 w-5" />
                 Business Claim Details
               </CardTitle>
-              <CardDescription>Claim #{claim.id}</CardDescription>
+              <CardDescription>{tj("Claim #{0}", claim.id)}</CardDescription>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
               ×
@@ -347,7 +348,7 @@ function ClaimDetailsModal({
               <p><strong>Business ID:</strong> {claim.businessId}</p>
               <Link href={`/business/${claim.businessId}`}>
                 <Button variant="outline" size="sm" className="mt-2">
-                  <Building2 className="mr-1 h-3 w-3" />
+                  <Building2 className="me-1 h-3 w-3" />
                   View Business Profile
                 </Button>
               </Link>
@@ -418,14 +419,12 @@ function ClaimDetailsModal({
             <div className="space-y-2">
               <div className="flex items-center gap-3 text-sm">
                 <div className="w-2 h-2 bg-[#0B6B2E] rounded-full"></div>
-                <span>Claim submitted on {format(new Date(claim.createdAt), 'MMM dd, yyyy HH:mm')}</span>
+                <span>{tj("Claim submitted on {0}", format(new Date(claim.createdAt), 'MMM dd, yyyy HH:mm'))}</span>
               </div>
               {claim.processedAt && (
                 <div className="flex items-center gap-3 text-sm">
                   <div className={`w-2 h-2 rounded-full ${claim.status === 'approved' ? 'bg-[#0B6B2E]' : 'bg-[#D71920]'}`}></div>
-                  <span>
-                    Claim {claim.status} on {format(new Date(claim.processedAt), 'MMM dd, yyyy HH:mm')}
-                  </span>
+                  <span>{tj("Claim {0} on {1}", claim.status, format(new Date(claim.processedAt), 'MMM dd, yyyy HH:mm'))}</span>
                 </div>
               )}
             </div>

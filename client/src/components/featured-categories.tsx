@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCategoryIcon } from "@/lib/category-icons-clean";
 import { trackEvent } from "@/lib/analytics";
+import { tj } from "@/i18n-jsx/tj";
 
 interface FeaturedCategoriesProps {
   onCategoryClick?: (categorySlug: string) => void;
@@ -28,9 +29,7 @@ function SectionHeading({ count }: { count?: number }) {
           className="text-[15px] font-semibold text-[#0B6B2E] hover:text-[#05501F]"
           onClick={() => trackEvent('category_click', 'view_all', 'all_categories')}
           data-testid="link-view-all-categories"
-        >
-          All {count.toLocaleString()} categories →
-        </a>
+        >{tj("All {0} categories →", count.toLocaleString())}</a>
       ) : null}
     </div>
   );

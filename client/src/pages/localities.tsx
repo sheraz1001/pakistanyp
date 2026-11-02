@@ -9,6 +9,8 @@ import Footer from "@/components/footer";
 import "./localities.css";
 import { localLang, localDir, country, localize, regionSlug } from "@shared/country";
 import { usePlaces, buildCityTree, shortPlaceName, plural, cityUrl } from "@/lib/places";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Locality {
   id: number;
@@ -74,11 +76,11 @@ export default function Localities() {
               <Link href="/">Home</Link><ChevronRight aria-hidden="true" /><span aria-current="page">Localities</span>
             </nav>
             <p className="locality-eyebrow"><MapPin aria-hidden="true" />Explore by neighborhood</p>
-            <h1>{`Find local businesses ${country.inName}.`}</h1>
+            <h1>{tx("Find local businesses {0}.", country.inName)}</h1>
             <p className="locality-lead">From everyday essentials to specialist services, find businesses in your neighborhood. Choose a province, a city and then a locality.</p>
             {!loading && !error && <div className="locality-meta">
               <span><MapPin aria-hidden="true" />{plural(cityTotal, "city", "cities")} · {plural(localities.length - cityTotal, "locality", "localities")}</span>
-              <span><Building2 aria-hidden="true" />{plural(totalBusinesses, "business", "businesses")} listed</span>
+              <span><Building2 aria-hidden="true" />{tj("{0} listed", plural(totalBusinesses, "business", "businesses"))}</span>
               <span>{provinces.length}{` ${country.regionTerm.plural.toLowerCase()}`}</span>
             </div>}
           </div>
@@ -87,7 +89,7 @@ export default function Localities() {
           <section className="locality-search-panel" aria-labelledby="locality-search-heading">
             <div>
               <h2 id="locality-search-heading">Browse by province, city and locality</h2>
-              <p aria-live="polite">{query && !loading && !error ? `${plural(resultCount, "place matches", "places match")} your search` : "Choose a province, then a city and its locality, to find the businesses around you."}</p>
+              <p aria-live="polite">{query && !loading && !error ? tx("{0} your search", plural(resultCount, "place matches", "places match")) : "Choose a province, then a city and its locality, to find the businesses around you."}</p>
             </div>
             <div className="locality-search">
               <Search aria-hidden="true" />
@@ -109,7 +111,7 @@ export default function Localities() {
           ) : groups.length === 0 || localities.length === 0 ? (
             <section className="locality-state">
               <Search aria-hidden="true" /><h2>{query ? "No matching localities" : "No localities to display yet"}</h2>
-              <p>{query ? `We couldn’t find a locality matching “${searchQuery}”. Try a different spelling or browse all areas.` : localize("You can still explore businesses across Pakistan in the main directory.")}</p>
+              <p>{query ? tx("We couldn’t find a locality matching “{0}”. Try a different spelling or browse all areas.", searchQuery) : localize("You can still explore businesses across Pakistan in the main directory.")}</p>
               {query ? <button type="button" className="locality-button" onClick={() => setSearchQuery("")}>Clear search</button> : <Link href="/search" className="locality-button">Browse businesses</Link>}
             </section>
           ) : (

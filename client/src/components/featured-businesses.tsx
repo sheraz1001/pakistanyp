@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
 import { Business } from "@shared/schema";
 import { localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 type DirectoryItem = Record<string, any>;
 
@@ -87,7 +88,7 @@ export default function FeaturedBusinesses() {
         >
           <div className="grid h-[150px] place-items-center" style={{ background: tint.bg, color: tint.fg }}>
             {logo
-              ? <img src={logo} alt={`${business.name} logo`} loading="lazy" className="max-h-[96px] max-w-[60%] rounded-xl object-contain" />
+              ? <img src={logo} alt={tx("{0} logo", business.name)} loading="lazy" className="max-h-[96px] max-w-[60%] rounded-xl object-contain" />
               : <span className="text-[40px] font-bold tracking-[-0.04em]" aria-hidden="true">{monogram(business.name)}</span>}
           </div>
           <div className="flex flex-col gap-2.5 p-5">

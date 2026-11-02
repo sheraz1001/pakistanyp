@@ -13,6 +13,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { api } from "@/components/phase1/api";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 type Tab = "pending" | "under_review" | "completed";
 
@@ -74,7 +76,7 @@ export default function BusinessVerification() {
   const approveMutation = useMutation({
     mutationFn: ({ requestId, notes }: { requestId: number; notes: string }) => api(`/api/admin/verification/${requestId}/approve`, { method: "POST", json: { notes } }),
     onSuccess: (r: any) => {
-      toast({ title: "Business verified", description: r.emailed ? `The owner was emailed (${r.emailedTo.join(", ")}).` : "Verified. No owner email address on file, so no email was sent." });
+      toast({ title: "Business verified", description: r.emailed ? tx("The owner was emailed ({0}).", r.emailedTo.join(", ")) : "Verified. No owner email address on file, so no email was sent." });
       closeAll(); refresh();
     },
     onError: fail("Approval failed"),
@@ -82,7 +84,7 @@ export default function BusinessVerification() {
   const rejectMutation = useMutation({
     mutationFn: ({ requestId, reason }: { requestId: number; reason: string }) => api(`/api/admin/verification/${requestId}/reject`, { method: "POST", json: { reason } }),
     onSuccess: (r: any) => {
-      toast({ title: "Verification rejected", description: r.emailed ? `The owner was emailed the reason (${r.emailedTo.join(", ")}).` : "Rejected. No owner email address on file." });
+      toast({ title: "Verification rejected", description: r.emailed ? tx("The owner was emailed the reason ({0}).", r.emailedTo.join(", ")) : "Rejected. No owner email address on file." });
       closeAll(); refresh();
     },
     onError: fail("Rejection failed"),
@@ -100,7 +102,7 @@ export default function BusinessVerification() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold flex items-center gap-2"><Shield className="h-6 w-6" /> Verification Queue</h2>
-        <p className="text-gray-600">Licence and contact checks submitted by business owners. {stats ? `${stats.total_verified_businesses} businesses are verified in total.` : ""}</p>
+        <p className="text-gray-600">{tj("Licence and contact checks submitted by business owners. {0}", stats ? `${stats.total_verified_businesses} businesses are verified in total.` : "")}</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -121,9 +123,9 @@ export default function BusinessVerification() {
         <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as Tab)}>
             <TabsList>
-              <TabsTrigger value="pending">Pending ({stats?.pending ?? 0})</TabsTrigger>
-              <TabsTrigger value="under_review">Under review ({stats?.under_review ?? 0})</TabsTrigger>
-              <TabsTrigger value="completed">Completed ({stats?.completed ?? 0})</TabsTrigger>
+              <TabsTrigger value="pending">{tj("Pending ({0})", stats?.pending ?? 0)}</TabsTrigger>
+              <TabsTrigger value="under_review">{tj("Under review ({0})", stats?.under_review ?? 0)}</TabsTrigger>
+              <TabsTrigger value="completed">{tj("Completed ({0})", stats?.completed ?? 0)}</TabsTrigger>
             </TabsList>
           </Tabs>
           <Input className="md:w-72" placeholder="Search business, email or licence…" value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -131,7 +133,7 @@ export default function BusinessVerification() {
         <CardContent>
           {error ? <p className="text-red-700">{(error as any).message}</p>
             : isLoading ? <p className="text-gray-600">Loading verification requests…</p>
-            : requests.length === 0 ? <p className="text-gray-600 py-8 text-center">No {activeTab.replace("_", " ")} verification requests.</p>
+            : requests.length === 0 ? <p className="text-gray-600 py-8 text-center">{tj("No {0} verification requests.", activeTab.replace("_", " "))}</p>
             : (
               <Table>
                 <TableHeader>
@@ -146,10 +148,10 @@ export default function BusinessVerification() {
                       <TableCell className="font-medium">{r.business_name}</TableCell>
                       <TableCell className="text-sm">{r.requester_name || "—"}<div className="text-gray-500">{r.requester_email}</div></TableCell>
                       <TableCell className="text-sm">{r.licence_number || "—"}<div className="text-gray-500">{r.licence_authority}</div></TableCell>
-                      <TableCell>{r.documents.length ? <Badge variant="outline"><FileText className="h-3 w-3 mr-1" />{r.documents.length}</Badge> : <span className="text-[#B45309] text-sm">none</span>}</TableCell>
+                      <TableCell>{r.documents.length ? <Badge variant="outline"><FileText className="h-3 w-3 me-1" />{r.documents.length}</Badge> : <span className="text-[#B45309] text-sm">none</span>}</TableCell>
                       <TableCell className="text-sm">{fmt(r.created_at)}</TableCell>
                       <TableCell>{statusBadge(r.status)}</TableCell>
-                      <TableCell><Button size="sm" variant="outline" onClick={() => { setSelected(r); setReviewNotes(r.admin_notes || ""); }}><Eye className="h-4 w-4 mr-1" />Review</Button></TableCell>
+                      <TableCell><Button size="sm" variant="outline" onClick={() => { setSelected(r); setReviewNotes(r.admin_notes || ""); }}><Eye className="h-4 w-4 me-1" />Review</Button></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -165,7 +167,7 @@ export default function BusinessVerification() {
             <>
               <DialogHeader>
                 <DialogTitle>Verification Request Review</DialogTitle>
-                <DialogDescription>#{selected.id} · submitted {fmt(selected.created_at)} · {statusBadge(selected.status)}</DialogDescription>
+                <DialogDescription>{tj("#{0} · submitted {1} · {2}", selected.id, fmt(selected.created_at), statusBadge(selected.status))}</DialogDescription>
               </DialogHeader>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -176,8 +178,8 @@ export default function BusinessVerification() {
                     <a className="text-blue-700 hover:underline inline-flex items-center gap-1" href={`/business/${selected.business_slug}`} target="_blank" rel="noreferrer">Open listing <ExternalLink className="h-3 w-3" /></a>
                     {selected.website && <div className="text-gray-600">{selected.website}</div>}
                     <div>Licence: <b>{selected.licence_number || "—"}</b></div>
-                    <div>Authority: {selected.licence_authority || "—"}</div>
-                    <div>Expiry: {selected.licence_expiry ? format(new Date(selected.licence_expiry), "dd MMM yyyy") : "—"}</div>
+                    <div>{tj("Authority: {0}", selected.licence_authority || "—")}</div>
+                    <div>{tj("Expiry: {0}", selected.licence_expiry ? format(new Date(selected.licence_expiry), "dd MMM yyyy") : "—")}</div>
                   </CardContent>
                 </Card>
                 <Card>
@@ -191,7 +193,7 @@ export default function BusinessVerification() {
               </div>
 
               <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-base flex items-center gap-2"><FileText className="h-4 w-4" />Documents ({selected.documents.length})</CardTitle></CardHeader>
+                <CardHeader className="pb-2"><CardTitle className="text-base flex items-center gap-2"><FileText className="h-4 w-4" />{tj("Documents ({0})", selected.documents.length)}</CardTitle></CardHeader>
                 <CardContent>
                   {selected.documents.length === 0 ? <p className="text-sm text-[#B45309]">The owner has not uploaded any documents yet.</p> : (
                     <div className="divide-y">
@@ -202,8 +204,8 @@ export default function BusinessVerification() {
                             <div className="font-medium truncate">{d.file_name}</div>
                             <div className="text-gray-500">{DOC_LABEL[d.doc_type] || d.doc_type}{d.size_bytes ? ` · ${size(d.size_bytes)}` : ""}{d.created_at ? ` · ${fmt(d.created_at)}` : ""}</div>
                           </div>
-                          <Button asChild size="sm" variant="outline"><a href={d.url} target="_blank" rel="noopener noreferrer"><Eye className="h-4 w-4 mr-1" />View</a></Button>
-                          {!d.external && <Button asChild size="sm" variant="outline"><a href={d.downloadUrl} download={d.file_name}><Download className="h-4 w-4 mr-1" />Download</a></Button>}
+                          <Button asChild size="sm" variant="outline"><a href={d.url} target="_blank" rel="noopener noreferrer"><Eye className="h-4 w-4 me-1" />View</a></Button>
+                          {!d.external && <Button asChild size="sm" variant="outline"><a href={d.downloadUrl} download={d.file_name}><Download className="h-4 w-4 me-1" />Download</a></Button>}
                         </div>
                       ))}
                     </div>
@@ -221,14 +223,14 @@ export default function BusinessVerification() {
 
               <DialogFooter className="gap-2 flex-wrap">
                 {selected.status === "pending" && (
-                  <Button variant="outline" disabled={busy} onClick={() => startReviewMutation.mutate(selected.id)}><Clock className="h-4 w-4 mr-1" />Start review</Button>
+                  <Button variant="outline" disabled={busy} onClick={() => startReviewMutation.mutate(selected.id)}><Clock className="h-4 w-4 me-1" />Start review</Button>
                 )}
                 {selected.status !== "rejected" && selected.status !== "approved" && (
-                  <Button variant="destructive" disabled={busy} onClick={() => setShowRejectDialog(true)}><XCircle className="h-4 w-4 mr-1" />Reject</Button>
+                  <Button variant="destructive" disabled={busy} onClick={() => setShowRejectDialog(true)}><XCircle className="h-4 w-4 me-1" />Reject</Button>
                 )}
                 {selected.status !== "approved" && (
                   <Button className="bg-green-600 hover:bg-green-700 text-white" disabled={busy} onClick={() => approveMutation.mutate({ requestId: selected.id, notes: reviewNotes })}>
-                    <CheckCircle className="h-4 w-4 mr-1" />{approveMutation.isPending ? "Approving…" : "Approve Verification"}
+                    <CheckCircle className="h-4 w-4 me-1" />{approveMutation.isPending ? "Approving…" : "Approve Verification"}
                   </Button>
                 )}
               </DialogFooter>
@@ -242,7 +244,7 @@ export default function BusinessVerification() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Reject verification</DialogTitle>
-            <DialogDescription>{selected?.business_name} — the reason is emailed to the owner so they can fix it.</DialogDescription>
+            <DialogDescription>{tj("{0} — the reason is emailed to the owner so they can fix it.", selected?.business_name)}</DialogDescription>
           </DialogHeader>
           <div className="flex flex-wrap gap-2">
             {["Trade licence is expired", "Licence number does not match the document", "Document is unreadable – please upload a clearer copy", "Business name does not match the licence", "Could not confirm the business email or phone"].map((r) => (

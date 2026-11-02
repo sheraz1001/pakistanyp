@@ -45,7 +45,7 @@ export default function SkeletonLoader({
           <Shimmer className="h-6 w-3/4" />
           <Shimmer className="h-4 w-full" />
           <Shimmer className="h-4 w-5/6" />
-          <div className="flex space-x-2 mt-4">
+          <div className="flex space-x-2 rtl:space-x-reverse mt-4">
             <Shimmer className="h-8 w-16 rounded-full" />
             <Shimmer className="h-8 w-20 rounded-full" />
           </div>
@@ -57,13 +57,13 @@ export default function SkeletonLoader({
   if (variant === 'business') {
     return (
       <div className={cn("p-6 border rounded-xl shadow-sm", className)}>
-        <div className="flex items-start space-x-4">
+        <div className="flex items-start space-x-4 rtl:space-x-reverse">
           <Shimmer className="w-16 h-16 rounded-lg flex-shrink-0" />
           <div className="flex-1 space-y-3">
             <Shimmer className="h-6 w-2/3" />
             <Shimmer className="h-4 w-full" />
             <Shimmer className="h-4 w-3/4" />
-            <div className="flex space-x-2 mt-4">
+            <div className="flex space-x-2 rtl:space-x-reverse mt-4">
               <Shimmer className="h-6 w-12 rounded-full" />
               <Shimmer className="h-6 w-16 rounded-full" />
               <Shimmer className="h-6 w-14 rounded-full" />
@@ -83,7 +83,7 @@ export default function SkeletonLoader({
     return (
       <div className={cn("space-y-4", className)}>
         {[...Array(lines)].map((_, i) => (
-          <div key={i} className="flex items-center space-x-4">
+          <div key={i} className="flex items-center space-x-4 rtl:space-x-reverse">
             {showAvatar && <Shimmer className="w-10 h-10 rounded-full flex-shrink-0" />}
             <div className="flex-1 space-y-2">
               <Shimmer className="h-4 w-3/4" />
@@ -98,7 +98,7 @@ export default function SkeletonLoader({
   if (variant === 'profile') {
     return (
       <div className={cn("p-6 border rounded-xl shadow-sm", className)}>
-        <div className="flex items-center space-x-4 mb-6">
+        <div className="flex items-center space-x-4 rtl:space-x-reverse mb-6">
           <Shimmer className="w-20 h-20 rounded-full" />
           <div className="flex-1 space-y-2">
             <Shimmer className="h-6 w-48" />
@@ -151,7 +151,7 @@ export function BusinessCardSkeleton({ className, layout }: { className?: string
 export function CategoryCardSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn("p-6 border rounded-xl shadow-sm", className)}>
-      <div className="flex items-center space-x-4 mb-4">
+      <div className="flex items-center space-x-4 rtl:space-x-reverse mb-4">
         <SkeletonLoader className="w-12 h-12 rounded-lg bg-gray-200" />
         <div className="flex-1">
           <SkeletonLoader className="h-5 w-3/4 bg-gray-200" />

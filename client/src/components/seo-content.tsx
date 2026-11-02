@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 interface SEOContent {
   h1Heading: string;
@@ -143,13 +144,13 @@ export function SEOContentDisplay({ type, id, fallbackContent }: SEOContentDispl
           {/* H2 Sections */}
           {seoContent.h2Headings.map((h2, index) => (
             <div key={index} className="space-y-4">
-              <h2 className="text-2xl font-semibold text-gray-900 border-l-4 border-blue-600 pl-4">
+              <h2 className="text-2xl font-semibold text-gray-900 border-s-4 border-blue-600 ps-4">
                 {h2}
               </h2>
               
               {/* H3 subsections for this H2 */}
               {index === 0 && seoContent.h3Headings.slice(0, Math.ceil(seoContent.h3Headings.length / 2)).map((h3, h3Index) => (
-                <div key={h3Index} className="ml-4">
+                <div key={h3Index} className="ms-4">
                   <h3 className="text-xl font-medium text-gray-800 mb-2">
                     {h3}
                   </h3>
@@ -161,7 +162,7 @@ export function SEOContentDisplay({ type, id, fallbackContent }: SEOContentDispl
               ))}
               
               {index === 1 && seoContent.h3Headings.slice(Math.ceil(seoContent.h3Headings.length / 2)).map((h3, h3Index) => (
-                <div key={h3Index} className="ml-4">
+                <div key={h3Index} className="ms-4">
                   <h3 className="text-xl font-medium text-gray-800 mb-2">
                     {h3}
                   </h3>
@@ -198,7 +199,7 @@ export function SEOContentDisplay({ type, id, fallbackContent }: SEOContentDispl
                   <Link key={index} href={link.url}>
                     <Button 
                       variant="ghost" 
-                      className="w-full justify-between text-left h-auto p-3 hover:bg-blue-50"
+                      className="w-full justify-between text-start h-auto p-3 hover:bg-blue-50"
                     >
                       <div>
                         <div className="font-medium text-sm">{link.text}</div>
@@ -238,12 +239,12 @@ export function SEOContentDisplay({ type, id, fallbackContent }: SEOContentDispl
             <CardContent className="p-6">
               <h3 className="font-semibold mb-2">List Your Business</h3>
               <p className="text-[#3A4354] text-sm mb-4">
-                {`Join thousands of businesses on ${country.name}'s leading directory`}
+                {tx("Join thousands of businesses on {0}'s leading directory", country.name)}
               </p>
               <Link href="/add-business">
                 <Button className="w-full bg-[#0B6B2E] text-white hover:bg-[#05501F]">
                   Get Started
-                  <ExternalLink className="w-4 h-4 ml-2" />
+                  <ExternalLink className="w-4 h-4 ms-2" />
                 </Button>
               </Link>
             </CardContent>

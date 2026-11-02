@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from "react";
+import { tj } from "@/i18n-jsx/tj";
 
 /**
  * Renders a province / city guide written in simple Markdown
@@ -83,7 +84,7 @@ function Blocks({ blocks }: { blocks: Block[] }) {
         b.type === "p" ? (
           <p key={i} className="max-w-[72ch] text-[16px] leading-[1.75] text-[#3A4354]">{inline(b.text)}</p>
         ) : (
-          <ul key={i} className="flex max-w-[72ch] list-disc flex-col gap-1.5 pl-5 text-[16px] leading-[1.7] text-[#3A4354] marker:text-[#0B6B2E]">
+          <ul key={i} className="flex max-w-[72ch] list-disc flex-col gap-1.5 ps-5 text-[16px] leading-[1.7] text-[#3A4354] marker:text-[#0B6B2E]">
             {b.items.map((item, j) => <li key={j}>{inline(item)}</li>)}
           </ul>
         ),
@@ -117,7 +118,7 @@ export function PlaceGuide({ guide, placeName }: { guide: ParsedGuide | null; pl
     <article className="yp-card flex flex-col gap-8 p-6 md:p-8" aria-labelledby="place-guide-heading">
       <header className="flex flex-col gap-4">
         <p className="yp-label">Guide</p>
-        <h2 id="place-guide-heading" className="text-[26px] font-bold leading-tight tracking-[-0.03em] text-[#0A0A0A]">About {placeName}</h2>
+        <h2 id="place-guide-heading" className="text-[26px] font-bold leading-tight tracking-[-0.03em] text-[#0A0A0A]">{tj("About {0}", placeName)}</h2>
         <Blocks blocks={guide.intro} />
       </header>
       {guide.sections.map((s, i) => (
@@ -133,9 +134,9 @@ export function PlaceGuide({ guide, placeName }: { guide: ParsedGuide | null; pl
             {guide.faqs.map((f, i) => (
               <details key={i} className="group px-4 py-3" open={i === 0}>
                 <summary className="cursor-pointer list-none text-[15px] font-semibold text-[#0A0A0A] marker:hidden">
-                  <span className="mr-2 inline-block text-[#0B6B2E] transition-transform group-open:rotate-90" aria-hidden="true">›</span>{f.q}
+                  <span className="me-2 inline-block text-[#0B6B2E] transition-transform group-open:rotate-90" aria-hidden="true">›</span>{f.q}
                 </summary>
-                <p className="mt-2 max-w-[72ch] pl-5 text-[15px] leading-[1.7] text-[#3A4354]">{f.a}</p>
+                <p className="mt-2 max-w-[72ch] ps-5 text-[15px] leading-[1.7] text-[#3A4354]">{f.a}</p>
               </details>
             ))}
           </div>

@@ -1,4 +1,5 @@
 import { CheckCircle, AlertCircle, Info } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
 
 interface SEOAuditItem {
   title: string;
@@ -88,19 +89,15 @@ export default function SEOAuditSummary() {
     <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900">SEO Audit Summary</h2>
-        <div className="flex items-center space-x-2">
-          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-            {completionPercentage}% Complete
-          </div>
-          <div className="text-sm text-gray-500">
-            {completedItems}/{totalItems} optimizations
-          </div>
+        <div className="flex items-center space-x-2 rtl:space-x-reverse">
+          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">{tj("{0}% Complete", completionPercentage)}</div>
+          <div className="text-sm text-gray-500">{tj("{0}/{1} optimizations", completedItems, totalItems)}</div>
         </div>
       </div>
 
       <div className="grid gap-4">
         {seoAuditItems.map((item, index) => (
-          <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+          <div key={index} className="flex items-start space-x-3 rtl:space-x-reverse p-3 bg-gray-50 rounded-lg">
             <div className="flex-shrink-0 mt-0.5">
               {item.status === 'completed' && (
                 <CheckCircle className="w-5 h-5 text-green-500" />
@@ -122,10 +119,10 @@ export default function SEOAuditSummary() {
 
       <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
         <div className="flex items-center">
-          <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+          <CheckCircle className="w-5 h-5 text-green-500 me-2" />
           <div className="text-sm">
             <strong className="text-green-800">SEO Optimization Complete:</strong>
-            <span className="text-green-700 ml-1">
+            <span className="text-green-700 ms-1">
               PakistanYP homepage is now fully optimized for search engines with comprehensive on-page SEO, 
               structured data, Core Web Vitals optimizations, and E-E-A-T content elements.
             </span>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { X, Search, ChevronRight, ChevronDown } from "lucide-react";
 import { getCategoryIcon } from "@/lib/category-icons-clean";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -114,7 +115,7 @@ export function SimpleCategorySelector({
       {selectedCategories.length > 0 && (
         <div className="bg-gray-50 border rounded-lg p-4">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-medium text-gray-900">Selected Categories ({selectedCategories.length})</h3>
+            <h3 className="font-medium text-gray-900">{tj("Selected Categories ({0})", selectedCategories.length)}</h3>
             <Button
               variant="ghost"
               size="sm"
@@ -139,7 +140,7 @@ export function SimpleCategorySelector({
                   <span>{category.name}</span>
                   <button
                     onClick={() => handleCategorySelect(category.id)}
-                    className="ml-1 hover:bg-blue-300 rounded-full p-0.5"
+                    className="ms-1 hover:bg-blue-300 rounded-full p-0.5"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -152,12 +153,12 @@ export function SimpleCategorySelector({
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
           placeholder="Search categories..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
+          className="ps-10"
         />
       </div>
 
@@ -179,7 +180,7 @@ export function SimpleCategorySelector({
                   <div className="flex items-center p-3 hover:bg-gray-50 border-b">
                     <button
                       onClick={() => toggleExpanded(main.id)}
-                      className="mr-3 p-1 hover:bg-gray-200 rounded"
+                      className="me-3 p-1 hover:bg-gray-200 rounded"
                     >
                       {isMainExpanded ? (
                         <ChevronDown className="w-4 h-4" />
@@ -190,7 +191,7 @@ export function SimpleCategorySelector({
                     
                     <button
                       onClick={() => handleCategorySelect(main.id)}
-                      className={`flex items-center gap-3 flex-1 text-left p-2 rounded-lg transition-all ${
+                      className={`flex items-center gap-3 flex-1 text-start p-2 rounded-lg transition-all ${
                         isMainSelected 
                           ? 'bg-blue-100 text-blue-800 font-medium' 
                           : 'hover:bg-gray-100'
@@ -199,9 +200,7 @@ export function SimpleCategorySelector({
                       <MainIconComponent className="w-5 h-5" />
                       <span className="font-medium">{main.name}</span>
                       {main.businessCount && (
-                        <span className="text-sm text-gray-500 ml-auto">
-                          {main.businessCount} businesses
-                        </span>
+                        <span className="text-sm text-gray-500 ms-auto">{tj("{0} businesses", main.businessCount)}</span>
                       )}
                     </button>
                   </div>
@@ -215,13 +214,13 @@ export function SimpleCategorySelector({
                         const SubIconComponent = getCategoryIcon(sub.name);
                         
                         return (
-                          <div key={sub.id} className="ml-6 border-l border-gray-200">
+                          <div key={sub.id} className="ms-6 border-s border-gray-200">
                             {/* Subcategory */}
                             <div className="flex items-center p-2 hover:bg-gray-100">
                               {specialized.length > 0 && (
                                 <button
                                   onClick={() => toggleExpanded(sub.id)}
-                                  className="mr-2 p-1 hover:bg-gray-200 rounded"
+                                  className="me-2 p-1 hover:bg-gray-200 rounded"
                                 >
                                   {isSubExpanded ? (
                                     <ChevronDown className="w-3 h-3" />
@@ -233,7 +232,7 @@ export function SimpleCategorySelector({
                               
                               <button
                                 onClick={() => handleCategorySelect(sub.id)}
-                                className={`flex items-center gap-3 flex-1 text-left p-2 rounded-lg transition-all ${
+                                className={`flex items-center gap-3 flex-1 text-start p-2 rounded-lg transition-all ${
                                   isSubSelected 
                                     ? 'bg-green-100 text-green-800 font-medium' 
                                     : 'hover:bg-gray-100'
@@ -242,16 +241,14 @@ export function SimpleCategorySelector({
                                 <SubIconComponent className="w-4 h-4" />
                                 <span>{sub.name}</span>
                                 {sub.businessCount && (
-                                  <span className="text-xs text-gray-500 ml-auto">
-                                    {sub.businessCount} businesses
-                                  </span>
+                                  <span className="text-xs text-gray-500 ms-auto">{tj("{0} businesses", sub.businessCount)}</span>
                                 )}
                               </button>
                             </div>
 
                             {/* Specialized Categories */}
                             {isSubExpanded && specialized.length > 0 && (
-                              <div className="ml-6 border-l border-gray-200">
+                              <div className="ms-6 border-s border-gray-200">
                                 {specialized.map((spec) => {
                                   const isSpecSelected = selectedCategories.includes(spec.id);
                                   const SpecIconComponent = getCategoryIcon(spec.name);
@@ -260,7 +257,7 @@ export function SimpleCategorySelector({
                                     <button
                                       key={spec.id}
                                       onClick={() => handleCategorySelect(spec.id)}
-                                      className={`flex items-center gap-3 w-full text-left p-2 m-1 rounded-lg transition-all ${
+                                      className={`flex items-center gap-3 w-full text-start p-2 m-1 rounded-lg transition-all ${
                                         isSpecSelected 
                                           ? 'bg-[#FFF4E0] text-[#B45309] font-medium' 
                                           : 'hover:bg-gray-100'
@@ -269,9 +266,7 @@ export function SimpleCategorySelector({
                                       <SpecIconComponent className="w-4 h-4" />
                                       <span className="text-sm">{spec.name}</span>
                                       {spec.businessCount && (
-                                        <span className="text-xs text-gray-500 ml-auto">
-                                          {spec.businessCount} businesses
-                                        </span>
+                                        <span className="text-xs text-gray-500 ms-auto">{tj("{0} businesses", spec.businessCount)}</span>
                                       )}
                                     </button>
                                   );

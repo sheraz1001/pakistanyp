@@ -81,7 +81,7 @@ export function MobileSwipeActions({
       {/* Action buttons */}
       <div
         className={cn(
-          "absolute right-0 top-0 h-full flex items-center transition-transform duration-300",
+          "absolute end-0 top-0 h-full flex items-center transition-transform duration-300",
           isExpanded ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -92,7 +92,7 @@ export function MobileSwipeActions({
               key={index}
               size="sm"
               className={cn(
-                "h-12 w-12 rounded-none border-r border-white",
+                "h-12 w-12 rounded-none border-e border-white",
                 action.color
               )}
               onClick={action.action}

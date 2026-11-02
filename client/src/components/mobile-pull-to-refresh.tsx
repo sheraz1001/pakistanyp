@@ -67,7 +67,7 @@ export function MobilePullToRefresh({
       {/* Pull to refresh indicator */}
       <div
         className={cn(
-          "absolute top-0 left-0 right-0 flex items-center justify-center transition-all duration-300",
+          "absolute top-0 start-0 end-0 flex items-center justify-center transition-all duration-300",
           shouldShowRefresh ? "opacity-100" : "opacity-0"
         )}
         style={{

@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 // Example places for the voice-search tips/quick actions (Pakistan: Karachi / Lahore; elsewhere: capital + next region's main city).
 const VS_CITY_1 = (country.regions.find((r) => r.capital) || country.regions[0]).name;
@@ -143,7 +145,7 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
       
       toast({
         title: "Voice Search",
-        description: `Searching for: "${searchQuery}"`,
+        description: tx("Searching for: \"{0}\"", searchQuery),
       });
 
       // Clear transcript after successful search
@@ -211,7 +213,7 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold flex items-center">
-              <Mic className="mr-2 h-5 w-5" />
+              <Mic className="me-2 h-5 w-5" />
               Voice Search
             </h3>
             <Button
@@ -222,19 +224,19 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
             >
               {voiceEnabled ? (
                 <>
-                  <Volume2 className="mr-1 h-4 w-4" />
+                  <Volume2 className="me-1 h-4 w-4" />
                   Voice On
                 </>
               ) : (
                 <>
-                  <VolumeX className="mr-1 h-4 w-4" />
+                  <VolumeX className="me-1 h-4 w-4" />
                   Voice Off
                 </>
               )}
             </Button>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 rtl:space-x-reverse">
             <Button
               onClick={isListening ? stopListening : startListening}
               disabled={isProcessing}
@@ -246,19 +248,17 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
               } transition-all duration-200`}
             >
               {isProcessing ? (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <Loader2 className="me-2 h-5 w-5 animate-spin" />
               ) : isListening ? (
-                <MicOff className="mr-2 h-5 w-5" />
+                <MicOff className="me-2 h-5 w-5" />
               ) : (
-                <Mic className="mr-2 h-5 w-5" />
+                <Mic className="me-2 h-5 w-5" />
               )}
               {isProcessing ? 'Processing...' : isListening ? 'Stop Listening' : 'Start Voice Search'}
             </Button>
 
             {confidence > 0 && (
-              <Badge variant="secondary" className="text-sm">
-                Confidence: {Math.round(confidence * 100)}%
-              </Badge>
+              <Badge variant="secondary" className="text-sm">{tj("Confidence: {0}%", Math.round(confidence * 100))}</Badge>
             )}
           </div>
 
@@ -269,8 +269,8 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
                 <strong>Voice Search Tips:</strong>
               </p>
               <ul className="text-xs text-[#3A4354] space-y-1">
-                <li>{`• Say business names: "Al Rajhi Bank", "Carrefour ${VS_CITY_1}"`}</li>
-                <li>{`• Search by category: "restaurants in ${VS_CITY_1}", "hotels in ${VS_CITY_2}"`}</li>
+                <li>{tx("• Say business names: \"Al Rajhi Bank\", \"Carrefour {0}\"", VS_CITY_1)}</li>
+                <li>{tx("• Search by category: \"restaurants in {0}\", \"hotels in {1}\"", VS_CITY_1, VS_CITY_2)}</li>
                 <li>• Use simple phrases: "coffee shops", "car rental", "medical centers"</li>
                 <li>• Speak clearly and pause after your search term</li>
               </ul>
@@ -288,12 +288,12 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
               </p>
               {isListening && (
                 <div className="flex items-center mt-2">
-                  <div className="flex space-x-1">
+                  <div className="flex space-x-1 rtl:space-x-reverse">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse delay-75"></div>
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse delay-150"></div>
                   </div>
-                  <span className="ml-2 text-sm text-red-600">Recording...</span>
+                  <span className="ms-2 text-sm text-red-600">Recording...</span>
                 </div>
               )}
             </div>
@@ -314,8 +314,8 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
               onClick={() => handleVoiceSearch(`restaurants in ${VS_CITY_1}`)}
               disabled={isListening || isProcessing}
             >
-              <Search className="mr-1 h-3 w-3" />
-              {`Restaurants in ${VS_CITY_1}`}
+              <Search className="me-1 h-3 w-3" />
+              {tx("Restaurants in {0}", VS_CITY_1)}
             </Button>
             <Button
               variant="outline"
@@ -323,8 +323,8 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
               onClick={() => handleVoiceSearch(`hotels in ${VS_CITY_2}`)}
               disabled={isListening || isProcessing}
             >
-              <Search className="mr-1 h-3 w-3" />
-              {`Hotels in ${VS_CITY_2}`}
+              <Search className="me-1 h-3 w-3" />
+              {tx("Hotels in {0}", VS_CITY_2)}
             </Button>
             <Button
               variant="outline"
@@ -332,7 +332,7 @@ const VoiceSearch: React.FC<VoiceSearchProps> = ({ onSearch, className = "" }) =
               onClick={() => handleVoiceSearch(localize('banks in Pakistan'))}
               disabled={isListening || isProcessing}
             >
-              <Search className="mr-1 h-3 w-3" />
+              <Search className="me-1 h-3 w-3" />
               {localize("Banks in Pakistan")}
             </Button>
           </div>

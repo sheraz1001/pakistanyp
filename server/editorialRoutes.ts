@@ -25,7 +25,8 @@ const SOURCES: Record<Kind, { table: string; published: string; select: string }
       coalesce(b.published_at, b.created_at) as "publishedAt", b.updated_at as "updatedAt", coalesce(b.view_count, 0) as views,
       coalesce(b.is_featured, false) as featured, b.reading_time as "readingTime",
       coalesce((select array_agg(t) from jsonb_array_elements_text(case when jsonb_typeof(b.tags) = 'array' then b.tags else '[]'::jsonb end) t), '{}') as tags,
-      nullif(trim(concat_ws(' ', u.first_name, u.last_name)), '') as author`,
+      nullif(trim(concat_ws(' ', u.first_name, u.last_name)), '') as author,
+      b.title_ar as "titleAr", b.excerpt_ar as "summaryAr"`,
   },
   news: {
     table: "news_articles b",
@@ -33,7 +34,8 @@ const SOURCES: Record<Kind, { table: string; published: string; select: string }
     select: `b.id, b.slug, b.title, b.summary, b.image_url as image, coalesce(nullif(trim(b.category), ''), 'News') as category,
       coalesce(b.published_at, b.created_at) as "publishedAt", b.updated_at as "updatedAt", coalesce(b.view_count, 0) as views,
       coalesce(b.is_featured, false) as featured, null::int as "readingTime", coalesce(b.tags, '{}') as tags,
-      coalesce(nullif(trim(b.author), ''), 'PakistanYP Editorial') as author`,
+      coalesce(nullif(trim(b.author), ''), 'PakistanYP Editorial') as author,
+      b.title_ar as "titleAr", b.summary_ar as "summaryAr"`,
   },
 };
 
@@ -126,8 +128,8 @@ export function registerEditorialRoutes(app: Express) {
       const s = SOURCES[kind];
       const from = fromClause(kind);
       const extra = kind === "blogs"
-        ? `b.content, b.meta_title as "metaTitle", b.meta_description as "metaDescription", b.og_image as "ogImage"`
-        : `b.content, b.meta_title as "metaTitle", b.meta_description as "metaDescription", b.source, b.source_url as "sourceUrl"`;
+        ? `b.content, b.meta_title as "metaTitle", b.meta_description as "metaDescription", b.og_image as "ogImage", b.content_ar as "contentAr", b.meta_title_ar as "metaTitleAr", b.meta_description_ar as "metaDescriptionAr"`
+        : `b.content, b.meta_title as "metaTitle", b.meta_description as "metaDescription", b.source, b.source_url as "sourceUrl", b.content_ar as "contentAr", b.meta_title_ar as "metaTitleAr", b.meta_description_ar as "metaDescriptionAr"`;
       const row = (await pool.query(`select ${s.select}, ${extra} from ${from} where ${s.published} and b.slug = $1 limit 1`, [req.params.slug])).rows[0];
       if (!row) return res.status(404).json({ message: "Article not found" });
       const article = shape(row);
@@ -135,8 +137,8 @@ export function registerEditorialRoutes(app: Express) {
       const [related, previous, next2, side] = await Promise.all([
         pool.query(`select ${s.select} from ${from} where ${s.published} and b.id <> $1
                     order by (coalesce(nullif(trim(b.category), ''), '') = $2) desc, coalesce(b.published_at, b.created_at) desc limit 3`, [article.id, row.category]),
-        pool.query(`select b.slug, b.title from ${from} where ${s.published} and coalesce(b.published_at, b.created_at) < $1 order by coalesce(b.published_at, b.created_at) desc limit 1`, [article.publishedAt]),
-        pool.query(`select b.slug, b.title from ${from} where ${s.published} and coalesce(b.published_at, b.created_at) > $1 order by coalesce(b.published_at, b.created_at) asc limit 1`, [article.publishedAt]),
+        pool.query(`select b.slug, b.title, b.title_ar as "titleAr" from ${from} where ${s.published} and coalesce(b.published_at, b.created_at) < $1 order by coalesce(b.published_at, b.created_at) desc limit 1`, [article.publishedAt]),
+        pool.query(`select b.slug, b.title, b.title_ar as "titleAr" from ${from} where ${s.published} and coalesce(b.published_at, b.created_at) > $1 order by coalesce(b.published_at, b.created_at) asc limit 1`, [article.publishedAt]),
         sidebar(kind),
       ]);
       res.json({ article, related: related.rows.map(shape), previous: previous.rows[0] || null, next: next2.rows[0] || null, ...side });

@@ -45,6 +45,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Page {
   id: number;
@@ -291,7 +293,7 @@ export default function PagesManagement() {
             resetForm();
             setShowAddDialog(true);
           }}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 me-2" />
             Create Page
           </Button>
         </CardHeader>
@@ -314,9 +316,7 @@ export default function PagesManagement() {
                   <TableCell>
                     <div>
                       <div className="font-medium">{page.title}</div>
-                      <div className="text-sm text-muted-foreground">
-                        By {page.author}
-                      </div>
+                      <div className="text-sm text-muted-foreground">{tj("By {0}", page.author)}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -379,7 +379,7 @@ export default function PagesManagement() {
                         size="sm"
                         variant="destructive"
                         onClick={() => {
-                          if (confirm(`Delete page "${page.title}"?`)) {
+                          if (confirm(tx("Delete page \"{0}\"?", page.title))) {
                             deleteMutation.mutate(page.id);
                           }
                         }}
@@ -487,9 +487,7 @@ export default function PagesManagement() {
                   placeholder="SEO page title (60 characters max)"
                   maxLength={60}
                 />
-                <p className="text-sm text-muted-foreground mt-1">
-                  {formData.metaTitle.length}/60 characters
-                </p>
+                <p className="text-sm text-muted-foreground mt-1">{tj("{0}/60 characters", formData.metaTitle.length)}</p>
               </div>
               <div>
                 <Label htmlFor="metaDescription">Meta Description</Label>
@@ -501,9 +499,7 @@ export default function PagesManagement() {
                   rows={3}
                   maxLength={160}
                 />
-                <p className="text-sm text-muted-foreground mt-1">
-                  {formData.metaDescription.length}/160 characters
-                </p>
+                <p className="text-sm text-muted-foreground mt-1">{tj("{0}/160 characters", formData.metaDescription.length)}</p>
               </div>
             </TabsContent>
 
@@ -561,9 +557,7 @@ export default function PagesManagement() {
             <Button variant="outline" onClick={() => setShowAddDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={!formData.title || !formData.slug}>
-              {selectedPage ? 'Update' : 'Create'} Page
-            </Button>
+            <Button onClick={handleSubmit} disabled={!formData.title || !formData.slug}>{tj("{0} Page", selectedPage ? 'Update' : 'Create')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

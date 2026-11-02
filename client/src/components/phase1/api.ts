@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { country, localize } from "@shared/country";
 
 /** Tiny fetch helper for Phase 1 components: JSON in/out, cookies included, readable errors. */
@@ -23,4 +24,4 @@ export const LICENCE_AUTHORITIES = country.licenceAuthorities ? country.licenceA
   "Ministry of Commerce (Commercial Registration)", "Ministry of Investment (MISA)", "Other",
 ];
 
-export const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(country.locale, { year: "numeric", month: "short", day: "numeric" }) : "");
+export const fmtDate = (d?: string | null) => (d ? new Date(d).toLocaleDateString(dateLocale(country.locale), { year: "numeric", month: "short", day: "numeric" }) : "");

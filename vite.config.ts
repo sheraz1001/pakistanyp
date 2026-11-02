@@ -3,9 +3,12 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  plugins: [react()],
+  // Text is translated as elements are created on second-language pages (client/src/i18n-jsx)
+  plugins: [react({ jsxImportSource: "@yp-i18n" })],
   resolve: {
     alias: {
+      "@yp-i18n/jsx-runtime": path.resolve(import.meta.dirname, "client", "src", "i18n-jsx", "jsx-runtime.ts"),
+      "@yp-i18n/jsx-dev-runtime": path.resolve(import.meta.dirname, "client", "src", "i18n-jsx", "jsx-dev-runtime.ts"),
       "@": path.resolve(import.meta.dirname, "client", "src"),
       "@shared": path.resolve(import.meta.dirname, "shared"),
       "@assets": path.resolve(import.meta.dirname, "attached_assets"),

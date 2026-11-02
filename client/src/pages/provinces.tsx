@@ -31,6 +31,8 @@ import {
   Sparkles
 } from "lucide-react";
 import { localLang, localDir, country, localize, regionSlug } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Province {
   id: number;
@@ -129,7 +131,7 @@ export default function Provinces() {
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A]">
       <SEO
         title="Pakistani Provinces – Business Directory by Province | PakistanYP"
-        description={`Browse businesses in ${country.regions.map(r => r.name).join(", ")}. Pick a region to explore its localities and companies.`}
+        description={tx("Browse businesses in {0}. Pick a region to explore its localities and companies.", country.regions.map(r => r.name).join(", "))}
         canonical={`${country.origin}${country.regionsPath}`}
         schemaType="CollectionPage"
       />
@@ -155,7 +157,7 @@ export default function Provinces() {
               
               {(
               <p className="yp-lead mt-5 max-w-3xl">
-                {`Discover the ${regionCount} ${regionsPlural} of ${country.name}${capitalRegion ? ` - from the capital ${capitalRegion.name} and beyond` : ""}. Pick a ${country.regionTerm.singular.toLowerCase()} to explore its localities and local businesses.`}
+                {tx("Discover the {0} {1} of {2}{3}. Pick a {4} to explore its localities and local businesses.", regionCount, regionsPlural, country.name, capitalRegion ? ` - from the capital ${capitalRegion.name} and beyond` : "", country.regionTerm.singular.toLowerCase())}
               </p>
               )}
               
@@ -177,12 +179,12 @@ export default function Provinces() {
               {/* Search Bar */}
               <div className="mt-8 max-w-2xl">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#5B6475]" />
+                  <Search className="absolute start-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#5B6475]" />
                   <Input
                     placeholder={localize("Search provinces, cities, businesses, attractions...")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-14 rounded-[14px] pl-12 pr-14 text-base"
+                    className="h-14 rounded-[14px] ps-12 pe-14 text-base"
                   />
                   {searchQuery && (
                     <Button
@@ -190,7 +192,7 @@ export default function Provinces() {
                       variant="ghost"
                       onClick={() => setSearchQuery("")}
                       aria-label="Clear search"
-                      className="absolute right-2 top-1/2 h-10 w-10 -translate-y-1/2 p-0 text-[#5B6475] hover:text-[#0A0A0A]"
+                      className="absolute end-2 top-1/2 h-10 w-10 -translate-y-1/2 p-0 text-[#5B6475] hover:text-[#0A0A0A]"
                     >
                       ×
                     </Button>
@@ -208,7 +210,7 @@ export default function Provinces() {
         <section className="yp-wrap pt-20">
           <div className="mb-8">
             <div className="yp-label">Explore</div>
-            <h2 className="yp-h2 mt-2">{`Across all ${regionCount} ${regionsPlural}`}</h2>
+            <h2 className="yp-h2 mt-2">{tx("Across all {0} {1}", regionCount, regionsPlural)}</h2>
           </div>
           <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
             {tileFeatured && <a
@@ -216,13 +218,11 @@ export default function Provinces() {
               onClick={(e) => { e.preventDefault(); navigate(tileFeatured.href); }}
               className="relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#E8F4EC] p-7 text-[#0A0A0A] hover:text-[#0A0A0A] sm:row-span-2"
             >
-              <svg width="100%" height="180" viewBox="0 0 400 180" preserveAspectRatio="xMidYMax meet" className="pointer-events-none absolute bottom-0 left-0 opacity-[.22]" aria-hidden="true"><path d="M0 180V140h30v-30h20v30h25V90h18v50h22V60l8-30 8 30v80h25v-55h30v55h20v-40h25v40h30V100h20v40h35v-25h25v25h29v40z" fill="#0B6B2E"></path></svg>
+              <svg width="100%" height="180" viewBox="0 0 400 180" preserveAspectRatio="xMidYMax meet" className="pointer-events-none absolute bottom-0 start-0 opacity-[.22]" aria-hidden="true"><path d="M0 180V140h30v-30h20v30h25V90h18v50h22V60l8-30 8 30v80h25v-55h30v55h20v-40h25v40h30V100h20v40h35v-25h25v25h29v40z" fill="#0B6B2E"></path></svg>
               <span dir={localDir} lang={localLang} className="relative font-arabic text-[22px] text-[#0B6B2E]">{tileFeatured.arabicName}</span>
               <span className="relative">
                 <span className="block text-[34px] font-bold tracking-[-0.035em]">{tileFeatured.name}</span>
-                <span className="mt-1.5 block text-[15px] text-[#3A4354]">
-                  {tileFeatured.businesses.toLocaleString()} businesses · {tileFeatured.localities} localities →
-                </span>
+                <span className="mt-1.5 block text-[15px] text-[#3A4354]">{tj("{0} businesses · {1} localities →", tileFeatured.businesses.toLocaleString(), tileFeatured.localities)}</span>
               </span>
             </a>}
             {tileOthers.map((province) => (
@@ -248,18 +248,16 @@ export default function Provinces() {
             <div className="yp-label">In detail</div>
             {(<>
             <h2 className="yp-h2 mt-2">
-              {`The ${regionCount} ${country.regionTerm.plural}`}
+              {tx("The {0} {1}", regionCount, country.regionTerm.plural)}
             </h2>
             <p className="mt-3 text-[17px] leading-relaxed text-[#4B5565]">
-              {`Browse local businesses and localities in every ${country.regionTerm.singular.toLowerCase()} of ${country.name}`}
+              {tx("Browse local businesses and localities in every {0} of {1}", country.regionTerm.singular.toLowerCase(), country.name)}
             </p>
             </>)}
           </div>
 
           {visibleRegions.length === 0 && (
-            <div className="yp-card p-10 text-center text-[#4B5565]">
-              No {regionsPlural} match “{searchQuery}”.
-            </div>
+            <div className="yp-card p-10 text-center text-[#4B5565]">{tj("No {0} match “{1}”.", regionsPlural, searchQuery)}</div>
           )}
 
           {(
@@ -273,8 +271,7 @@ export default function Provinces() {
                   </div>
                   {region.capital && (
                     <span className="yp-pill mb-4 w-fit gap-1 border border-[#E7E9EE] bg-white text-[#05501F]">
-                      <Crown className="h-3 w-3" /> Capital {country.regionTerm.singular.toLowerCase()}
-                    </span>
+                      <Crown className="h-3 w-3" />{" "}{tj("Capital {0}", country.regionTerm.singular.toLowerCase())}</span>
                   )}
                   <dl className="mb-5 grid grid-cols-2 gap-2">
                     {[
@@ -297,9 +294,7 @@ export default function Provinces() {
                       </div>
                     </div>
                   )}
-                  <Button className="mt-auto min-h-[44px] w-full" onClick={() => navigate(region.href)}>
-                    Explore Businesses in {region.name}
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                  <Button className="mt-auto min-h-[44px] w-full" onClick={() => navigate(region.href)}>{tj("Explore Businesses in {0}", region.name)}<ArrowRight className="ms-2 h-4 w-4" />
                   </Button>
                 </div>
               </article>
@@ -325,7 +320,7 @@ export default function Provinces() {
               {localize("Ready to Explore Pakistan?")}
             </h2>
             <p className="mx-auto mb-8 max-w-2xl text-[17px] leading-relaxed text-[#4B5565]">
-              {`Discover business opportunities, find local services, and connect with the vibrant communities across all ${regionCount} ${regionsPlural}`}
+              {tx("Discover business opportunities, find local services, and connect with the vibrant communities across all {0} {1}", regionCount, regionsPlural)}
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button 
@@ -334,7 +329,7 @@ export default function Provinces() {
                 onClick={() => navigate('/categories')}
               >
                 Browse Business Directory
-                <Building className="ml-2 h-5 w-5" />
+                <Building className="ms-2 h-5 w-5" />
               </Button>
               <Button 
                 size="lg" 
@@ -343,7 +338,7 @@ export default function Provinces() {
                 onClick={() => navigate('/localities')}
               >
                 Explore All Localities
-                <MapPin className="ml-2 h-5 w-5" />
+                <MapPin className="ms-2 h-5 w-5" />
               </Button>
             </div>
           </div>

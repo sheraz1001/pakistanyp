@@ -19,6 +19,8 @@ import {
   Award,
   TrendingUp
 } from 'lucide-react';
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 export default function BusinessGuidelines() {
   const schemaMarkup = {
@@ -41,7 +43,7 @@ export default function BusinessGuidelines() {
         {
           type: "required",
           title: "Business Registration",
-          description: `Valid ${country.licenceAuthority} required`
+          description: tx("Valid {0} required", country.licenceAuthority)
         },
         {
           type: "required", 
@@ -316,16 +318,14 @@ export default function BusinessGuidelines() {
               {violations.map((violation, index) => (
                 <div key={index} className="yp-card p-7 flex flex-col gap-3">
                   <div className="flex items-center justify-between mb-2">
-                    <span className={`yp-pill ${violation.color}`}>
-                      {violation.severity} Violation
-                    </span>
+                    <span className={`yp-pill ${violation.color}`}>{tj("{0} Violation", violation.severity)}</span>
                     {index < 2 ? <AlertTriangle className="w-5 h-5 text-[#5B6475]" aria-hidden="true" /> : <XCircle className="w-5 h-5 text-[#D71920]" aria-hidden="true" />}
                   </div>
                   <h3 className="text-lg font-semibold tracking-[-0.02em]">Consequences</h3>
                   <p className="text-[15px] text-[#3A4354]">{violation.consequences}</p>
                   <div className="border-t border-[#EEF0F4] pt-4 mt-1">
                     <h4 className="yp-label mb-3">Examples</h4>
-                    <ul className="space-y-1.5 list-disc pl-5 text-sm text-[#4B5565]">
+                    <ul className="space-y-1.5 list-disc ps-5 text-sm text-[#4B5565]">
                       {violation.examples.map((example, exampleIndex) => (
                         <li key={exampleIndex}>{example}</li>
                       ))}
@@ -346,7 +346,7 @@ export default function BusinessGuidelines() {
                   <TrendingUp className="w-5 h-5 text-[#0B6B2E]" aria-hidden="true" />
                   Optimize Your Listing
                 </h4>
-                <ul className="space-y-2 text-[15px] text-[#3A4354] list-disc pl-5">
+                <ul className="space-y-2 text-[15px] text-[#3A4354] list-disc ps-5">
                   <li>Complete all profile sections</li>
                   <li>Use relevant keywords in description</li>
                   <li>Upload high-quality images</li>
@@ -359,7 +359,7 @@ export default function BusinessGuidelines() {
                   <Users className="w-5 h-5 text-[#0B6B2E]" aria-hidden="true" />
                   Engage with Customers
                 </h4>
-                <ul className="space-y-2 text-[15px] text-[#3A4354] list-disc pl-5">
+                <ul className="space-y-2 text-[15px] text-[#3A4354] list-disc ps-5">
                   <li>Respond promptly to inquiries</li>
                   <li>Encourage honest reviews</li>
                   <li>Address complaints professionally</li>

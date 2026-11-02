@@ -3,6 +3,7 @@ import { Helmet } from "@/lib/helmet-compat";
 import { useLocation } from "wouter";
 import { country } from "@shared/country";
 import { geoFrom } from "@/lib/structured-data";
+import { t as tx } from "@shared/i18n";
 
 /**
  * Page <head> manager.
@@ -224,8 +225,8 @@ export const SEOConfigs = {
   },
 
   categoryPage: (category: any) => ({
-    title: `${category.name} in Pakistan - Find Best ${category.name} | PakistanYP Directory`,
-    description: `Discover top-rated ${category.name.toLowerCase()} businesses across Pakistan. Browse verified listings in Karachi, Lahore, Islamabad and other provinces. Reviews, ratings, and contact details available.`,
+    title: tx("{0} in Pakistan - Find Best {1} | PakistanYP Directory", category.name, category.name),
+    description: tx("Discover top-rated {0} businesses across Pakistan. Browse verified listings in Karachi, Lahore, Islamabad and other provinces. Reviews, ratings, and contact details available.", category.name.toLowerCase()),
     keywords: `${category.name} Pakistan, ${category.name} Karachi, ${category.name} Lahore, best ${category.name.toLowerCase()}, Pakistan ${category.name.toLowerCase()}`,
     canonical: `${country.origin}/categories/${category.slug}`,
     schemaType: "CollectionPage",
@@ -238,8 +239,8 @@ export const SEOConfigs = {
   }),
 
   provincePage: (province: any) => ({
-    title: `Businesses in ${province.name}, Pakistan - Complete Directory | PakistanYP`,
-    description: `Find all types of businesses in ${province.name}, Pakistan. Comprehensive directory with contact details, reviews, and ratings for companies in ${province.name}.`,
+    title: tx("Businesses in {0}, Pakistan - Complete Directory | PakistanYP", province.name),
+    description: tx("Find all types of businesses in {0}, Pakistan. Comprehensive directory with contact details, reviews, and ratings for companies in {1}.", province.name, province.name),
     keywords: `${province.name} businesses, ${province.name} companies, ${province.name} directory, ${province.name} Pakistan`,
     canonical: `${country.origin}/${province.name.toLowerCase().replace(/\s+/g, '-')}`,
     schemaType: "Place",
@@ -256,7 +257,7 @@ export const SEOConfigs = {
   }),
 
   staticPage: (pageTitle: string, pageDescription: string) => ({
-    title: `${pageTitle} | PakistanYP - Pakistani Business Directory`,
+    title: tx("{0} | PakistanYP - Pakistani Business Directory", pageTitle),
     description: pageDescription,
     keywords: `PakistanYP, Pakistan business directory, ${pageTitle.toLowerCase()}`,
     schemaType: "WebPage"

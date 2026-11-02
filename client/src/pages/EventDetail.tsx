@@ -10,6 +10,8 @@ import { Helmet } from "@/lib/helmet-compat";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface EventDetail {
   id: number;
@@ -118,7 +120,7 @@ export default function EventDetail() {
   return (
     <>
       <Helmet>
-        <title>{event.metaTitle || `${event.title} - ${country.adjective} Events`}</title>
+        <title>{event.metaTitle || tx("{0} - {1} Events", event.title, country.adjective)}</title>
         <meta name="description" content={event.metaDescription || event.shortDescription || event.description.substring(0, 160)} />
       </Helmet>
 
@@ -207,7 +209,7 @@ export default function EventDetail() {
                       <img
                         key={index}
                         src={image}
-                        alt={`${event.title} - Image ${index + 1}`}
+                        alt={tx("{0} - Image {1}", event.title, index + 1)}
                         className="rounded-[20px] w-full aspect-[16/10] object-cover"
                       />
                     ))}
@@ -251,7 +253,7 @@ export default function EventDetail() {
                       <h3 className="yp-label mb-2">
                         Capacity
                       </h3>
-                      <p className="text-[#0A0A0A] font-medium">{event.maxCapacity} attendees</p>
+                      <p className="text-[#0A0A0A] font-medium">{tj("{0} attendees", event.maxCapacity)}</p>
                     </div>
                   )}
                 </div>
@@ -304,7 +306,7 @@ export default function EventDetail() {
                   {event.venueMapUrl && (
                     <Button variant="outline" className="w-full" asChild>
                       <a href={event.venueMapUrl} target="_blank" rel="noopener noreferrer">
-                        <MapPin className="mr-2 h-4 w-4" />
+                        <MapPin className="me-2 h-4 w-4" />
                         View on Map
                       </a>
                     </Button>
@@ -337,7 +339,7 @@ export default function EventDetail() {
                   <Button className="w-full mb-4" size="lg" asChild data-testid="button-get-tickets">
                     <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer">
                       Get Tickets
-                      <ExternalLink className="ml-2 h-4 w-4" />
+                      <ExternalLink className="ms-2 h-4 w-4" />
                     </a>
                   </Button>
                 )}
@@ -399,9 +401,7 @@ export default function EventDetail() {
                       <User className="h-5 w-5 text-[#0B6B2E] mt-0.5 flex-none" />
                       <div>
                         <div className="font-medium text-[#0A0A0A]">Interest</div>
-                        <div className="text-[#5B6475]">
-                          {event.viewCount.toLocaleString()} views
-                        </div>
+                        <div className="text-[#5B6475]">{tj("{0} views", event.viewCount.toLocaleString())}</div>
                       </div>
                     </div>
                   )}

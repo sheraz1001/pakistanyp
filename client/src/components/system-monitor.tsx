@@ -16,6 +16,8 @@ import {
   Globe, Shield, Bell, TrendingUp, TrendingDown, AlertCircle
 } from "lucide-react";
 import { format } from "date-fns";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 interface SystemHealth {
   status: 'healthy' | 'warning' | 'critical';
@@ -215,9 +217,7 @@ export function SystemMonitor() {
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-sm">
-            <Clock className="h-4 w-4" />
-            Refresh every {refreshInterval}s
-          </div>
+            <Clock className="h-4 w-4" />{tj("Refresh every {0}s", refreshInterval)}</div>
 
           <Button
             variant="outline"
@@ -232,10 +232,7 @@ export function SystemMonitor() {
           <Badge 
             variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'}
             className="flex items-center gap-1"
-          >
-            {getStatusIcon(systemHealth?.status || 'unknown')}
-            System {systemHealth?.status || 'Unknown'}
-          </Badge>
+          >{tj("{0}System {1}", getStatusIcon(systemHealth?.status || 'unknown'), systemHealth?.status || 'Unknown')}</Badge>
         </div>
       </div>
 
@@ -302,9 +299,7 @@ export function SystemMonitor() {
                 <p className="text-2xl font-bold text-purple-600">
                   {systemHealth ? systemHealth.databaseConnections.active : '--'}
                 </p>
-                <p className="text-xs text-gray-500">
-                  {systemHealth ? systemHealth.databaseConnections.idle : '--'} idle
-                </p>
+                <p className="text-xs text-gray-500">{tj("{0} idle", systemHealth ? systemHealth.databaseConnections.idle : '--')}</p>
               </div>
               <Database className="h-8 w-8 text-purple-500" />
             </div>
@@ -473,16 +468,12 @@ export function SystemMonitor() {
                       </div>
                     </div>
 
-                    <div className="text-right">
+                    <div className="text-end">
                       <Badge variant="outline" className={getStatusColor(service.status)}>
                         {service.status}
                       </Badge>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {service.responseTime}ms • Uptime: {formatUptime(service.uptime)}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        Last check: {format(new Date(service.lastCheck), 'HH:mm:ss')}
-                      </p>
+                      <p className="text-xs text-gray-500 mt-1">{tj("{0}ms • Uptime: {1}", service.responseTime, formatUptime(service.uptime))}</p>
+                      <p className="text-xs text-gray-400">{tj("Last check: {0}", format(new Date(service.lastCheck), 'HH:mm:ss'))}</p>
                     </div>
                   </div>
                 ))}
@@ -538,7 +529,7 @@ export function SystemMonitor() {
                         </span>
                       </div>
                       <p className="mt-2 text-sm">{log.message}</p>
-                      <p className="text-xs text-gray-500">Source: {log.source}</p>
+                      <p className="text-xs text-gray-500">{tj("Source: {0}", log.source)}</p>
                     </div>
                   ))}
                 </div>

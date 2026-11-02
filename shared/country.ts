@@ -73,6 +73,12 @@ export interface CountryConfig {
   regionsPhrase?: string;
   /** Licence/registration types a business can upload for verification */
   licenceAuthorities?: string[];
+  /**
+   * Optional second site language (e.g. Arabic for Saudi Arabia). English stays at the main
+   * addresses; the second language is served under `/${code}` with its own dictionary
+   * (shared/countries/dictionary.ts). Admin pages stay English.
+   */
+  secondLanguage?: { code: string; dir: "rtl" | "ltr"; name: string; englishName: string; locale: string };
 }
 
 // <country-config>  (each country pack replaces this block)

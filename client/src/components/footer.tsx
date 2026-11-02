@@ -6,6 +6,7 @@ import NewsletterSubscription from "./newsletter-subscription";
 import { PakistanypLogo } from "./brand/pakistanyp-logo";
 import "./footer.css";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = { Instagram, Facebook, LinkedIn: Linkedin, X: Twitter };
 
@@ -173,9 +174,9 @@ function Footer() {
             <a href={`mailto:${country.contact.email}`} className="footer-contact-row"><Mail size={16} aria-hidden="true" />{country.contact.email}</a>
           </address>
           {country.social.length > 0 && (
-          <div className="footer-socials" role="group" aria-label={`Follow ${country.brand}`}>
+          <div className="footer-socials" role="group" aria-label={tx("Follow {0}", country.brand)}>
             {country.social.map(({ name, href }) => ({ name, href, Icon: SOCIAL_ICONS[name] || Mail })).map(({ name, href, Icon }) => (
-              <a key={name} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Follow ${country.brand} on ${name} (opens in a new tab)`}>
+              <a key={name} href={href} target="_blank" rel="noopener noreferrer" aria-label={tx("Follow {0} on {1} (opens in a new tab)", country.brand, name)}>
                 <Icon size={17} aria-hidden="true" />
               </a>
             ))}
@@ -183,7 +184,7 @@ function Footer() {
           )}
         </div>
         {columns.map(({ title, links }) => (
-          <nav key={title} className="footer-menu" aria-label={`Footer ${title}`}>
+          <nav key={title} className="footer-menu" aria-label={tx("Footer {0}", title)}>
             <h2 className="yp-label footer-menu-title">{title}</h2>
             <details className="footer-menu-disclosure" open={desktopMenus || undefined}>
               <summary className="footer-menu-summary">
@@ -216,7 +217,7 @@ function Footer() {
 
       <div className="yp-wrap footer-bottom">
         <p>
-          &copy; {new Date().getFullYear()}{` ${country.brand}. All rights reserved. Developed by`}{" "}
+          &copy; {new Date().getFullYear()}{tx(" {0}. All rights reserved. Developed by", country.brand)}{" "}
           <a href="https://www.webmaster.ae" target="_blank" rel="noopener noreferrer" className="footer-credit">
             Webmaster Technology
           </a>

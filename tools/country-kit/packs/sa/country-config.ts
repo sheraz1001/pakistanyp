@@ -47,6 +47,8 @@ const SITE: CountryConfig = {
   popularSearches: ["Business setup", "AC maintenance", "Dental clinics", "Car repair", "Movers", "Restaurants"],
   majorCities: ["Riyadh", "Jeddah", "Dammam"],
   localLanguage: { code: "ar", dir: "rtl" },
+  // Full Arabic site under /ar (dictionary: shared/countries/dictionary.ar.json)
+  secondLanguage: { code: "ar", dir: "rtl", name: "العربية", englishName: "Arabic", locale: "ar-SA" },
   regionsPhrase: "Regions",
   licenceAuthorities: [
     "Commercial registration (CR)",

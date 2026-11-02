@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { country } from "@shared/country";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -12,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Crown, Star, Shield, Zap, Check, CreditCard, AlertTriangle, Loader2, Heart, Sparkles } from "lucide-react";
 import SubscriptionTierMascotGuide from "@/components/subscription-tier-mascot-guide";
+import { tj } from "@/i18n-jsx/tj";
 
 type SubscriptionPlan = {
   id: number;
@@ -277,7 +279,7 @@ export function SubscriptionUpgradeModal({
               />
               <span className={`text-sm ${isYearly ? 'font-semibold' : ''}`}>
                 Yearly
-                <span className="yp-pill bg-[#E8F4EC] text-[#05501F] ml-2">Save up to 25%</span>
+                <span className="yp-pill bg-[#E8F4EC] text-[#05501F] ms-2">Save up to 25%</span>
               </span>
             </div>
 
@@ -308,12 +310,8 @@ export function SubscriptionUpgradeModal({
                       {formatPrice(price)}
                     </div>
                     {price && price > 0 && (
-                      <div className="text-sm text-[#4B5565]">
-                        per {isYearly ? 'year' : 'month'}
-                        {isYearly && savings > 0 && (
-                          <Badge className="ml-2 bg-[#E8F4EC] text-[#05501F]">
-                            {savings}% off
-                          </Badge>
+                      <div className="text-sm text-[#4B5565]">{tj("per {0}", isYearly ? 'year' : 'month')}{isYearly && savings > 0 && (
+                          <Badge className="ms-2 bg-[#E8F4EC] text-[#05501F]">{tj("{0}% off", savings)}</Badge>
                         )}
                       </div>
                     )}
@@ -337,12 +335,12 @@ export function SubscriptionUpgradeModal({
 
                   <div className="space-y-1 pt-2">
                     {plan.features?.map((feature, index) => (
-                      <div key={index} className="flex items-center space-x-2">
+                      <div key={index} className="flex items-center space-x-2 rtl:space-x-reverse">
                         <Check className="w-4 h-4 text-[#0B6B2E] shrink-0" />
                         <span className="text-sm">{feature}</span>
                       </div>
                     )) || (
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 rtl:space-x-reverse">
                         <Check className="w-4 h-4 text-[#0B6B2E] shrink-0" />
                         <span className="text-sm">Basic features included</span>
                       </div>
@@ -353,7 +351,7 @@ export function SubscriptionUpgradeModal({
                     {current ? (
                       <div className="space-y-2">
                         <Button className="w-full" disabled>
-                          <Crown className="w-4 h-4 mr-2" />
+                          <Crown className="w-4 h-4 me-2" />
                           Current Plan
                         </Button>
                         {plan.name !== "free" && (
@@ -365,9 +363,9 @@ export function SubscriptionUpgradeModal({
                             disabled={cancelMutation.isPending}
                           >
                             {cancelMutation.isPending ? (
-                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              <Loader2 className="w-4 h-4 me-2 animate-spin" />
                             ) : (
-                              <AlertTriangle className="w-4 h-4 mr-2" />
+                              <AlertTriangle className="w-4 h-4 me-2" />
                             )}
                             Cancel Subscription
                           </Button>
@@ -380,9 +378,9 @@ export function SubscriptionUpgradeModal({
                         disabled={isLoading || upgradeMutation.isPending}
                       >
                         {isLoading ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <Loader2 className="w-4 h-4 me-2 animate-spin" />
                         ) : (
-                          <CreditCard className="w-4 h-4 mr-2" />
+                          <CreditCard className="w-4 h-4 me-2" />
                         )}
                         {getActionText(plan.name)}
                       </Button>
@@ -404,10 +402,7 @@ export function SubscriptionUpgradeModal({
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold">{currentSubscription.planDisplayName}</p>
-                      <p className="text-sm text-[#4B5565]">
-                        Status: {currentSubscription.status} • 
-                        Next billing: {new Date(currentSubscription.currentPeriodEnd).toLocaleDateString()}
-                      </p>
+                      <p className="text-sm text-[#4B5565]">{tj("Status: {0} • Next billing: {1}", currentSubscription.status, new Date(currentSubscription.currentPeriodEnd).toLocaleDateString(dateLocale()))}</p>
                     </div>
                     <Badge className="bg-white text-[#05501F] border border-[#CFE8D8]">
                       {currentSubscription.status}

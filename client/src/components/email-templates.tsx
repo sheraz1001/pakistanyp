@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Edit, Trash2, Plus, Save, Eye, Code } from 'lucide-react';
+import { tj } from "@/i18n-jsx/tj";
 
 interface EmailTemplate {
   id: number;
@@ -139,7 +141,7 @@ export default function EmailTemplates() {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Email Templates</h2>
         <Button onClick={() => setEditMode(true)}>
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4 me-2" />
           Create Template
         </Button>
       </div>
@@ -177,9 +179,7 @@ export default function EmailTemplates() {
                   </div>
                 )}
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-muted-foreground">
-                    Updated {new Date(template.updatedAt).toLocaleDateString()}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tj("Updated {0}", new Date(template.updatedAt).toLocaleDateString(dateLocale()))}</p>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -296,7 +296,7 @@ export default function EmailTemplates() {
               Cancel
             </Button>
             <Button onClick={handleSave}>
-              <Save className="w-4 h-4 mr-2" />
+              <Save className="w-4 h-4 me-2" />
               Save Template
             </Button>
           </DialogFooter>
@@ -307,7 +307,7 @@ export default function EmailTemplates() {
       <Dialog open={previewMode} onOpenChange={setPreviewMode}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Template Preview: {selectedTemplate?.name}</DialogTitle>
+            <DialogTitle>{tj("Template Preview: {0}", selectedTemplate?.name)}</DialogTitle>
           </DialogHeader>
           {selectedTemplate && (
             <div className="space-y-4 py-4">
@@ -330,7 +330,7 @@ export default function EmailTemplates() {
                     window.open(url, '_blank');
                   }}
                 >
-                  <Code className="w-4 h-4 mr-2" />
+                  <Code className="w-4 h-4 me-2" />
                   View HTML Source
                 </Button>
                 <Button onClick={() => setPreviewMode(false)}>Close</Button>

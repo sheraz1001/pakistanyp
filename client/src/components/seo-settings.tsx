@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Save, RefreshCw, Search, Globe, FileText, AlertCircle, CheckCircle } from 'lucide-react';
+import { t as tx } from "@shared/i18n";
 
 interface SEOSettings {
   id?: number;
@@ -84,7 +85,7 @@ export default function SEOSettings() {
     mutationFn: () => apiRequest('/api/admin/seo/analyze', { method: 'POST' }),
     onSuccess: (data: any) => {
       setSeoScore(data.score);
-      toast({ title: `SEO Score: ${data.score}/100`, description: data.summary });
+      toast({ title: tx("SEO Score: {0}/100", data.score), description: data.summary });
     }
   });
 
@@ -129,11 +130,11 @@ export default function SEOSettings() {
             onClick={() => analyzeSEOMutation.mutate()}
             disabled={analyzeSEOMutation.isPending}
           >
-            <Search className="w-4 h-4 mr-2" />
+            <Search className="w-4 h-4 me-2" />
             Analyze SEO
           </Button>
           <Button onClick={handleSave} disabled={updateMutation.isPending}>
-            <Save className="w-4 h-4 mr-2" />
+            <Save className="w-4 h-4 me-2" />
             Save Changes
           </Button>
         </div>
@@ -214,7 +215,7 @@ export default function SEOSettings() {
                       {keyword}
                       <button
                         onClick={() => removeKeyword(keyword)}
-                        className="ml-2 text-xs hover:text-destructive"
+                        className="ms-2 text-xs hover:text-destructive"
                       >
                         ×
                       </button>
@@ -325,7 +326,7 @@ export default function SEOSettings() {
                 onClick={() => generateSitemapMutation.mutate()}
                 disabled={generateSitemapMutation.isPending}
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="w-4 h-4 me-2" />
                 Generate Sitemap Now
               </Button>
             </CardContent>

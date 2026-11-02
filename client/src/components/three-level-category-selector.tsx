@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Search, X, ChevronRight, Folder, FolderOpen } from 'lucide-react';
 import { getCategoryIcon } from '@/lib/category-icons-clean';
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -190,15 +191,9 @@ export default function ThreeLevelCategorySelector({
             <div className="text-sm font-medium text-blue-800">Free Plan Category Limits</div>
           </div>
           <div className="grid grid-cols-3 gap-4 text-sm">
-            <div className={`${mainCategoriesCount >= 1 ? 'text-red-600' : 'text-green-600'}`}>
-              Main: {mainCategoriesCount}/1
-            </div>
-            <div className={`${subCategoriesCount >= 3 ? 'text-red-600' : 'text-green-600'}`}>
-              Second Level: {subCategoriesCount}/3
-            </div>
-            <div className="text-green-600">
-              Third Level: {subSubCategoriesCount}/∞
-            </div>
+            <div className={`${mainCategoriesCount >= 1 ? 'text-red-600' : 'text-green-600'}`}>{tj("Main: {0}/1", mainCategoriesCount)}</div>
+            <div className={`${subCategoriesCount >= 3 ? 'text-red-600' : 'text-green-600'}`}>{tj("Second Level: {0}/3", subCategoriesCount)}</div>
+            <div className="text-green-600">{tj("Third Level: {0}/∞", subSubCategoriesCount)}</div>
           </div>
         </div>
       )}
@@ -339,9 +334,7 @@ export default function ThreeLevelCategorySelector({
       {selectedCategories.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-medium">
-              Selected Categories ({selectedCategories.length})
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">{tj("Selected Categories ({0})", selectedCategories.length)}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
@@ -385,12 +378,12 @@ export default function ThreeLevelCategorySelector({
         </CardHeader>
         <CardContent>
           <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Search className="absolute start-3 top-3 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search categories..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
           
@@ -415,9 +408,7 @@ export default function ThreeLevelCategorySelector({
                             {path.map(cat => cat.name).join(' → ')}
                           </div>
                           {showCounts && category.businessCount !== undefined && (
-                            <Badge variant="outline" className="text-xs">
-                              {category.businessCount} companies
-                            </Badge>
+                            <Badge variant="outline" className="text-xs">{tj("{0} companies", category.businessCount)}</Badge>
                           )}
                         </div>
                         {isSelected && (
@@ -428,9 +419,7 @@ export default function ThreeLevelCategorySelector({
                   })}
                 </div>
               ) : (
-                <div className="text-center py-4 text-gray-500">
-                  No categories found matching "{searchTerm}"
-                </div>
+                <div className="text-center py-4 text-gray-500">{tj("No categories found matching \"{0}\"", searchTerm)}</div>
               )}
             </div>
           )}
@@ -468,9 +457,7 @@ export default function ThreeLevelCategorySelector({
                           <IconComponent className="h-4 w-4" />
                           <span>{category.name}</span>
                           {showCounts && category.subcategoryCount !== undefined && (
-                            <Badge variant="outline" className="text-xs">
-                              {category.subcategoryCount} subcategories
-                            </Badge>
+                            <Badge variant="outline" className="text-xs">{tj("{0} subcategories", category.subcategoryCount)}</Badge>
                           )}
                         </div>
                       </SelectItem>
@@ -502,9 +489,7 @@ export default function ThreeLevelCategorySelector({
                           <ChevronRight className="h-4 w-4" />
                           <span>{category.name}</span>
                           {showCounts && category.businessCount !== undefined && (
-                            <Badge variant="outline" className="text-xs">
-                              {category.businessCount} companies
-                            </Badge>
+                            <Badge variant="outline" className="text-xs">{tj("{0} companies", category.businessCount)}</Badge>
                           )}
                         </div>
                       </SelectItem>
@@ -526,7 +511,7 @@ export default function ThreeLevelCategorySelector({
                       >
                         {category.name}
                         {showCounts && category.businessCount !== undefined && (
-                          <span className="ml-1">({category.businessCount})</span>
+                          <span className="ms-1">({category.businessCount})</span>
                         )}
                       </Button>
                     );

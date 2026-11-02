@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowUpRight, Check, Globe, LayoutGrid, List, MapPin, MessageCircle, Navigation, Phone, Star } from "lucide-react";
 import "./business-card.css";
 import { country } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 export type BusinessCardLayout = "grid" | "list";
 type DirectoryRecord = Record<string, any>;
@@ -104,7 +105,7 @@ export default function BusinessCard({ business, layout = "grid", category, prov
     <a href={href} onClick={onProfileClick} aria-label={name} tabIndex={-1}
       className={`directory-tile ${isList ? "directory-tile-lg" : ""}`} style={{ background: tint, color: ink }}>
       <span aria-hidden="true">{initials}</span>
-      {logo && logo !== failedLogo && <img src={logo} alt={`${name} logo`} loading="lazy" onError={() => setFailedLogo(logo)} />}
+      {logo && logo !== failedLogo && <img src={logo} alt={tx("{0} logo", name)} loading="lazy" onError={() => setFailedLogo(logo)} />}
     </a>
   );
 
@@ -145,16 +146,16 @@ export default function BusinessCard({ business, layout = "grid", category, prov
           {description && <p className="directory-description line-clamp-2">{description}</p>}
           {tags}
           {(website || directions) && <div className="flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
-            {website && <a className="inline-flex items-center gap-1.5 text-[#0B6B2E] hover:text-[#05501F]" href={website} target="_blank" rel="noopener noreferrer" aria-label={`${name} website (opens in a new tab)`}><Globe size={14} aria-hidden="true" /><span className="truncate">{domain}</span></a>}
-            {directions && <a className="inline-flex items-center gap-1.5 text-[#0B6B2E] hover:text-[#05501F]" href={directions} target="_blank" rel="noopener noreferrer" aria-label={`Directions to ${name} on Google Maps (opens in a new tab)`}><Navigation size={14} aria-hidden="true" />Directions</a>}
+            {website && <a className="inline-flex items-center gap-1.5 text-[#0B6B2E] hover:text-[#05501F]" href={website} target="_blank" rel="noopener noreferrer" aria-label={tx("{0} website (opens in a new tab)", name)}><Globe size={14} aria-hidden="true" /><span className="truncate">{domain}</span></a>}
+            {directions && <a className="inline-flex items-center gap-1.5 text-[#0B6B2E] hover:text-[#05501F]" href={directions} target="_blank" rel="noopener noreferrer" aria-label={tx("Directions to {0} on Google Maps (opens in a new tab)", name)}><Navigation size={14} aria-hidden="true" />Directions</a>}
           </div>}
         </div>
         <div className="flex flex-[0_1_170px] flex-col justify-center gap-2">
           <a className="yp-btn yp-btn-primary" href={`${href}#quote`} onClick={onProfileClick}>Request quote</a>
           {phone
-            ? <a className="yp-btn yp-btn-ghost" href={`tel:+${phone}`} aria-label={`Call ${name} at ${formatPhone(business.phone)}`}><Phone size={16} aria-hidden="true" />Call</a>
+            ? <a className="yp-btn yp-btn-ghost" href={`tel:+${phone}`} aria-label={tx("Call {0} at {1}", name, formatPhone(business.phone))}><Phone size={16} aria-hidden="true" />Call</a>
             : <a className="yp-btn yp-btn-ghost" href={href} onClick={onProfileClick}>View profile</a>}
-          {whatsapp && <a className="yp-btn yp-btn-ghost" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label={`Message ${name} on WhatsApp (opens in a new tab)`}><MessageCircle size={16} aria-hidden="true" />WhatsApp</a>}
+          {whatsapp && <a className="yp-btn yp-btn-ghost" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label={tx("Message {0} on WhatsApp (opens in a new tab)", name)}><MessageCircle size={16} aria-hidden="true" />WhatsApp</a>}
         </div>
       </article>
     );
@@ -172,15 +173,15 @@ export default function BusinessCard({ business, layout = "grid", category, prov
       {description && <p className="directory-description line-clamp-2">{description}</p>}
       {tags}
       {(phone || website) && <div className="directory-contact">
-        {phone && <a href={`tel:+${phone}`} aria-label={`Call ${name} at ${formatPhone(business.phone)}`}><Phone size={14} aria-hidden="true" /><span dir="ltr">{formatPhone(business.phone)}</span></a>}
-        {website && <a href={website} target="_blank" rel="noopener noreferrer" aria-label={`${name} website (opens in a new tab)`}><Globe size={14} aria-hidden="true" /><span className="truncate">{domain}</span></a>}
+        {phone && <a href={`tel:+${phone}`} aria-label={tx("Call {0} at {1}", name, formatPhone(business.phone))}><Phone size={14} aria-hidden="true" /><span dir="ltr">{formatPhone(business.phone)}</span></a>}
+        {website && <a href={website} target="_blank" rel="noopener noreferrer" aria-label={tx("{0} website (opens in a new tab)", name)}><Globe size={14} aria-hidden="true" /><span className="truncate">{domain}</span></a>}
       </div>}
       <div className="directory-actions">
         <div className="directory-icon-actions">
-          {phone && <a className="directory-action" href={`tel:+${phone}`} aria-label={`Call ${name}`} title="Call"><Phone size={16} aria-hidden="true" /></a>}
-          {whatsapp && <a className="directory-action" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label={`Message ${name} on WhatsApp (opens in a new tab)`} title="WhatsApp"><MessageCircle size={16} aria-hidden="true" /></a>}
-          {website && <a className="directory-action" href={website} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${name} website (opens in a new tab)`} title="Website"><Globe size={16} aria-hidden="true" /></a>}
-          {directions && <a className="directory-action" href={directions} target="_blank" rel="noopener noreferrer" aria-label={`Directions to ${name} on Google Maps (opens in a new tab)`} title="Directions"><Navigation size={16} aria-hidden="true" /></a>}
+          {phone && <a className="directory-action" href={`tel:+${phone}`} aria-label={tx("Call {0}", name)} title="Call"><Phone size={16} aria-hidden="true" /></a>}
+          {whatsapp && <a className="directory-action" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label={tx("Message {0} on WhatsApp (opens in a new tab)", name)} title="WhatsApp"><MessageCircle size={16} aria-hidden="true" /></a>}
+          {website && <a className="directory-action" href={website} target="_blank" rel="noopener noreferrer" aria-label={tx("Visit {0} website (opens in a new tab)", name)} title="Website"><Globe size={16} aria-hidden="true" /></a>}
+          {directions && <a className="directory-action" href={directions} target="_blank" rel="noopener noreferrer" aria-label={tx("Directions to {0} on Google Maps (opens in a new tab)", name)} title="Directions"><Navigation size={16} aria-hidden="true" /></a>}
         </div>
         <a className="yp-btn yp-btn-primary directory-profile" href={href} onClick={onProfileClick}>View profile<ArrowUpRight size={15} aria-hidden="true" /></a>
       </div>

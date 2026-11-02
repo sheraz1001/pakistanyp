@@ -21,6 +21,8 @@ import {
   Sparkles
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface MetaGenerationData {
   title: string;
@@ -117,7 +119,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied!",
-      description: `${type} copied to clipboard.`,
+      description: tx("{0} copied to clipboard.", type),
     });
   };
 
@@ -156,8 +158,8 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
         <CardTitle className="flex items-center gap-2">
           <Bot className="w-5 h-5 text-blue-600" />
           AI Meta Generator
-          <Badge variant="secondary" className="ml-auto">
-            <Sparkles className="w-3 h-3 mr-1" />
+          <Badge variant="secondary" className="ms-auto">
+            <Sparkles className="w-3 h-3 me-1" />
             Powered by GPT-4
           </Badge>
         </CardTitle>
@@ -179,7 +181,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
             
             {currentMeta.metaTitle && (
               <div className="space-y-1">
-                <Label className="text-xs text-gray-600">Current Title ({currentMeta.metaTitle.length}/60)</Label>
+                <Label className="text-xs text-gray-600">{tj("Current Title ({0}/60)", currentMeta.metaTitle.length)}</Label>
                 <div className="p-2 bg-gray-50 rounded text-sm border">
                   {currentMeta.metaTitle}
                 </div>
@@ -188,7 +190,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
             
             {currentMeta.metaDescription && (
               <div className="space-y-1">
-                <Label className="text-xs text-gray-600">Current Description ({currentMeta.metaDescription.length}/160)</Label>
+                <Label className="text-xs text-gray-600">{tj("Current Description ({0}/160)", currentMeta.metaDescription.length)}</Label>
                 <div className="p-2 bg-gray-50 rounded text-sm border">
                   {currentMeta.metaDescription}
                 </div>
@@ -207,12 +209,12 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
             >
               {isGenerating ? (
                 <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  <RefreshCw className="w-4 h-4 me-2 animate-spin" />
                   Generating...
                 </>
               ) : (
                 <>
-                  <Zap className="w-4 h-4 mr-2" />
+                  <Zap className="w-4 h-4 me-2" />
                   Generate AI Meta
                 </>
               )}
@@ -263,7 +265,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
                 </Badge>
                 {generatedScore > currentScore && (
                   <Badge variant="default" className="bg-green-100 text-green-800">
-                    <TrendingUp className="w-3 h-3 mr-1" />
+                    <TrendingUp className="w-3 h-3 me-1" />
                     +{generatedScore - currentScore}
                   </Badge>
                 )}
@@ -275,9 +277,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
             {/* Generated Meta Title */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label className="text-xs text-gray-600">
-                  Meta Title ({generatedMeta.metaTitle.length}/60)
-                </Label>
+                <Label className="text-xs text-gray-600">{tj("Meta Title ({0}/60)", generatedMeta.metaTitle.length)}</Label>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -295,9 +295,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
             {/* Generated Meta Description */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label className="text-xs text-gray-600">
-                  Meta Description ({generatedMeta.metaDescription.length}/160)
-                </Label>
+                <Label className="text-xs text-gray-600">{tj("Meta Description ({0}/160)", generatedMeta.metaDescription.length)}</Label>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -331,7 +329,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
 
             {/* Apply Button */}
             <Button onClick={applyGeneratedMeta} className="w-full">
-              <CheckCircle className="w-4 h-4 mr-2" />
+              <CheckCircle className="w-4 h-4 me-2" />
               Apply Generated Meta
             </Button>
           </div>
@@ -340,7 +338,7 @@ export default function AIMetaGenerator({ data, onMetaGenerated, currentMeta }: 
         {/* Tips */}
         <div className="text-xs text-gray-500 space-y-1 pt-2 border-t">
           <p className="font-medium">💡 AI Tips:</p>
-          <ul className="space-y-1 ml-4">
+          <ul className="space-y-1 ms-4">
             <li>• Include your focus keyword in both title and description</li>
             <li>• Keep titles under 60 characters for better display</li>
             <li>• Use compelling calls-to-action in descriptions</li>

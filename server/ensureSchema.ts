@@ -10,7 +10,7 @@ import { pool } from "./db";
  * database an ALTER TABLE has to wait for the previous instance's connections to finish.
  * Each one-off data fix is recorded in schema_fixes so it runs exactly once.
  */
-const FILES = ["scripts/create-missing-tables.sql", "scripts/add-missing-columns.sql", "scripts/phase1.sql", "scripts/phase2.sql", "scripts/approvals.sql", "scripts/verification-docs.sql", "scripts/updated-at-triggers.sql"];
+const FILES = ["scripts/create-missing-tables.sql", "scripts/add-missing-columns.sql", "scripts/phase1.sql", "scripts/phase2.sql", "scripts/approvals.sql", "scripts/verification-docs.sql", "scripts/updated-at-triggers.sql", "scripts/languages.sql"];
 
 const FIXES: Record<string, string> = {
   // Islamabad (3) and Multan (7) were switched off, so their 57 localities and listings were invisible

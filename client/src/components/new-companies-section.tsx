@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { Business } from "@shared/schema";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 export default function NewCompaniesSection() {
   const { data: businessesData } = useQuery<{ businesses: Business[] }>({
@@ -34,7 +36,7 @@ export default function NewCompaniesSection() {
               {localize("Launch Your Business in Pakistan Directory")}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              {`Join the inaugural group of businesses in ${country.name}'s most comprehensive directory. Get discovered by thousands of potential customers across all ${country.regions.length} ${country.regionTerm.plural.toLowerCase()}.`}
+              {tx("Join the inaugural group of businesses in {0}'s most comprehensive directory. Get discovered by thousands of potential customers across all {1} {2}.", country.name, country.regions.length, country.regionTerm.plural.toLowerCase())}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
@@ -42,7 +44,7 @@ export default function NewCompaniesSection() {
                 className="bg-pk-navy hover:bg-pk-teal text-white px-8 py-4 text-lg"
               >
                 Add Your Business Free
-                <ArrowRight className="h-5 w-5 ml-2" />
+                <ArrowRight className="h-5 w-5 ms-2" />
               </Button>
               <Button 
                 variant="outline"
@@ -52,17 +54,17 @@ export default function NewCompaniesSection() {
                 Business Guidelines
               </Button>
             </div>
-            <div className="mt-8 flex justify-center space-x-8 text-sm text-gray-600">
+            <div className="mt-8 flex justify-center space-x-8 rtl:space-x-reverse text-sm text-gray-600">
               <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+                <CheckCircle className="w-5 h-5 text-green-500 me-2" />
                 Free listing
               </div>
               <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+                <CheckCircle className="w-5 h-5 text-green-500 me-2" />
                 Instant verification
               </div>
               <div className="flex items-center">
-                <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+                <CheckCircle className="w-5 h-5 text-green-500 me-2" />
                 Premium features available
               </div>
             </div>
@@ -154,7 +156,7 @@ export default function NewCompaniesSection() {
                     </div>
                     <div className="flex items-center gap-1 text-xs text-gray-500">
                       <Users className="h-3 w-3" />
-                      <span>{business.viewCount || 0} views</span>
+                      <span>{tj("{0} views", business.viewCount || 0)}</span>
                     </div>
                   </div>
                 </div>
@@ -168,9 +170,7 @@ export default function NewCompaniesSection() {
                         </Badge>
                       ))}
                       {business.specialties.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{business.specialties.length - 2} more
-                        </Badge>
+                        <Badge variant="outline" className="text-xs">{tj("+{0} more", business.specialties.length - 2)}</Badge>
                       )}
                     </div>
                   </div>
@@ -184,7 +184,7 @@ export default function NewCompaniesSection() {
                     onClick={() => window.location.href = `/business/${business.slug}`}
                   >
                     View Profile
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                    <ArrowRight className="h-4 w-4 ms-2" />
                   </Button>
                   {business.phone && (
                     <Button variant="outline" size="sm" asChild>
@@ -207,7 +207,7 @@ export default function NewCompaniesSection() {
             className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
           >
             Explore All Categories
-            <ArrowRight className="h-5 w-5 ml-2" />
+            <ArrowRight className="h-5 w-5 ms-2" />
           </Button>
         </div>
       </div>

@@ -32,6 +32,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { Link } from 'wouter';
+import { t as tx } from "@shared/i18n";
 
 const businessClaimSchema = z.object({
   relationshipToBusiness: z.enum(['owner', 'manager', 'employee', 'authorized_representative'], {
@@ -89,7 +90,7 @@ export default function BusinessClaim() {
     onSuccess: (data) => {
       toast({
         title: "Claim Submitted Successfully!",
-        description: `Your business claim has been submitted for review. Claim ID: #${data.claimId}`,
+        description: tx("Your business claim has been submitted for review. Claim ID: #{0}", data.claimId),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/user/business-claims'] });
       // Redirect to user dashboard
@@ -218,7 +219,7 @@ export default function BusinessClaim() {
         <div className="mb-6">
           <Link href={`/business/${business.slug || businessId}`}>
             <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="me-2 h-4 w-4" />
               Back to Business
             </Button>
           </Link>
@@ -277,28 +278,28 @@ export default function BusinessClaim() {
                               defaultValue={field.value}
                               className="grid gap-3 mt-2"
                             >
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="owner" id="owner" />
                                 <label htmlFor="owner" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Business Owner</div>
                                   <div className="text-sm text-[#4B5565]">I own this business</div>
                                 </label>
                               </div>
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="manager" id="manager" />
                                 <label htmlFor="manager" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Manager</div>
                                   <div className="text-sm text-[#4B5565]">I manage this business</div>
                                 </label>
                               </div>
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="employee" id="employee" />
                                 <label htmlFor="employee" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Employee</div>
                                   <div className="text-sm text-[#4B5565]">I work for this business</div>
                                 </label>
                               </div>
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="authorized_representative" id="authorized_rep" />
                                 <label htmlFor="authorized_rep" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Authorized Representative</div>
@@ -324,8 +325,8 @@ export default function BusinessClaim() {
                             <FormLabel>Business Email</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B6475]" />
-                                <Input placeholder="business@example.com" className="pl-10" {...field} />
+                                <Mail className="absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B6475]" />
+                                <Input placeholder="business@example.com" className="ps-10" {...field} />
                               </div>
                             </FormControl>
                             <FormDescription>
@@ -344,8 +345,8 @@ export default function BusinessClaim() {
                             <FormLabel>Business Phone</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B6475]" />
-                                <Input placeholder={`${country.phonePrefix} XX XXX XXXX`} className="pl-10" {...field} />
+                                <Phone className="absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B6475]" />
+                                <Input placeholder={tx("{0} XX XXX XXXX", country.phonePrefix)} className="ps-10" {...field} />
                               </div>
                             </FormControl>
                             <FormDescription>
@@ -366,8 +367,8 @@ export default function BusinessClaim() {
                           <FormLabel>Your Position/Title</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B6475]" />
-                              <Input placeholder="e.g., CEO, Manager, Director" className="pl-10" {...field} />
+                              <User className="absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#5B6475]" />
+                              <Input placeholder="e.g., CEO, Manager, Director" className="ps-10" {...field} />
                             </div>
                           </FormControl>
                           <FormDescription>
@@ -395,28 +396,28 @@ export default function BusinessClaim() {
                               defaultValue={field.value}
                               className="grid gap-3 mt-2"
                             >
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="business_email" id="email_verify" />
                                 <label htmlFor="email_verify" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Business Email Verification</div>
                                   <div className="text-sm text-[#4B5565]">Verify via official business email</div>
                                 </label>
                               </div>
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="business_phone" id="phone_verify" />
                                 <label htmlFor="phone_verify" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Phone Verification</div>
                                   <div className="text-sm text-[#4B5565]">Verify via business phone number</div>
                                 </label>
                               </div>
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="business_documents" id="doc_verify" />
                                 <label htmlFor="doc_verify" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Business Documents</div>
                                   <div className="text-sm text-[#4B5565]">Provide business registration documents</div>
                                 </label>
                               </div>
-                              <div className="flex items-center space-x-2 p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
+                              <div className="flex items-center space-x-2 rtl:space-x-reverse p-4 border border-[#DDE1E8] rounded-2xl bg-white hover:border-[#0B6B2E] has-[[data-state=checked]]:border-[#0B6B2E] has-[[data-state=checked]]:bg-[#F2F9F4] transition-colors">
                                 <RadioGroupItem value="official_registration" id="reg_verify" />
                                 <label htmlFor="reg_verify" className="flex-1 cursor-pointer">
                                   <div className="font-medium">Official Registration</div>

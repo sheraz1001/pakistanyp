@@ -1,4 +1,6 @@
 import { country, localize } from "@shared/country";
+import { SECOND, langOfPath, pathInLang, stripLang } from "@shared/i18n";
+import { htmlLangAttributes } from "./i18n";
 /**
  * Builds the final SSR HTML document (added in the Oct 2026 SEO audit).
  *
@@ -139,7 +141,7 @@ export function composeSSRPage(template: string, input: ComposeInput): { status:
       }
     : { title: "", meta: "", link: "", script: "" };
 
-  let html = countryTemplate(template);
+  let html = htmlLangAttributes(countryTemplate(template), url);
 
   // 1. Page title wins over the template default
   const hasTitle = /<title[^>]*>[^<]+<\/title>/i.test(parts.title);
@@ -163,11 +165,22 @@ export function composeSSRPage(template: string, input: ComposeInput): { status:
   let extra = `<link rel="canonical" href="${canonical}" />\n<meta property="og:url" content="${canonical}" />`;
 
   // 4. 404 pages and private/utility pages must not be indexable
-  const pathOnly = new URL(url, SITE_ORIGIN).pathname;
+  const pathOnly = stripLang(new URL(url, SITE_ORIGIN).pathname);
   if (notFound || PRIVATE_PATH.test(pathOnly)) {
     html = removeTag(html, /<meta[^>]+name="robots"[^>]*>\s*/gi);
     parts.meta = parts.meta.replace(/<meta[^>]+name="robots"[^>]*>\s*/gi, "");
     extra = `<meta name="robots" content="noindex, follow" />`;
+  } else if (SECOND) {
+    // Each page exists in both languages
+    const en = canonicalFor(pathInLang(url, "en"));
+    const second = canonicalFor(pathInLang(url, SECOND.code));
+    parts.link = parts.link.replace(/<link[^>]+hreflang="[^"]*"[^>]*>\s*/gi, "");
+    html = removeTag(html, /<link[^>]+hreflang="[^"]*"[^>]*>\s*/gi);
+    extra += `\n<link rel="alternate" hreflang="en" href="${en}" />\n<link rel="alternate" hreflang="${SECOND.code}" href="${second}" />\n<link rel="alternate" hreflang="x-default" href="${en}" />`;
+  }
+  if (SECOND && langOfPath(new URL(url, SITE_ORIGIN).pathname) === SECOND.code) {
+    html = removeTag(html, /<meta[^>]+property="og:locale"[^>]*>\s*/gi);
+    extra += `\n<meta property="og:locale" content="${SECOND.locale.replace("-", "_")}" />`;
   }
 
   // 5. Never ship the Replit dev banner to production

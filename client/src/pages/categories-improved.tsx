@@ -13,6 +13,8 @@ import Footer from "@/components/footer";
 import SEO from "@/components/seo";
 import { Category } from "@shared/schema";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 const TILE_TINTS = [
   "bg-[#E8F4EC] text-[#0B6B2E]",
@@ -99,10 +101,7 @@ export default function CategoriesImproved() {
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-[#5B6475]">
               {(
-                <>
-              Discover businesses across {country.name} organized by comprehensive categories. 
-              Explore {totalCategories} categories covering all business sectors.
-                </>
+                <>{tj("Discover businesses across {0} organized by comprehensive categories. Explore {1} categories covering all business sectors.", country.name, totalCategories)}</>
               )}
             </p>
           </div>
@@ -122,10 +121,10 @@ export default function CategoriesImproved() {
           
         <div className="yp-card mb-6 flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#5B6475]" />
+            <Search className="absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#5B6475]" />
             <Input
               placeholder="Search categories and subcategories..."
-              className="h-12 pl-11"
+              className="h-12 ps-11"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -137,7 +136,7 @@ export default function CategoriesImproved() {
               onClick={() => setViewMode("expanded")}
               className="min-h-[44px] px-5"
             >
-              <Eye className="h-4 w-4 mr-2" />
+              <Eye className="h-4 w-4 me-2" />
               Expanded View
             </Button>
             <Button
@@ -145,7 +144,7 @@ export default function CategoriesImproved() {
               onClick={() => setViewMode("compact")}
               className="min-h-[44px] px-5"
             >
-              <List className="h-4 w-4 mr-2" />
+              <List className="h-4 w-4 me-2" />
               Compact View
             </Button>
           </div>
@@ -189,12 +188,8 @@ export default function CategoriesImproved() {
                                   {category.name}
                                 </h2>
                                 <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                                  <span className="yp-tag yp-tag-green">
-                                    {category.businessCount || 0} businesses
-                                  </span>
-                                  <span className="yp-tag">
-                                    {category.subcategories.length} subcategories
-                                  </span>
+                                  <span className="yp-tag yp-tag-green">{tj("{0} businesses", category.businessCount || 0)}</span>
+                                  <span className="yp-tag">{tj("{0} subcategories", category.subcategories.length)}</span>
                                   {category.metaTitle && (
                                     <span className="yp-tag">SEO Optimized</span>
                                   )}
@@ -235,9 +230,7 @@ export default function CategoriesImproved() {
                         <div className="px-5 pb-6 sm:px-6">
                           {category.subcategories.length > 0 ? (
                             <div className="border-t border-[#EEF0F4] pt-5">
-                              <h3 className="yp-label mb-3">
-                                Subcategories ({category.subcategories.length})
-                              </h3>
+                              <h3 className="yp-label mb-3">{tj("Subcategories ({0})", category.subcategories.length)}</h3>
                               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                                 {category.subcategories.map((subcategory) => (
                                   <div 
@@ -258,7 +251,7 @@ export default function CategoriesImproved() {
                                       <ChevronRight className="h-4 w-4 flex-none text-[#0B6B2E]" />
                                     </div>
                                     <div className="flex items-center gap-2 text-[13px] text-[#5B6475]">
-                                      <span>{subcategory.businessCount || 0} businesses</span>
+                                      <span>{tj("{0} businesses", subcategory.businessCount || 0)}</span>
                                       {subcategory.metaTitle && (
                                         <TrendingUp className="h-3 w-3 text-[#0B6B2E]" />
                                       )}
@@ -341,22 +334,22 @@ export default function CategoriesImproved() {
                   className="min-h-[44px] w-full justify-start"
                   onClick={() => setLocation(country.regionsPath)}
                 >
-                  <MapPin className="h-4 w-4 mr-2" />
-                  {`Browse by ${country.regionTerm.plural}`}
+                  <MapPin className="h-4 w-4 me-2" />
+                  {tx("Browse by {0}", country.regionTerm.plural)}
                 </Button>
                 <Button 
                   variant="outline" 
                   className="min-h-[44px] w-full justify-start"
                   onClick={() => setLocation("/search")}
                 >
-                  <Search className="h-4 w-4 mr-2" />
+                  <Search className="h-4 w-4 me-2" />
                   Advanced Search
                 </Button>
                 <Button 
                   className="min-h-[44px] w-full justify-start bg-[#E3A82B] text-[#141414] hover:bg-[#D19719]"
                   onClick={() => setLocation("/add-business-enhanced")}
                 >
-                  <Building2 className="h-4 w-4 mr-2" />
+                  <Building2 className="h-4 w-4 me-2" />
                   Add Your Business
                 </Button>
               </div>

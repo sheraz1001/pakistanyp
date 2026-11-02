@@ -37,6 +37,8 @@ import {
   Lock,
   MapPin
 } from "lucide-react";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 export default function Pricing() {
   const { data: liveStats } = useQuery<any>({ queryKey: ['/api/stats'] });
@@ -283,9 +285,7 @@ export default function Pricing() {
                 {plan.price > 0 && isYearly && plan.discount && (
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-[#5B6475] line-through text-sm">{plan.price}{" " + country.currency}</span>
-                    <span className="yp-pill bg-[#E8F4EC] text-[#05501F]">
-                      Save {plan.discount}%
-                    </span>
+                    <span className="yp-pill bg-[#E8F4EC] text-[#05501F]">{tj("Save {0}%", plan.discount)}</span>
                   </div>
                 )}
                 <div className="yp-label mt-3">{plan.limits}</div>
@@ -299,9 +299,7 @@ export default function Pricing() {
                   </li>
                 ))}
                 {plan.features.length > 6 && (
-                  <li className="text-sm text-[#5B6475] pl-8">
-                    +{plan.features.length - 6} more features
-                  </li>
+                  <li className="text-sm text-[#5B6475] ps-8">{tj("+{0} more features", plan.features.length - 6)}</li>
                 )}
               </ul>
 
@@ -311,7 +309,7 @@ export default function Pricing() {
                 onClick={() => handlePlanSelect(plan.id)}
               >
                 {plan.price === 0 ? 'Start Free' : 'Get Started'}
-                <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
+                <ArrowRight className="w-4 h-4 ms-2" aria-hidden="true" />
               </Button>
             </div>
           ))}
@@ -324,13 +322,13 @@ export default function Pricing() {
           <span className="yp-label">{localize("Why PakistanYP")}</span>
           <h2 className="yp-h2 mt-2 mb-3">{localize("Why Choose PakistanYP?")}</h2>
           <p className="yp-lead max-w-3xl">
-            {`Built specifically for the ${country.adjective} market with features that help your business succeed`}
+            {tx("Built specifically for the {0} market with features that help your business succeed", country.adjective)}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            { icon: Globe, tile: 'bg-[#E8F4EC] text-[#0B6B2E]', title: localize('Pakistani-Focused Platform'), text: `Built specifically for the ${country.adjective} market with local expertise and Urdu and regional language support` },
+            { icon: Globe, tile: 'bg-[#E8F4EC] text-[#0B6B2E]', title: localize('Pakistani-Focused Platform'), text: tx("Built specifically for the {0} market with local expertise and Urdu and regional language support", country.adjective) },
             { icon: BarChart3, tile: 'bg-[#E6F6F1] text-[#047857]', title: 'Advanced Analytics', text: 'Detailed insights into your business performance with real-time analytics and reporting' },
             { icon: Headphones, tile: 'bg-[#FFF4E0] text-[#B45309]', title: '24/7 Support', text: 'Dedicated support team available around the clock to help your business succeed' },
           ].map((item) => (

@@ -7,6 +7,7 @@ import { Sparkles, Loader2, Lightbulb, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
 
 interface AutocompleteSuggestion {
   suggestions: string[];
@@ -93,7 +94,7 @@ export function AIAutocomplete({
       if (data.suggestions && data.suggestions.length > 0) {
         toast({
           title: "✨ AI Suggestions Ready",
-          description: `Generated ${data.suggestions.length} suggestions for ${getFieldDisplayName(field)}`,
+          description: tx("Generated {0} suggestions for {1}", data.suggestions.length, getFieldDisplayName(field)),
         });
       } else {
         // Show fallback suggestions even if we didn't get any from AI
@@ -229,11 +230,11 @@ export function AIAutocomplete({
         className="mb-2 w-full sm:w-auto min-h-[44px] rounded-xl bg-[#F2F9F4] hover:bg-[#E8F4EC] border-[#CFE8D8] hover:border-[#0B6B2E] text-[#05501F] transition-colors"
       >
         {isLoading ? (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          <Loader2 className="w-4 h-4 me-2 animate-spin" />
         ) : (
-          <Sparkles className="w-4 h-4 mr-2" />
+          <Sparkles className="w-4 h-4 me-2" />
         )}
-{isLoading ? "Generating Suggestions..." : `Get AI Suggestions for ${getFieldDisplayName(field)}`}
+{isLoading ? "Generating Suggestions..." : tx("Get AI Suggestions for {0}", getFieldDisplayName(field))}
       </Button>
 
       {isOpen && (suggestions.length > 0 || insights) && (
@@ -244,7 +245,7 @@ export function AIAutocomplete({
               AI-Generated Suggestions
             </CardTitle>
             {insights && (
-              <CardDescription className="text-sm bg-blue-50 p-3 rounded-md border-l-4 border-blue-300">
+              <CardDescription className="text-sm bg-blue-50 p-3 rounded-md border-s-4 border-blue-300">
                 <div className="flex items-start gap-2">
                   <Lightbulb className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                   <span>{insights}</span>

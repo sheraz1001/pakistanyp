@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { FadeIn } from "@/components/ui/fade-in";
 import { AnimatedCard } from "@/components/ui/animated-card";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface MascotCharacter {
   id: string;
@@ -216,7 +218,7 @@ function MascotGuideDialog({ plan, trigger }: MascotGuideDialogProps) {
   
   const steps = [
     {
-      title: `Meet ${mascot.name}!`,
+      title: tx("Meet {0}!", mascot.name),
       content: (
         <div className="text-center space-y-4">
           <div className={`text-6xl`}>{mascot.emoji}</div>
@@ -228,7 +230,7 @@ function MascotGuideDialog({ plan, trigger }: MascotGuideDialogProps) {
       )
     },
     {
-      title: `${plan.displayName} Features`,
+      title: tx("{0} Features", plan.displayName),
       content: (
         <div className="space-y-4">
           <div className={`text-3xl text-center`}>{mascot.emoji}</div>
@@ -244,7 +246,7 @@ function MascotGuideDialog({ plan, trigger }: MascotGuideDialogProps) {
       )
     },
     {
-      title: `${mascot.name}'s Pro Tips`,
+      title: tx("{0}'s Pro Tips", mascot.name),
       content: (
         <div className="space-y-4">
           <div className={`text-3xl text-center`}>{mascot.emoji}</div>
@@ -300,9 +302,7 @@ function MascotGuideDialog({ plan, trigger }: MascotGuideDialogProps) {
               Previous
             </Button>
             
-            <span className="text-xs text-muted-foreground self-center">
-              {currentStep + 1} of {steps.length}
-            </span>
+            <span className="text-xs text-muted-foreground self-center">{tj("{0} of {1}", currentStep + 1, steps.length)}</span>
             
             <Button 
               onClick={nextStep}
@@ -310,7 +310,7 @@ function MascotGuideDialog({ plan, trigger }: MascotGuideDialogProps) {
               size="sm"
               className={`${mascot.gradient} text-white`}
             >
-              Next <ArrowRight className="w-4 h-4 ml-1" />
+              Next <ArrowRight className="w-4 h-4 ms-1" />
             </Button>
           </div>
         </div>
@@ -324,17 +324,15 @@ function MascotPlanCard({ plan }: { plan: SubscriptionPlan }) {
   
   return (
     <AnimatedCard className={`relative overflow-hidden border-2 hover:border-opacity-60 transition-all duration-300`}>
-      <div className={`absolute top-0 left-0 right-0 h-1 ${mascot.gradient}`} />
+      <div className={`absolute top-0 start-0 end-0 h-1 ${mascot.gradient}`} />
       
       <CardHeader className="text-center space-y-2">
         <div className="text-4xl animate-pulse">{mascot.emoji}</div>
         <CardTitle className={`text-xl ${mascot.color}`}>{plan.displayName}</CardTitle>
         <div className="text-2xl font-bold">
-          {plan.price === 0 ? "Free" : `${plan.currency} ${plan.monthlyPrice}/mo`}
+          {plan.price === 0 ? "Free" : tx("{0} {1}/mo", plan.currency, plan.monthlyPrice)}
         </div>
-        <CardDescription className="text-xs italic">
-          "Meet {mascot.name} - {mascot.personality}"
-        </CardDescription>
+        <CardDescription className="text-xs italic">{tj("\"Meet {0} - {1}\"", mascot.name, mascot.personality)}</CardDescription>
       </CardHeader>
       
       <CardContent className="space-y-4">
@@ -362,9 +360,7 @@ function MascotPlanCard({ plan }: { plan: SubscriptionPlan }) {
               size="sm" 
               className={`w-full hover:${mascot.gradient} hover:text-white transition-all duration-300`}
             >
-              <Heart className="w-4 h-4 mr-2" />
-              Meet {mascot.name}
-            </Button>
+              <Heart className="w-4 h-4 me-2" />{tj("Meet {0}", mascot.name)}</Button>
           }
         />
       </CardContent>

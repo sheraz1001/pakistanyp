@@ -28,10 +28,10 @@
 .locality-page h3 { overflow-wrap: anywhere; }
 .locality-search-panel p { font-size: .875rem; color: var(--locality-muted); margin-top: .3rem; }
 .locality-search { position: relative; width: min(100%, 390px); }
-.locality-search > svg { position: absolute; left: 14px; top: 15px; width: 18px; height: 18px; color: var(--locality-muted); pointer-events: none; }
+.locality-search > svg { position: absolute; inset-inline-start: 14px; top: 15px; width: 18px; height: 18px; color: var(--locality-muted); pointer-events: none; }
 .locality-search input { width: 100%; height: 48px; padding: .6rem 2.8rem .6rem 2.6rem; border: 1px solid #DDE1E8; border-radius: 12px; background: #FFFFFF; font-size: 1rem; color: #0A0A0A; }
 .locality-search input:focus { outline: 3px solid #BFE3CD; border-color: var(--locality-green); }
-.locality-search button { position: absolute; right: 6px; top: 6px; width: 36px; height: 36px; display: grid; place-items: center; color: var(--locality-muted); border-radius: 10px; }
+.locality-search button { position: absolute; inset-inline-end: 6px; top: 6px; width: 36px; height: 36px; display: grid; place-items: center; color: var(--locality-muted); border-radius: 10px; }
 .locality-search button:hover { background: #F1F2F6; }
 .locality-groups { display: grid; gap: 1.5rem; }
 .locality-group { border: 1px solid var(--locality-line); background: var(--locality-paper); border-radius: 20px; overflow: hidden; }
@@ -58,7 +58,7 @@
 .locality-panel dl { margin-bottom: 1.25rem; }
 .locality-panel dl > div { display: grid; grid-template-columns: 1fr 1.2fr; gap: .75rem; padding-block: .7rem; border-bottom: 1px solid #EEF0F4; font-size: .875rem; }
 .locality-panel dt { color: var(--locality-muted); }
-.locality-panel dd { text-align: right; font-weight: 600; overflow-wrap: anywhere; }
+.locality-panel dd { text-align: end; font-weight: 600; overflow-wrap: anywhere; }
 .locality-owner { background: #F2F9F4; border-color: #CFE8D8; }
 .locality-button { display: inline-flex; justify-content: center; align-items: center; gap: .5rem; padding: .7rem 1rem; min-height: 44px; border-radius: 12px; border: 1px solid transparent; background: var(--locality-green); color: #FFFFFF; font-size: .875rem; font-weight: 600; text-align: center; line-height: 1.5; }
 .locality-button svg { width: 16px; height: 16px; flex-shrink: 0; }
@@ -101,7 +101,7 @@
 /* Province > City > Locality */
 .locality-children { margin-bottom: 2.5rem; }
 .locality-children-search { width: 100%; margin: .25rem 0 1rem; }
-.locality-children-search input { padding-left: 1rem; }
+.locality-children-search input { padding-inline-start: 1rem; }
 .locality-children-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
 .locality-child { display: flex; align-items: flex-start; gap: .55rem; min-height: 56px; padding: .65rem .8rem; border: 1px solid var(--locality-line); border-radius: 12px; background: #FFFFFF; }
 .locality-child > svg { width: 16px; height: 16px; margin-top: .15rem; flex-shrink: 0; color: var(--locality-green); }

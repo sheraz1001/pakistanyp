@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Plus, X, Search, Crown, ChevronRight, ChevronDown } from "lucide-react";
 import { getCategoryIcon } from "@/lib/category-icons-clean";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -164,7 +165,7 @@ export function ImprovedCategorySelector({
                     <span>{category.name}</span>
                     <button
                       onClick={() => handleCategorySelect(category.id)}
-                      className="ml-1 hover:bg-white/20 rounded-full p-0.5"
+                      className="ms-1 hover:bg-white/20 rounded-full p-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -204,7 +205,7 @@ export function ImprovedCategorySelector({
             </div>
             <div className="mt-3 pt-3 border-t border-[#F5DDB0]">
               <Button size="sm" variant="outline" className="w-full text-[#B45309] border-[#F5DDB0] hover:bg-[#FFF4E0]">
-                <Crown className="w-4 h-4 mr-2" />
+                <Crown className="w-4 h-4 me-2" />
                 Upgrade for Unlimited Categories
               </Button>
             </div>
@@ -217,12 +218,12 @@ export function ImprovedCategorySelector({
         <CardHeader>
           <CardTitle className="text-lg">Browse Categories</CardTitle>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               placeholder="Search categories..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="ps-10"
             />
           </div>
         </CardHeader>
@@ -240,7 +241,7 @@ export function ImprovedCategorySelector({
                   <div className="flex items-center p-3 hover:bg-gray-50">
                     <button
                       onClick={() => toggleExpanded(main.id)}
-                      className="mr-2 p-1 hover:bg-gray-200 rounded"
+                      className="me-2 p-1 hover:bg-gray-200 rounded"
                     >
                       {isMainExpanded ? (
                         <ChevronDown className="w-4 h-4" />
@@ -251,7 +252,7 @@ export function ImprovedCategorySelector({
                     
                     <button
                       onClick={() => canSelectMain && handleCategorySelect(main.id)}
-                      className={`flex items-center gap-3 flex-1 text-left p-2 rounded-lg transition-all ${
+                      className={`flex items-center gap-3 flex-1 text-start p-2 rounded-lg transition-all ${
                         isMainSelected 
                           ? 'bg-blue-100 border-2 border-blue-300' 
                           : canSelectMain 
@@ -264,7 +265,7 @@ export function ImprovedCategorySelector({
                       <div className="flex-1">
                         <div className="font-medium">{main.name}</div>
                         {main.businessCount && (
-                          <div className="text-sm text-gray-500">{main.businessCount} businesses</div>
+                          <div className="text-sm text-gray-500">{tj("{0} businesses", main.businessCount)}</div>
                         )}
                       </div>
                       {isMainSelected && (
@@ -285,13 +286,13 @@ export function ImprovedCategorySelector({
                         const canSelectSub = isPremium || canAddSub || isSubSelected;
                         
                         return (
-                          <div key={sub.id} className="ml-6 border-l-2 border-gray-200">
+                          <div key={sub.id} className="ms-6 border-s-2 border-gray-200">
                             {/* Subcategory */}
                             <div className="flex items-center p-2 hover:bg-gray-100">
                               {specialized.length > 0 && (
                                 <button
                                   onClick={() => toggleExpanded(sub.id)}
-                                  className="mr-2 p-1 hover:bg-gray-200 rounded"
+                                  className="me-2 p-1 hover:bg-gray-200 rounded"
                                 >
                                   {isSubExpanded ? (
                                     <ChevronDown className="w-3 h-3" />
@@ -303,7 +304,7 @@ export function ImprovedCategorySelector({
                               
                               <button
                                 onClick={() => canSelectSub && handleCategorySelect(sub.id)}
-                                className={`flex items-center gap-3 flex-1 text-left p-2 rounded-lg transition-all ${
+                                className={`flex items-center gap-3 flex-1 text-start p-2 rounded-lg transition-all ${
                                   isSubSelected 
                                     ? 'bg-green-100 border-2 border-green-300' 
                                     : canSelectSub 
@@ -316,7 +317,7 @@ export function ImprovedCategorySelector({
                                 <div className="flex-1">
                                   <div className="font-medium text-sm">{sub.name}</div>
                                   {sub.businessCount && (
-                                    <div className="text-xs text-gray-500">{sub.businessCount} businesses</div>
+                                    <div className="text-xs text-gray-500">{tj("{0} businesses", sub.businessCount)}</div>
                                   )}
                                 </div>
                                 {isSubSelected && (
@@ -329,7 +330,7 @@ export function ImprovedCategorySelector({
 
                             {/* Specialized Categories */}
                             {isSubExpanded && specialized.length > 0 && (
-                              <div className="ml-6 border-l-2 border-gray-200">
+                              <div className="ms-6 border-s-2 border-gray-200">
                                 {specialized.map((spec) => {
                                   const isSpecSelected = selectedCategories.includes(spec.id);
                                   const SpecIconComponent = getCategoryIcon(spec.name);
@@ -338,7 +339,7 @@ export function ImprovedCategorySelector({
                                     <button
                                       key={spec.id}
                                       onClick={() => handleCategorySelect(spec.id)}
-                                      className={`flex items-center gap-3 w-full text-left p-2 m-1 rounded-lg transition-all ${
+                                      className={`flex items-center gap-3 w-full text-start p-2 m-1 rounded-lg transition-all ${
                                         isSpecSelected 
                                           ? 'bg-purple-100 border-2 border-purple-300' 
                                           : 'hover:bg-purple-50 border-2 border-transparent'
@@ -348,7 +349,7 @@ export function ImprovedCategorySelector({
                                       <div className="flex-1">
                                         <div className="font-medium text-sm">{spec.name}</div>
                                         {spec.businessCount && (
-                                          <div className="text-xs text-gray-500">{spec.businessCount} businesses</div>
+                                          <div className="text-xs text-gray-500">{tj("{0} businesses", spec.businessCount)}</div>
                                         )}
                                       </div>
                                       {isSpecSelected && (

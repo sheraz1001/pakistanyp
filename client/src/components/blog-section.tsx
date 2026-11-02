@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ function formatDate(value?: string) {
   if (!value) return "";
   const d = new Date(value);
   if (isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  return d.toLocaleDateString(dateLocale("en-GB"), { day: "numeric", month: "short", year: "numeric" });
 }
 
 export default function BlogSection() {

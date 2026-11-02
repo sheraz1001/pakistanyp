@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +26,8 @@ import {
   TrendingUp,
   DollarSign
 } from "lucide-react";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 type SubscriptionPlan = {
   id: number;
@@ -271,7 +274,7 @@ export default function SubscriptionManagement() {
           <Label>Features</Label>
           <div className="space-y-2">
             {formData.features.map((feature, index) => (
-              <div key={index} className="flex items-center space-x-2">
+              <div key={index} className="flex items-center space-x-2 rtl:space-x-reverse">
                 <Input value={feature} readOnly />
                 <Button
                   type="button"
@@ -283,7 +286,7 @@ export default function SubscriptionManagement() {
                 </Button>
               </div>
             ))}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               <Input
                 value={newFeature}
                 onChange={(e) => setNewFeature(e.target.value)}
@@ -323,7 +326,7 @@ export default function SubscriptionManagement() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 rtl:space-x-reverse">
           <Switch
             id="isActive"
             checked={formData.isActive}
@@ -340,7 +343,7 @@ export default function SubscriptionManagement() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(dateLocale('en-US'), {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -366,7 +369,7 @@ export default function SubscriptionManagement() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               <Users className="w-5 h-5 text-blue-500" />
               <div>
                 <p className="text-sm text-gray-600">Total Subscribers</p>
@@ -378,11 +381,11 @@ export default function SubscriptionManagement() {
         
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               <DollarSign className="w-5 h-5 text-green-500" />
               <div>
                 <p className="text-sm text-gray-600">Monthly Revenue</p>
-                <p className="text-2xl font-bold">PKR {stats.monthlyRevenue || 0}</p>
+                <p className="text-2xl font-bold">{tj("PKR {0}", stats.monthlyRevenue || 0)}</p>
               </div>
             </div>
           </CardContent>
@@ -390,7 +393,7 @@ export default function SubscriptionManagement() {
         
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               <TrendingUp className="w-5 h-5 text-purple-500" />
               <div>
                 <p className="text-sm text-gray-600">Active Plans</p>
@@ -402,7 +405,7 @@ export default function SubscriptionManagement() {
         
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
               <Crown className="w-5 h-5 text-[#B45309]" />
               <div>
                 <p className="text-sm text-gray-600">Premium Users</p>
@@ -425,7 +428,7 @@ export default function SubscriptionManagement() {
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
-                  <Plus className="w-4 h-4 mr-2" />
+                  <Plus className="w-4 h-4 me-2" />
                   Create Plan
                 </Button>
               </DialogTrigger>
@@ -448,7 +451,7 @@ export default function SubscriptionManagement() {
                   <Card key={plan.id} className={`${plan.isActive ? '' : 'opacity-60'}`}>
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 rtl:space-x-reverse">
                           <Icon className="w-5 h-5 text-blue-500" />
                           <CardTitle className="text-lg">{plan.displayName}</CardTitle>
                         </div>
@@ -463,12 +466,12 @@ export default function SubscriptionManagement() {
                       
                       <div className="text-center p-3 bg-gray-50 rounded-lg">
                         <div className="text-2xl font-bold text-blue-600">
-                          {plan.monthlyPrice === 0 ? "Free" : `PKR ${plan.monthlyPrice}`}
+                          {plan.monthlyPrice === 0 ? "Free" : tx("PKR {0}", plan.monthlyPrice)}
                         </div>
                         <div className="text-sm text-gray-500">per month</div>
                       </div>
 
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-2 rtl:space-x-reverse">
                         <Dialog open={isEditDialogOpen && selectedPlan?.id === plan.id} onOpenChange={setIsEditDialogOpen}>
                           <DialogTrigger asChild>
                             <Button
@@ -477,7 +480,7 @@ export default function SubscriptionManagement() {
                               className="flex-1"
                               onClick={() => setSelectedPlan(plan)}
                             >
-                              <Edit2 className="w-4 h-4 mr-2" />
+                              <Edit2 className="w-4 h-4 me-2" />
                               Edit
                             </Button>
                           </DialogTrigger>
@@ -554,7 +557,7 @@ export default function SubscriptionManagement() {
                         <TableCell>
                           <div className="text-sm">
                             <p>{formatDate(subscription.currentPeriodStart)}</p>
-                            <p className="text-gray-500">to {formatDate(subscription.currentPeriodEnd)}</p>
+                            <p className="text-gray-500">{tj("to {0}", formatDate(subscription.currentPeriodEnd))}</p>
                           </div>
                         </TableCell>
                         <TableCell>

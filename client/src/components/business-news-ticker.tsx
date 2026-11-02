@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight } from 'lucide-react';
 
@@ -11,7 +12,7 @@ interface NewsItem {
 }
 
 const fmt = (d: string) => {
-  try { return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); } catch { return ''; }
+  try { return new Date(d).toLocaleDateString(dateLocale('en-GB'), { day: 'numeric', month: 'short' }); } catch { return ''; }
 };
 
 /** Home page news ticker: latest headlines scroll continuously (pauses on hover/focus; static with reduced motion). */
@@ -47,7 +48,7 @@ export default function BusinessNewsTicker() {
       key={`${copy ? 'b' : 'a'}-${item.id}`}
       tabIndex={copy ? -1 : undefined}
       href={item.slug ? `/news/${item.slug}` : '/news'}
-      className="ticker-item inline-flex shrink-0 items-center gap-2.5 pr-10 text-sm text-[#0A0A0A] hover:text-[#0B6B2E] focus-visible:text-[#0B6B2E] md:text-[15px]"
+      className="ticker-item inline-flex shrink-0 items-center gap-2.5 pe-10 text-sm text-[#0A0A0A] hover:text-[#0B6B2E] focus-visible:text-[#0B6B2E] md:text-[15px]"
     >
       <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#0B6B2E]" aria-hidden="true" />
       {item.category && <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#5B6475]">{item.category}</span>}
@@ -67,8 +68,8 @@ export default function BusinessNewsTicker() {
             <div className="flex">{renderItems(false)}</div>
             <div className="flex" aria-hidden="true">{renderItems(true)}</div>
           </div>
-          <span className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-white to-transparent" aria-hidden="true" />
-          <span className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent" aria-hidden="true" />
+          <span className="pointer-events-none absolute inset-y-0 start-0 w-6 bg-gradient-to-r from-white to-transparent" aria-hidden="true" />
+          <span className="pointer-events-none absolute inset-y-0 end-0 w-10 bg-gradient-to-l from-white to-transparent" aria-hidden="true" />
         </div>
         <a href="/news" className="inline-flex flex-shrink-0 items-center gap-1 text-sm font-semibold text-[#0B6B2E] hover:text-[#05501F]">
           <span className="hidden sm:inline">All news</span>

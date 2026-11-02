@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ChevronUp, Link2, Facebook, Linkedin, BookOpen } from "lucide-react";
@@ -79,7 +80,7 @@ export function formatPostDate(value?: string | null): string {
   if (!value) return "";
   const d = new Date(value);
   if (isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: country.timezone });
+  return d.toLocaleDateString(dateLocale("en-US"), { year: "numeric", month: "long", day: "numeric", timeZone: country.timezone });
 }
 
 export function getAuthorName(post: any): string {
@@ -337,7 +338,7 @@ const ScrollToTop = () => {
       type="button"
       onClick={scrollToTop}
       aria-label="Back to top"
-      className="fixed bottom-8 right-8 z-50 grid h-11 w-11 place-items-center rounded-full border border-[#E3E6EC] bg-white text-[#0A0A0A] shadow-[0_12px_32px_-16px_rgba(10,10,10,.35)] hover:border-[#0B6B2E] hover:text-[#0B6B2E]"
+      className="fixed bottom-8 end-8 z-50 grid h-11 w-11 place-items-center rounded-full border border-[#E3E6EC] bg-white text-[#0A0A0A] shadow-[0_12px_32px_-16px_rgba(10,10,10,.35)] hover:border-[#0B6B2E] hover:text-[#0B6B2E]"
     >
       <ChevronUp className="h-5 w-5" />
     </button>
@@ -441,7 +442,7 @@ export default function CompactBlogPost({ post, onBack, categoryName, related = 
         </div>
         <header className="flex flex-col items-center gap-5 text-center">
           <span className="yp-label !text-[#0B6B2E]">
-            {post.isFeatured && <span className="mr-2 text-[#D71920]">Featured ·</span>}
+            {post.isFeatured && <span className="me-2 text-[#D71920]">Featured ·</span>}
             {meta}
           </span>
           <h1 className="m-0 text-[clamp(36px,5vw,58px)] font-bold leading-[1.05] tracking-[-0.045em] text-[#0A0A0A]">

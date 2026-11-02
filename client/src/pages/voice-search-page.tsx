@@ -9,6 +9,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import VoiceSearch from '@/components/voice-search';
 import { country, localize } from '@shared/country';
+import { t as tx } from "@shared/i18n";
 
 // Main city of each region, for example queries outside Pakistan
 const cities = country.regions.map((r) => r.cities?.[0]?.name ?? r.name);
@@ -142,7 +143,7 @@ export default function VoiceSearchPage() {
               </h1>
               
               <p className="yp-lead mb-8 max-w-3xl mx-auto">
-                {`Simply speak to discover businesses across ${country.name}. Our AI-powered voice search understands natural language and delivers instant, accurate results from our comprehensive business directory.`}
+                {tx("Simply speak to discover businesses across {0}. Our AI-powered voice search understands natural language and delivers instant, accurate results from our comprehensive business directory.", country.name)}
               </p>
               
               <div className="flex flex-wrap justify-center gap-4 mb-8">
@@ -222,7 +223,7 @@ export default function VoiceSearchPage() {
                 Voice Search Examples
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                {`Here are some examples of how you can use voice search to find businesses across ${country.name}`}
+                {tx("Here are some examples of how you can use voice search to find businesses across {0}", country.name)}
               </p>
             </div>
             
@@ -243,7 +244,7 @@ export default function VoiceSearchPage() {
                           onClick={() => handleVoiceSearch(example)}
                         >
                           <div className="flex items-center">
-                            <Mic className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
+                            <Mic className="h-4 w-4 text-blue-500 me-2 flex-shrink-0" />
                             <span className="text-sm text-gray-700">"{example}"</span>
                           </div>
                         </div>
@@ -271,7 +272,7 @@ export default function VoiceSearchPage() {
                 className="min-h-[52px]"
                 onClick={() => document.getElementById('voice-search-section')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <Mic className="mr-2 h-5 w-5" />
+                <Mic className="me-2 h-5 w-5" />
                 Start Voice Search
               </Button>
               <Button 

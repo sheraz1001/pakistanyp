@@ -1,3 +1,4 @@
+import { isSecondLang, num, t } from "@shared/i18n";
 /**
  * Province > City > Locality helpers.
  *
@@ -71,7 +72,8 @@ export function singleCityOf(cities: CityNode[]): CityNode | null {
   return cities.length === 1 && cities[0].localities.length > 0 ? cities[0] : null;
 }
 
-export const plural = (n: number, one: string, many: string) => `${n.toLocaleString()} ${n === 1 ? one : many}`;
+export const plural = (n: number, one: string, many: string) =>
+  isSecondLang() ? t(`{0} ${n === 1 ? one : many}`, num(n)) : `${n.toLocaleString()} ${n === 1 ? one : many}`;
 
 /** A city's own page: "sindh/karachi" -> "/cities/karachi". */
 export const cityUrl = (city: Pick<Place, "slug">) => `/cities/${city.slug.split("/").pop()}`;

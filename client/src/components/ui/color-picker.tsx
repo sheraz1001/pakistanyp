@@ -51,7 +51,7 @@ export function ColorPicker({ value, onChange, label, className }: ColorPickerPr
               style={{ backgroundColor: value }}
             />
             <span className="text-sm font-mono">{value}</span>
-            <Palette className="w-4 h-4 ml-auto" />
+            <Palette className="w-4 h-4 ms-auto" />
           </Button>
         </PopoverTrigger>
         

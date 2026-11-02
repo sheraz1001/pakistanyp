@@ -20,7 +20,7 @@ export function LoadingDots({ size = "md", color = "primary", className }: Loadi
   };
 
   return (
-    <div className={cn("flex space-x-1 items-center justify-center", className)}>
+    <div className={cn("flex space-x-1 rtl:space-x-reverse items-center justify-center", className)}>
       {[0, 1, 2].map((i) => (
         <div
           key={i}

@@ -1,3 +1,4 @@
+import { dateLocale } from "@shared/i18n";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +33,7 @@ import {
   Filter
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Cell, AreaChart, Area } from 'recharts';
+import { tj } from "@/i18n-jsx/tj";
 
 interface BusinessInsightsProps {
   businessId?: number;
@@ -216,14 +218,14 @@ function MetricCard({ title, value, previousValue, trend, icon, color, suffix = 
           </p>
           <div className="flex items-center text-sm">
             {isPositive ? (
-              <ArrowUpRight className="h-4 w-4 text-green-500 mr-1" />
+              <ArrowUpRight className="h-4 w-4 text-green-500 me-1" />
             ) : (
-              <ArrowDownRight className="h-4 w-4 text-red-500 mr-1" />
+              <ArrowDownRight className="h-4 w-4 text-red-500 me-1" />
             )}
             <span className={isPositive ? "text-green-600" : "text-red-600"}>
               {Math.abs(trend)}%
             </span>
-            <span className="text-gray-500 ml-2">from last period</span>
+            <span className="text-gray-500 ms-2">from last period</span>
           </div>
         </div>
       </CardContent>
@@ -254,9 +256,9 @@ function ViewsChart({ data }: { data: any[] }) {
         <ResponsiveContainer width="100%" height={200}>
           <AreaChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" tickFormatter={(value) => new Date(value).toLocaleDateString()} />
+            <XAxis dataKey="date" tickFormatter={(value) => new Date(value).toLocaleDateString(dateLocale())} />
             <YAxis />
-            <Tooltip labelFormatter={(value) => new Date(value).toLocaleDateString()} />
+            <Tooltip labelFormatter={(value) => new Date(value).toLocaleDateString(dateLocale())} />
             <Area type="monotone" dataKey="views" stackId="1" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.6} />
             <Area type="monotone" dataKey="clicks" stackId="1" stroke="#10B981" fill="#10B981" fillOpacity={0.6} />
           </AreaChart>
@@ -294,7 +296,7 @@ function RatingsDistribution({ data }: { data: any[] }) {
               <div className="flex-1">
                 <Progress value={item.percentage} className="h-2" />
               </div>
-              <div className="text-sm text-gray-600 w-12 text-right">
+              <div className="text-sm text-gray-600 w-12 text-end">
                 {item.count}
               </div>
             </div>
@@ -596,7 +598,7 @@ function LocationAnalytics({ data }: { data: any[] }) {
                 <div className="w-20">
                   <Progress value={location.percentage} className="h-2" />
                 </div>
-                <span className="text-sm text-gray-600 w-12 text-right">{location.visits}</span>
+                <span className="text-sm text-gray-600 w-12 text-end">{location.visits}</span>
               </div>
             </div>
           ))}
@@ -693,9 +695,9 @@ function CompetitorAnalysis({ data }: { data: any }) {
             <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
               <div>
                 <h4 className="font-medium">{competitor.name}</h4>
-                <p className="text-sm text-gray-600">{competitor.distance} away</p>
+                <p className="text-sm text-gray-600">{tj("{0} away", competitor.distance)}</p>
               </div>
-              <div className="text-right">
+              <div className="text-end">
                 <div className="font-medium">{competitor.score}%</div>
                 <div className="text-sm text-gray-600">Performance</div>
               </div>

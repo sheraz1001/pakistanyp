@@ -18,7 +18,7 @@ export function MobileNavigation() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 md:hidden shadow-lg">
+    <nav className="fixed bottom-0 start-0 end-0 bg-white border-t border-gray-200 z-40 md:hidden shadow-lg">
       <div className="grid grid-cols-5 h-16">
         {navigationItems.map((item) => {
           const Icon = item.icon;
@@ -38,7 +38,7 @@ export function MobileNavigation() {
             >
               <Icon className={cn("h-5 w-5 mb-1", isActive && "text-blue-600")} />
               {item.badge && (
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <div className="absolute -top-1 -end-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
               )}
               <span className="text-xs">{item.label}</span>
             </Link>
@@ -49,7 +49,7 @@ export function MobileNavigation() {
       {/* Add Business FAB for authenticated users */}
       {isAuthenticated && (
         <Link href="/pricing">
-          <div className="absolute -top-8 right-4 bg-blue-600 text-white rounded-full p-3 shadow-lg">
+          <div className="absolute -top-8 end-4 bg-blue-600 text-white rounded-full p-3 shadow-lg">
             <Building2 className="h-6 w-6" />
           </div>
         </Link>

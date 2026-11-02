@@ -23,6 +23,7 @@ import {
   X
 } from 'lucide-react';
 import { Link } from 'wouter';
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -235,8 +236,8 @@ export default function InteractiveCategoryHierarchy() {
     return (
       <div className="category-tree-node">
         <div 
-          className={`flex items-center py-2 px-3 hover:bg-gray-50 cursor-pointer border-l-2 transition-colors ${
-            selectedCategory?.id === category.id ? 'border-l-blue-500 bg-blue-50' : 'border-l-transparent'
+          className={`flex items-center py-2 px-3 hover:bg-gray-50 cursor-pointer border-s-2 transition-colors ${
+            selectedCategory?.id === category.id ? 'border-s-blue-500 bg-blue-50' : 'border-s-transparent'
           }`}
           style={indentStyle}
           onClick={() => setSelectedCategory(category)}
@@ -268,7 +269,7 @@ export default function InteractiveCategoryHierarchy() {
             
             <span className="font-medium text-sm">{category.name}</span>
             
-            <Badge variant="secondary" className="ml-auto">
+            <Badge variant="secondary" className="ms-auto">
               {category.businessCount || category.business_count || 0}
             </Badge>
             
@@ -306,14 +307,12 @@ export default function InteractiveCategoryHierarchy() {
           </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center">
-              <Badge variant="secondary">{category.businessCount || category.business_count || 0} businesses</Badge>
-              <Badge variant="outline">Level {category.level}</Badge>
+              <Badge variant="secondary">{tj("{0} businesses", category.businessCount || category.business_count || 0)}</Badge>
+              <Badge variant="outline">{tj("Level {0}", category.level)}</Badge>
             </div>
             {category.children && category.children.length > 0 && (
               <div className="mt-2">
-                <Badge variant="outline" className="text-xs">
-                  {category.children.length} subcategories
-                </Badge>
+                <Badge variant="outline" className="text-xs">{tj("{0} subcategories", category.children.length)}</Badge>
               </div>
             )}
           </CardContent>
@@ -365,7 +364,7 @@ export default function InteractiveCategoryHierarchy() {
               <div className="space-y-2">
                 {Object.entries(stats.levelCounts).map(([level, count]) => (
                   <div key={level} className="flex justify-between">
-                    <span>Level {level}:</span>
+                    <span>{tj("Level {0}:", level)}</span>
                     <span className="font-semibold">{count}</span>
                   </div>
                 ))}
@@ -420,7 +419,7 @@ export default function InteractiveCategoryHierarchy() {
             <div className="search-container">
               <label className="text-sm font-medium mb-2 block">Search Categories</label>
               <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 z-10" />
+                <Search className="absolute start-3 top-2.5 h-4 w-4 text-gray-400 z-10" />
                 <Input
                   placeholder="Type to search categories..."
                   value={searchTerm}
@@ -429,13 +428,13 @@ export default function InteractiveCategoryHierarchy() {
                     setShowSearchDropdown(e.target.value.length >= 2);
                   }}
                   onFocus={() => searchTerm.length >= 2 && setShowSearchDropdown(true)}
-                  className="pl-9 pr-8"
+                  className="ps-9 pe-8"
                 />
                 {searchTerm && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="absolute right-1 top-1 h-6 w-6 p-0 hover:bg-gray-100"
+                    className="absolute end-1 top-1 h-6 w-6 p-0 hover:bg-gray-100"
                     onClick={clearSearch}
                   >
                     <X className="h-3 w-3" />
@@ -444,11 +443,9 @@ export default function InteractiveCategoryHierarchy() {
                 
                 {/* Search Dropdown */}
                 {showSearchDropdown && searchSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-64 overflow-y-auto">
+                  <div className="absolute top-full start-0 end-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-64 overflow-y-auto">
                     <div className="p-2 border-b border-gray-100">
-                      <span className="text-xs text-gray-500">
-                        {searchSuggestions.length} categories found
-                      </span>
+                      <span className="text-xs text-gray-500">{tj("{0} categories found", searchSuggestions.length)}</span>
                     </div>
                     {searchSuggestions.map((suggestion) => (
                       <div
@@ -485,10 +482,8 @@ export default function InteractiveCategoryHierarchy() {
                 
                 {/* No results message */}
                 {showSearchDropdown && searchTerm.length >= 2 && searchSuggestions.length === 0 && (
-                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg p-4 text-center">
-                    <p className="text-sm text-gray-500">
-                      No categories found for "{searchTerm}"
-                    </p>
+                  <div className="absolute top-full start-0 end-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg p-4 text-center">
+                    <p className="text-sm text-gray-500">{tj("No categories found for \"{0}\"", searchTerm)}</p>
                   </div>
                 )}
               </div>
@@ -576,12 +571,8 @@ export default function InteractiveCategoryHierarchy() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TreePine className="h-5 w-5" />
-                Category Hierarchy ({sortedCategories.length} categories)
-                {searchTerm && (
-                  <Badge variant="outline" className="ml-2">
-                    Filtering: "{searchTerm}"
-                  </Badge>
+                <TreePine className="h-5 w-5" />{tj("Category Hierarchy ({0} categories)", sortedCategories.length)}{searchTerm && (
+                  <Badge variant="outline" className="ms-2">{tj("Filtering: \"{0}\"", searchTerm)}</Badge>
                 )}
               </CardTitle>
             </CardHeader>
@@ -614,9 +605,7 @@ export default function InteractiveCategoryHierarchy() {
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">{category.businessCount || 0}</Badge>
                         {category.children && category.children.length > 0 && (
-                          <Badge variant="outline" className="text-xs">
-                            {category.children.length} sub
-                          </Badge>
+                          <Badge variant="outline" className="text-xs">{tj("{0} sub", category.children.length)}</Badge>
                         )}
                       </div>
                     </div>
@@ -644,8 +633,8 @@ export default function InteractiveCategoryHierarchy() {
               <div>
                 <h3 className="font-semibold text-lg">{selectedCategory.name}</h3>
                 <div className="flex gap-2 mt-2">
-                  <Badge variant="outline">Level {selectedCategory.level}</Badge>
-                  <Badge variant="secondary">{selectedCategory.businessCount || 0} businesses</Badge>
+                  <Badge variant="outline">{tj("Level {0}", selectedCategory.level)}</Badge>
+                  <Badge variant="secondary">{tj("{0} businesses", selectedCategory.businessCount || 0)}</Badge>
                 </div>
               </div>
               
@@ -660,7 +649,7 @@ export default function InteractiveCategoryHierarchy() {
               
               {selectedCategory.children && selectedCategory.children.length > 0 && (
                 <div>
-                  <label className="text-sm font-medium">Subcategories ({selectedCategory.children.length})</label>
+                  <label className="text-sm font-medium">{tj("Subcategories ({0})", selectedCategory.children.length)}</label>
                   <div className="space-y-1 mt-2 max-h-32 overflow-y-auto">
                     {selectedCategory.children.map(child => (
                       <div key={child.id} className="text-sm p-2 bg-gray-50 rounded flex justify-between items-center">
@@ -675,7 +664,7 @@ export default function InteractiveCategoryHierarchy() {
               <div className="pt-4 border-t">
                 <Link href={`/categories/${selectedCategory.slug}`}>
                   <Button className="w-full" size="sm">
-                    <MapPin className="h-4 w-4 mr-2" />
+                    <MapPin className="h-4 w-4 me-2" />
                     View Category Page
                   </Button>
                 </Link>

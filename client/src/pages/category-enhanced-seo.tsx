@@ -15,6 +15,8 @@ import { Building2, Search, MapPin, Phone, Globe, Star, ChevronRight, ArrowLeft,
 import { getCategoryIcon, getCategoryIconColor } from "@/lib/category-icons-clean";
 import BusinessCard from "@/components/business-card";
 import { country, localize } from "@shared/country";
+import { t as tx } from "@shared/i18n";
+import { tj } from "@/i18n-jsx/tj";
 
 interface Category {
   id: number;
@@ -194,7 +196,7 @@ export default function CategoryEnhancedSEO() {
             </p>
             <Link href="/categories">
               <Button>
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-4 h-4 me-2" />
                 Browse All Categories
               </Button>
             </Link>
@@ -212,8 +214,8 @@ export default function CategoryEnhancedSEO() {
         type="category" 
         id={currentCategory.id}
         fallback={{
-          title: `${currentCategory.name} in Pakistan | Business Directory | pakistanyp.com`,
-          description: `Find the best ${currentCategory.name.toLowerCase()} businesses across all provinces and territories in Pakistan. Browse verified listings with reviews and contact information.`,
+          title: tx("{0} in Pakistan | Business Directory | pakistanyp.com", currentCategory.name),
+          description: tx("Find the best {0} businesses across all provinces and territories in Pakistan. Browse verified listings with reviews and contact information.", currentCategory.name.toLowerCase()),
           keywords: `${currentCategory.name}, Pakistan, business directory, ${provinces.map((e: any) => e.name).join(', ')}`
         }}
       />
@@ -243,9 +245,7 @@ export default function CategoryEnhancedSEO() {
                   <LevelIcon className="w-6 h-6" />
                 </div>
                 <div>
-                  <Badge variant="secondary" className="text-xs">
-                    Level {currentLevel} Category
-                  </Badge>
+                  <Badge variant="secondary" className="text-xs">{tj("Level {0} Category", currentLevel)}</Badge>
                   <div className="text-[#5B6475] text-sm mt-1">
                     {currentLevel === 1 && "Main Category"}
                     {currentLevel === 2 && "Sub Category"}
@@ -267,16 +267,16 @@ export default function CategoryEnhancedSEO() {
               <div className="flex flex-wrap items-center gap-4 text-[#4B5565]">
                 <div className="flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
-                  <span>{totalBusinesses} Businesses</span>
+                  <span>{tj("{0} Businesses", totalBusinesses)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-5 h-5" />
-                  <span>{`All ${country.regions.length} ${country.regionTerm.plural}`}</span>
+                  <span>{tx("All {0} {1}", country.regions.length, country.regionTerm.plural)}</span>
                 </div>
                 {subcategories.length > 0 && (
                   <div className="flex items-center gap-2">
                     <Layers className="w-5 h-5" />
-                    <span>{subcategories.length} Subcategories</span>
+                    <span>{tj("{0} Subcategories", subcategories.length)}</span>
                   </div>
                 )}
               </div>
@@ -291,8 +291,8 @@ export default function CategoryEnhancedSEO() {
             type="category"
             id={currentCategory.id}
             fallbackContent={{
-              heading: localize(`Explore ${currentCategory.name} in Pakistan`),
-              description: localize(`Discover comprehensive ${currentCategory.name.toLowerCase()} options across Pakistan with our extensive business directory.`)
+              heading: localize(tx("Explore {0} in Pakistan", currentCategory.name)),
+              description: localize(tx("Discover comprehensive {0} options across Pakistan with our extensive business directory.", currentCategory.name.toLowerCase()))
             }}
           />
 
@@ -300,9 +300,7 @@ export default function CategoryEnhancedSEO() {
           {subcategories.length > 0 && currentLevel < 3 && (
             <div className="mt-16">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  Browse {currentLevel === 1 ? 'Subcategories' : 'Specialized Categories'}
-                </h2>
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">{tj("Browse {0}", currentLevel === 1 ? 'Subcategories' : 'Specialized Categories')}</h2>
                 <p className="text-gray-600 max-w-2xl mx-auto">
                   Find exactly what you're looking for with our detailed category breakdown
                 </p>
@@ -340,7 +338,7 @@ export default function CategoryEnhancedSEO() {
                             </CardDescription>
                           )}
                           <div className="flex items-center justify-between text-sm text-gray-500">
-                            <span>{subcategory.businessCount || 0} businesses</span>
+                            <span>{tj("{0} businesses", subcategory.businessCount || 0)}</span>
                             <ChevronRight className="w-4 h-4" />
                           </div>
                         </CardContent>
@@ -359,12 +357,12 @@ export default function CategoryEnhancedSEO() {
                 <div className="flex flex-col lg:flex-row gap-4">
                   <div className="flex-1">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                      <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                       <Input
-                        placeholder={`Search ${currentCategory.name.toLowerCase()}...`}
+                        placeholder={tx("Search {0}...", currentCategory.name.toLowerCase())}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10"
+                        className="ps-10"
                         onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                       />
                     </div>
@@ -373,10 +371,10 @@ export default function CategoryEnhancedSEO() {
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:w-auto">
                     <Select value={selectedProvince} onValueChange={setSelectedProvince}>
                       <SelectTrigger>
-                        <SelectValue placeholder={`All ${country.regionTerm.plural}`} />
+                        <SelectValue placeholder={tx("All {0}", country.regionTerm.plural)} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">{`All ${country.regionTerm.plural}`}</SelectItem>
+                        <SelectItem value="all">{tx("All {0}", country.regionTerm.plural)}</SelectItem>
                         {provinces.map((province: any) => (
                           <SelectItem key={province.id} value={province.id.toString()}>
                             {province.name}
@@ -421,7 +419,7 @@ export default function CategoryEnhancedSEO() {
                     </div>
 
                     <Button onClick={handleSearch} className="bg-blue-600 hover:bg-blue-700">
-                      <Search className="w-4 h-4 mr-2" />
+                      <Search className="w-4 h-4 me-2" />
                       Search
                     </Button>
                   </div>
@@ -440,9 +438,7 @@ export default function CategoryEnhancedSEO() {
               ) : businesses.length > 0 ? (
                 <>
                   <div className="mb-6">
-                    <p className="text-gray-600">
-                      Showing {businesses.length} of {totalBusinesses} businesses
-                    </p>
+                    <p className="text-gray-600">{tj("Showing {0} of {1} businesses", businesses.length, totalBusinesses)}</p>
                   </div>
                   
                   <div className={`grid gap-6 ${
@@ -504,9 +500,7 @@ export default function CategoryEnhancedSEO() {
                             </div>
                             <div>
                               <div className="font-medium text-sm">{related.name}</div>
-                              <div className="text-xs text-gray-500">
-                                {related.businessCount || 0} businesses
-                              </div>
+                              <div className="text-xs text-gray-500">{tj("{0} businesses", related.businessCount || 0)}</div>
                             </div>
                           </div>
                         </CardContent>

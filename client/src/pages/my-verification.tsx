@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { OwnerShell as OpsShell, OwnerPill as StatusPill } from "@/components/owner-shell";
 import { SEO } from "@/components/seo";
 import { api, LICENCE_AUTHORITIES, fmtDate } from "@/components/phase1/api";
+import { tj } from "@/i18n-jsx/tj";
+import { t as tx } from "@shared/i18n";
 
 export default function MyVerification() {
   const { toast } = useToast();
@@ -57,7 +59,7 @@ export default function MyVerification() {
         <div className="grid lg:grid-cols-[320px_1fr] gap-6">
           <div className="space-y-3">
             {businesses.map((b) => (
-              <button key={b.id} onClick={() => setBusinessId(b.id)} type="button" aria-pressed={b.id === businessId} className={`w-full text-left rounded-[20px] border p-4 bg-white ${b.id === businessId ? "border-[#0B6B2E] ring-1 ring-[#0B6B2E]" : "border-[#E7E9EE] hover:border-[#CFE8D8]"}`}>
+              <button key={b.id} onClick={() => setBusinessId(b.id)} type="button" aria-pressed={b.id === businessId} className={`w-full text-start rounded-[20px] border p-4 bg-white ${b.id === businessId ? "border-[#0B6B2E] ring-1 ring-[#0B6B2E]" : "border-[#E7E9EE] hover:border-[#CFE8D8]"}`}>
                 <div className="font-medium">{b.name}</div>
                 <div className="text-xs text-gray-500">{b.category_name}{b.province_name ? ` · ${b.province_name}` : ""}</div>
                 <div className="mt-2">{b.is_verified ? <StatusPill value="approved" /> : <StatusPill value={b.verification_status || "not started"} />}</div>
@@ -69,18 +71,18 @@ export default function MyVerification() {
               {biz.is_verified ? (
                 <Card className="border-[#CFE8D8] bg-[#F2F9F4]"><CardContent className="p-6 flex gap-4 items-start">
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[14px] bg-[#E6F6F1] text-[#047857]"><ShieldCheck className="h-6 w-6" /></span>
-                  <div><h2 className="text-lg font-semibold">{biz.name} is verified</h2><p className="text-gray-600">The badge is live on <Link href={`/business/${biz.slug}`} className="underline">your profile</Link>. Keep your licence current – we re-check when it expires.</p></div>
+                  <div><h2 className="text-lg font-semibold">{tj("{0} is verified", biz.name)}</h2><p className="text-gray-600">The badge is live on <Link href={`/business/${biz.slug}`} className="underline">your profile</Link>. Keep your licence current – we re-check when it expires.</p></div>
                 </CardContent></Card>
               ) : (
                 <>
                   {v && (
                     <Card><CardHeader><CardTitle className="flex items-center gap-2"><Clock className="h-5 w-5" /> Current request <StatusPill value={v.status} /></CardTitle></CardHeader>
                       <CardContent className="space-y-2 text-sm">
-                        <div className="flex items-center gap-2"><FileCheck2 className="h-4 w-4" /> Licence {v.licence_number} ({v.licence_authority}) – {v.status === "approved" ? "checked" : v.status === "rejected" ? "not accepted" : "awaiting review"}</div>
-                        <div className="flex items-center gap-2"><Mail className="h-4 w-4" /> {v.business_email} – {v.email_verified_at ? `confirmed ${fmtDate(v.email_verified_at)}` : "not confirmed yet – check the inbox for our email"}</div>
+                        <div className="flex items-center gap-2"><FileCheck2 className="h-4 w-4" />{" "}{tj("Licence {0} ({1}) – {2}", v.licence_number, v.licence_authority, v.status === "approved" ? "checked" : v.status === "rejected" ? "not accepted" : "awaiting review")}</div>
+                        <div className="flex items-center gap-2"><Mail className="h-4 w-4" /> {v.business_email} – {v.email_verified_at ? tx("confirmed {0}", fmtDate(v.email_verified_at)) : "not confirmed yet – check the inbox for our email"}</div>
                         <div className="flex items-center gap-2 flex-wrap"><Phone className="h-4 w-4" /> {v.phone} – {v.phone_verified_at ? "confirmed" : "not confirmed"}
                           {!v.phone_verified_at && v.status === "pending" && (
-                            <span className="inline-flex gap-2 items-center ml-2">
+                            <span className="inline-flex gap-2 items-center ms-2">
                               <Button size="sm" variant="outline" onClick={() => sendOtp.mutate()} disabled={sendOtp.isPending}>Send code</Button>
                               <Input className="h-8 w-28" placeholder="6-digit code" value={otp} onChange={(e) => setOtp(e.target.value)} />
                               <Button size="sm" onClick={() => confirmOtp.mutate()} disabled={otp.length < 6 || confirmOtp.isPending}>Confirm</Button>
@@ -88,7 +90,7 @@ export default function MyVerification() {
                           )}
                         </div>
                         {(v.status === "pending" || v.status === "under_review") && businessId && <VerificationDocuments businessId={businessId} editable={v.status === "pending"} />}
-                        {v.status === "rejected" && (v.rejection_reason || v.admin_notes) && <div className="rounded-xl bg-[#FDECEC] text-[#B91C1C] p-3">Reason: {v.rejection_reason || v.admin_notes}</div>}
+                        {v.status === "rejected" && (v.rejection_reason || v.admin_notes) && <div className="rounded-xl bg-[#FDECEC] text-[#B91C1C] p-3">{tj("Reason: {0}", v.rejection_reason || v.admin_notes)}</div>}
                       </CardContent></Card>
                   )}
                   <Card>
