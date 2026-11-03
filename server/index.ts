@@ -1,6 +1,7 @@
 import { ensureSchema } from "./ensureSchema";
 import { syncPlaceGuides } from "./placeGuides";
 import { registerExtensionRoutes, startExtensions } from "./extensions";
+import { registerSchemaHealth } from "./ensureSchema";
 import { publishContent } from "./contentPublisher";
 import { syncCatalog } from "./catalogSync";
 import { registerIndexNowKeyRoute, startSitemapWatcher } from "./indexNow";
@@ -312,6 +313,7 @@ function escapeJsonForScript(json: string): string {
     registerIndexNowKeyRoute(app);
     // Country extension APIs (server/extensions) before the directory routes
     registerExtensionRoutes(app);
+    registerSchemaHealth(app);
     const server = await registerRoutes(app);
     console.log('Routes registered successfully');
 
