@@ -1,0 +1,2198 @@
+{
+ "version": "2026-11-03",
+ "note": "Official rates and rules used by the Saudi Life calculators. Edited in the admin panel; this file seeds new databases and records the reviewed baseline.",
+ "rules": {
+  "eosb_termination": {
+   "summary_en": "Article 84. When the employer ends the contract, or a fixed-term contract expires, the employer pays an end-of-service award of half a month's wage for each of the first 5 years and one month's wage for each later year. The basis is the LAST wage. The Law's interpretive rule (Article 2) reads an unqualified 'wage' as the ACTUAL wage: basic wage plus all periodic increments and allowances, such as housing and transport. Parts of a year count pro rata. The parties may agree to exclude all or part of commissions, percentages and similar variable components from the award base.",
+   "summary_ar": "المادة 84: إذا انتهت علاقة العمل وجب على صاحب العمل دفع مكافأة نهاية خدمة قدرها أجر نصف شهر عن كل سنة من السنوات الخمس الأولى، وأجر شهر عن كل سنة من السنوات التالية، وتُحسب على أساس الأجر الأخير (الأجر الفعلي: الأساسي مع جميع البدلات والزيادات الدورية)، ويستحق العامل مكافأة عن أجزاء السنة بنسبة ما قضاه منها في العمل.",
+   "effectiveFrom": "2005-09-27",
+   "sources": [
+    {
+     "title": "End-of-Service Award Regulations (Labor Education)",
+     "url": "https://www.hrsd.gov.sa/en/knowledge-centre/articles/317",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Labor Law Royal Decree No. M/51 (English translation PDF)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2023-02/Labor.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Actual wage (glossary)",
+     "url": "https://www.qoyod.com/en/glossary/actual-wage/",
+     "publisher": "Qoyod (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The tiers and 'last wage' basis are confirmed by MHRSD pages. The 'actual wage' reading comes from the Article 2 interpretive rule, reported by secondary sources and widely applied; some calculators wrongly use basic only. No source reports that M/44 (2025) changed Article 84, but I could not read the consolidated post-amendment text. The 'commissions may be excluded by agreement' clause was seen in an MHRSD excerpt; I did not verify its exact current article placement. Days of unpaid leave are generally excluded from service length (implementing regulations, not verified).",
+   "values": {
+    "firstYears": 5,
+    "firstRate": 0.5,
+    "laterRate": 1,
+    "wageBasis": [
+     "basic",
+     "housing_allowance",
+     "transport_allowance",
+     "other_fixed_periodic_allowances"
+    ]
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "eosb_resignation": {
+   "summary_en": "Article 85. A worker who resigns from an indefinite contract gets 1/3 of the Article 84 award after at least 2 and no more than 5 years of continuous service. After more than 5 and fewer than 10 years, the share is 2/3. At 10 years or more, the worker gets the full award. Under 2 years, nothing is due.",
+   "summary_ar": "المادة 85: إذا كان انتهاء علاقة العمل بسبب استقالة العامل، يستحق ثلث المكافأة إذا كانت مدة خدمته لا تقل عن سنتين ولا تزيد على خمس سنوات، وثلثيها إذا زادت على خمس سنوات ولم تبلغ عشر سنوات، والمكافأة كاملة إذا بلغت عشر سنوات فأكثر، ولا يستحق شيئاً إذا قلت عن سنتين.",
+   "effectiveFrom": "2005-09-27",
+   "sources": [
+    {
+     "title": "Labor Law Royal Decree No. M/51 (English translation PDF)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2023-02/Labor.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "End-of-Service Award Regulations",
+     "url": "https://laboreducation.hrsd.gov.sa/en/labor-education/317",
+     "publisher": "MHRSD Labor Education",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "M/44 added a statutory definition of resignation and an Article 79 bis resignation procedure. The procedure is reported (secondary) as automatic acceptance if the employer does not respond within 30 days, with the employer able to defer up to 60 days. Neither source reports a change to the 85 fractions. Most calculators apply the fraction to the whole award; this matches the MHRSD wording.",
+   "values": {
+    "bands": [
+     {
+      "minYears": 0,
+      "maxYears": 2,
+      "share": 0
+     },
+     {
+      "minYears": 2,
+      "maxYears": 5,
+      "maxInclusive": true,
+      "share": 0.3333333333333333
+     },
+     {
+      "minYears": 5,
+      "maxYears": 10,
+      "share": 0.6666666666666666
+     },
+     {
+      "minYears": 10,
+      "maxYears": null,
+      "share": 1
+     }
+    ]
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "eosb_full_award_exceptions": {
+   "summary_en": "Article 87 is an exception to Article 85: the worker gets the FULL award despite leaving voluntarily in two cases. The first is leaving because of force majeure beyond the worker's control. The second is a female worker ending the contract within 6 months of her marriage contract or within 3 months of giving birth. Separately, under Article 81 a worker who leaves without notice because of specified employer breaches keeps all statutory rights, including the full award. Common examples of such breaches are non-payment of wages, assault and fraud.",
+   "summary_ar": "المادة 87: يستحق العامل المكافأة كاملة إذا ترك العمل نتيجة لقوة قاهرة خارجة عن إرادته، أو إذا أنهت العاملة العقد خلال ستة أشهر من تاريخ عقد زواجها أو خلال ثلاثة أشهر من تاريخ وضعها. كما يحتفظ العامل بحقوقه النظامية كاملة إذا ترك العمل وفق حالات المادة 81.",
+   "effectiveFrom": "2005-09-27",
+   "sources": [
+    {
+     "title": "End-of-Service Award Regulations",
+     "url": "https://www.hrsd.gov.sa/en/knowledge-centre/articles/317",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Labor Law Royal Decree No. M/51 (English translation PDF)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2023-02/Labor.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi end of service award",
+     "url": "https://www.teamed.global/gulf-employment-law/saudi-end-of-service-award",
+     "publisher": "Teamed (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The Article 87 cases and windows appear in an MHRSD-indexed excerpt. Article 81 (full rights on justified departure) comes from secondary sources and its list of cases was not verified in this pass. Whether a resigning worker with under 2 years gets the full award under Article 87: secondary sources say yes, regardless of service length. No 2025 change was reported.",
+   "values": {
+    "article87": [
+     {
+      "case": "force_majeure",
+      "fraction": 1.0
+     },
+     {
+      "case": "female_after_marriage",
+      "windowMonths": 6,
+      "fromEvent": "marriage_contract_date",
+      "fraction": 1.0
+     },
+     {
+      "case": "female_after_childbirth",
+      "windowMonths": 3,
+      "fromEvent": "delivery_date",
+      "fraction": 1.0
+     }
+    ],
+    "article81": {
+     "case": "worker_leaves_due_to_employer_breach",
+     "fraction": 1.0
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "overtime": {
+   "summary_en": "Article 107, as amended in 2025. Overtime pay per hour = the hourly ACTUAL wage + 50% of the hourly BASIC wage. MHRSD's worked example: actual wage / 30 days / 8 hours = hourly wage. Work on weekly rest days and official holidays is treated as overtime. The 2025 amendment allows the employer, with the worker's consent, to grant paid compensatory leave days in place of overtime pay. The MHRSD awareness guide says such leave must be at least 1.5 hours per overtime hour, used within 60 days unless agreed otherwise, and capped at 30 days a year. Annual cap: 720 overtime hours a year, which may be exceeded with the worker's consent (ministerial decision; MHRSD Knowledge Centre).",
+   "summary_ar": "المادة 107 (معدلة): يدفع صاحب العمل للعامل عن ساعات العمل الإضافية أجراً إضافياً يوازي أجر الساعة (الفعلي) مضافاً إليه 50% من أجره الأساسي، ويجوز بموافقة العامل احتساب أيام إجازة مدفوعة الأجر عوضاً عن أجر الساعات الإضافية. لا تزيد ساعات العمل الإضافية على 720 ساعة في السنة إلا بموافقة العامل.",
+   "effectiveFrom": "2025-02-19",
+   "sources": [
+    {
+     "title": "Overtime Hours (Knowledge Centre)",
+     "url": "https://www.hrsd.gov.sa/en/knowledge-centre/articles/313",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Amendments to Labor Law Articles (PDF, 2025-03)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2025-03/Amendments%20to%20Labor%20Law%20Articles.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Awareness guide on the rights and duties of employers and workers (PDF, 2025-12)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2025-12/awareness-guide-on-the-rights-and-duties-of-employers-and-workers---1-.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "How is the overtime wage counted?",
+     "url": "https://laboreducation.hrsd.gov.sa/en/node/64579",
+     "publisher": "MHRSD Labor Education",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The rate formula and the compensatory-leave option are confirmed from MHRSD excerpts. The 720 h cap is on an older Knowledge Centre page tied to a ministerial decision, and the law delegates the cap to the Minister. I could not confirm that it still stands after 2025, so treat the cap as secondary. The 1.5h / 60-day / 30-day compensatory-leave details come only from the awareness-guide excerpt. Some vendor calculators wrongly use basic*1.5; the MHRSD method uses actual + 0.5*basic. The /30/8 divisor comes from the MHRSD example, not statute text. For the Ramadan 6-hour day, some calculators divide by 6; I did not verify this.",
+   "values": {
+    "premiumOfBasic": 0.5,
+    "monthDays": 30,
+    "dailyHours": 8,
+    "annualCapHours": 720
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "working_hours": {
+   "summary_en": "Article 98. Actual working hours may not exceed 8 hours a day if the employer uses a daily standard, or 48 hours a week if it uses a weekly standard. During Ramadan, hours for Muslim workers are reduced to at most 6 a day or 36 a week. Overtime hours are additional and paid under Article 107.",
+   "summary_ar": "المادة 98: لا يجوز تشغيل العامل تشغيلاً فعلياً أكثر من ثماني ساعات في اليوم إذا اعتمد المعيار اليومي، أو أكثر من ثمانٍ وأربعين ساعة في الأسبوع إذا اعتمد المعيار الأسبوعي، وتخفض ساعات العمل الفعلية خلال شهر رمضان للعمال المسلمين بحيث لا تزيد على ست ساعات في اليوم أو ست وثلاثين ساعة في الأسبوع.",
+   "effectiveFrom": "2005-09-27",
+   "sources": [
+    {
+     "title": "Actually working hours (Knowledge Centre)",
+     "url": "https://www.hrsd.gov.sa/en/knowledge-centre/articles/312",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "MHRSD announces Ramadan working hours for private sector",
+     "url": "https://saudigazette.com.sa/article/618626/SAUDI-ARABIA/MHRSD-announces-Ramadan-working-hours-for-private-sector-nbsp",
+     "publisher": "Saudi Gazette (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "The values match long-standing Article 98 text and annual MHRSD Ramadan announcements reported by press. The MHRSD Knowledge Centre page was found but its text was not read, so these values are secondary rather than confirmed. Commentators dispute whether the Ramadan reduction applies to non-Muslims; the text says Muslim workers. I found no report that M/44 changed Article 98.",
+   "values": {
+    "maxDailyHours": 8,
+    "maxWeeklyHours": 48,
+    "ramadanMuslimMaxDailyHours": 6,
+    "ramadanMuslimMaxWeeklyHours": 36
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "annual_leave": {
+   "summary_en": "Article 109. Paid annual leave of at least 21 days a year, rising to at least 30 days once the worker completes 5 consecutive years with the same employer. The leave wage is paid IN ADVANCE, before the leave starts. Leave should be taken in the year it falls due. The worker may not waive it or take cash instead during employment. It may be postponed or split with employer approval.",
+   "summary_ar": "المادة 109: يستحق العامل عن كل عام إجازة سنوية لا تقل مدتها عن واحد وعشرين يوماً، تزاد إلى مدة لا تقل عن ثلاثين يوماً إذا أمضى العامل في خدمة صاحب العمل خمس سنوات متصلة، بأجر يدفع مقدماً. ولا يجوز للعامل التنازل عنها أو تقاضي بدل نقدي عنها أثناء الخدمة.",
+   "effectiveFrom": "2005-09-27",
+   "sources": [
+    {
+     "title": "Annual Leave (Knowledge Centre)",
+     "url": "https://www.hrsd.gov.sa/en/knowledge-centre/articles/321",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "What are the conditions and requirements for the worker's leaves?",
+     "url": "https://laboreducation.hrsd.gov.sa/en/node/64537",
+     "publisher": "MHRSD Labor Education",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Labor Law Royal Decree No. M/51 (English translation PDF)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2023-02/Labor.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "Whether leave days are calendar days or working days is not stated in the excerpts; common practice and most sources treat them as calendar days. No 2025 change was reported. The daily accrual is a calculator convention.",
+   "values": {
+    "daysBase": 21,
+    "daysAfter": 30,
+    "afterYears": 5
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "leave_compensation": {
+   "summary_en": "Article 111. A worker who leaves before using accrued annual leave is entitled to the wage for those unused days. The worker is also entitled to leave wage for the fraction of the year worked, in proportion to the time worked. The payment is made at the worker's wage; the prevailing reading is the actual wage.",
+   "summary_ar": "المادة 111: للعامل الحق في الحصول على أجر عن أيام الإجازة المستحقة إذا ترك العمل قبل استعماله لها، وذلك بالنسبة إلى المدة التي لم يحصل على إجازته عنها، كما يستحق أجر الإجازة عن أجزاء السنة بنسبة ما قضاه منها في العمل.",
+   "effectiveFrom": "2005-09-27",
+   "sources": [
+    {
+     "title": "Labour education FAQs",
+     "url": "https://www.hrsd.gov.sa/en/labour-education-faq",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Annual Leave (Knowledge Centre)",
+     "url": "https://www.hrsd.gov.sa/en/knowledge-centre/articles/321",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The entitlement is confirmed by MHRSD. The wage basis (actual vs basic) and the /30 daily divisor are not stated in the official excerpts seen. Secondary sources mostly use actual wage / 30, while some vendors use basic or /365*12. Flag this as a calculator assumption.",
+   "values": {
+    "dailyDivisor": 30
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "notice_period": {
+   "summary_en": "Article 75, as amended and in force from 19 Feb 2025, applies to INDEFINITE contracts terminated for a legitimate reason. If the worker's wage is paid monthly, a worker who terminates must give at least 30 days' written notice, and an employer who terminates must give at least 60 days. If the wage is not paid monthly, either party must give at least 30 days. Under the pre-2025 rule, each party gave at least 60 days (monthly paid) or 30 days (others), with no split by who terminates. Article 76: a party who does not observe the notice period must pay the other the worker's wage for the notice period, unless agreed otherwise. A worker given notice by the employer may be absent one full day a week, or 8 hours during the week, with pay, to look for work. Article 77 (termination for an illegitimate reason, absent an agreed amount) gives compensation of 15 days' wage per year of service for an indefinite contract, or the wage for the remaining term for a fixed-term contract, with a minimum of 2 months' wage in either case.",
+   "summary_ar": "المادة 75 (معدلة): إذا كان العقد غير محدد المدة جاز لأي من طرفيه إنهاؤه بناءً على سبب مشروع بإشعار كتابي للطرف الآخر قبل الإنهاء بمدة لا تقل عن ثلاثين يوماً إذا كان الإنهاء من العامل، ولا تقل عن ستين يوماً إذا كان من صاحب العمل، متى كان أجر العامل يدفع شهرياً، ولا تقل عن ثلاثين يوماً لغيره. المادة 76: إذا لم يراعِ الطرف المنهي مدة الإشعار التزم بأن يدفع للطرف الآخر مبلغاً مساوياً لأجر العامل عن مدة الإشعار ما لم يتفق الطرفان على خلافه. المادة 77: التعويض عن الإنهاء لسبب غير مشروع أجر 15 يوماً عن كل سنة (غير محدد المدة) أو أجر المدة الباقية (محدد المدة) بحد أدنى أجر شهرين.",
+   "effectiveFrom": "2025-02-19",
+   "sources": [
+    {
+     "title": "Labor Relations",
+     "url": "https://www.hrsd.gov.sa/en/%D8%B9%D9%84%D8%A7%D9%82%D8%A7%D8%AA-%D8%A7%D9%84%D8%B9%D9%85%D9%84",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Amendments to Labor Law Articles (PDF, 2025-03)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2025-03/Amendments%20to%20Labor%20Law%20Articles.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Contract Termination (Labor Education)",
+     "url": "https://laboreducation.hrsd.gov.sa/en/labor-education/306",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Article 77 labor law (glossary)",
+     "url": "https://www.qoyod.com/glossary/article-77-labor-law/",
+     "publisher": "Qoyod (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The Article 75 split and the Article 76 pay in lieu are confirmed from MHRSD excerpts. The Article 77 figures (15 days/year, 2-month minimum) come from secondary sources only; one law-firm page says Article 77 was amended at some point, and I could not confirm whether M/44 changed it. The Article 77 entries in values are secondary. Fixed-term contracts carry no statutory notice under Article 75 unless the contract provides for it.",
+   "values": {
+    "employeeDays": 30,
+    "employerDays": 60,
+    "nonMonthlyDays": 30,
+    "preAmendment": {
+     "monthlyPaidEitherPartyMinDays": 60,
+     "nonMonthlyEitherPartyMinDays": 30,
+     "until": "2025-02-18"
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "fixed_term_contracts": {
+   "summary_en": "Article 37, as amended in 2025: a non-Saudi worker's contract must be written and fixed-term. If no term is stated, the contract is deemed to run for ONE YEAR from the worker's actual start date. If both parties continue performing it, it is deemed renewed for a similar period. Before 19 Feb 2025, the default term was the work permit's duration. Article 55: a fixed-term contract ends when its term expires, and if both parties continue performing it, it is deemed renewed for an indefinite period, subject to Article 37 for non-Saudis. For Saudis, MHRSD guidance says a fixed-term contract converts to indefinite after 3 consecutive renewals, or when the original term plus renewals reaches 4 years, whichever is less.",
+   "summary_ar": "المادة 37 (معدلة): يجب أن يكون عقد عمل غير السعودي مكتوباً ومحدد المدة، وإذا خلا العقد من بيان مدته عُدَّ لمدة سنة من تاريخ مباشرة العامل للعمل، وإذا استمر طرفاه في تنفيذه عُدَّ العقد مجدداً لمدة مماثلة. المادة 55: ينتهي العقد المحدد المدة بانقضاء مدته، فإذا استمر الطرفان في تنفيذه عُدَّ مجدداً لمدة غير محددة مع مراعاة المادة 37 لغير السعوديين، ويتحول عقد السعودي إلى غير محدد المدة إذا تجدد ثلاث مرات متتالية أو بلغت مدته الأصلية مع مدة التجديد أربع سنوات أيهما أقل.",
+   "effectiveFrom": "2025-02-19",
+   "sources": [
+    {
+     "title": "Amendments to Labor Law Articles (PDF, 2025-03)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2025-03/Amendments%20to%20Labor%20Law%20Articles.pdf",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Labor Relations",
+     "url": "https://www.hrsd.gov.sa/en/%D8%B9%D9%84%D8%A7%D9%82%D8%A7%D8%AA-%D8%A7%D9%84%D8%B9%D9%85%D9%84",
+     "publisher": "MHRSD",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Key amendments to Saudi Arabia's labour law",
+     "url": "https://tamimi.com/news/key-amendments-to-saudi-arabias-labour-law",
+     "publisher": "Al Tamimi & Co (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "The Article 37 one-year default appears in the MHRSD amendment PDF excerpt (bilingual, fragmentary) and in the Dec-2025 awareness guide, and law firms agree. One secondary source says renewal is 'upon mutual agreement' rather than automatic. The 3-renewals / 4-years conversion rule for Saudis was seen on the MHRSD Labor Relations page, but I could not confirm whether its wording is post-2025. A duration calculator should treat the Saudi conversion rule as needing verification.",
+   "values": {
+    "nonSaudi": {
+     "mustBeFixedTerm": true,
+     "defaultTermMonthsIfUnspecified": 12,
+     "defaultTermStarts": "actual_start_date",
+     "continuationRenewsFor": "same_period",
+     "preAmendmentDefault": "work_permit_duration"
+    },
+    "saudi": {
+     "convertsToIndefiniteAfterRenewals": 3,
+     "convertsToIndefiniteAfterTotalYears": 4,
+     "rule": "whichever_is_less"
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "gosi_saudi_legacy": {
+   "summary_en": "Applies to Saudi private-sector employees who had contribution periods before the new Social Insurance Law took effect on 3 Jul 2024. They stay on the old Social Insurance Law. The annuities branch is 18% of the contributory wage, split 9% employee and 9% employer. SANED unemployment insurance is 1.5%, split 0.75% each, a rate in force since 1 Jan 2022 after a cut from 2%. Occupational hazards is 2%, paid by the employer only. The totals are 9.75% employee, 11.75% employer, 21.5% overall. Under the old law, no rate increase applies in 2025 or 2026.",
+   "summary_ar": "للمشتركين السعوديين القائمين (ممن لهم مدد اشتراك قبل 3 يوليو 2024): فرع المعاشات 18% (9% على المشترك و9% على صاحب العمل)، والتعطل عن العمل (ساند) 1.5% مناصفة (0.75% لكل طرف) منذ 1/1/2022، والأخطار المهنية 2% على صاحب العمل؛ الإجمالي 9.75% على الموظف و11.75% على صاحب العمل.",
+   "effectiveFrom": "2022-01-01",
+   "sources": [
+    {
+     "title": "The Insurance Protection Extension - Saudi Workers",
+     "url": "https://www.gosi.gov.sa/GOSIOnline/Saudi_Workers&locale=en_US",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Coverages",
+     "url": "https://gosi.gov.sa/GOSIOnline/Coverages&locale=en_US",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "SANED Law",
+     "url": "https://beta.gosi.gov.sa/en/saned",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The rates come from GOSI search excerpts; the pages themselves could not be fetched. One vendor lists SANED as 1% employer + 0.75% employee, and another as 1% each. Both conflict with GOSI's 1.5%-equally statement, so I disregarded them. The occupational hazards rate can be raised for employers that ignore safety rules; this is not modelled.",
+   "values": {
+    "annuitiesEmployee": 0.09,
+    "annuitiesEmployer": 0.09,
+    "sanedEmployee": 0.0075,
+    "sanedEmployer": 0.0075,
+    "hazardsEmployer": 0.02
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "gosi_saudi_new_law": {
+   "summary_en": "The new Social Insurance Law (Royal Decree M/273) took effect on 3 Jul 2024 (27/12/1445H). It applies ONLY to people who join the labour market with NO prior contribution period under either the Civil Retirement Law or the Social Insurance Law before that date; existing contributors stay on the old law. The annuities rate starts at 9% each for employee and employer. From the 2nd year of the law through the 5th, it rises 0.5 percentage points each on every 1 July, reaching 11% each by 1 Jul 2028. SANED (0.75% each) and occupational hazards (2%, employer) are unchanged. The rates in force on 2026-11-03 (from 1 Jul 2026) are annuities 10% each, so the employee pays 10.75%, the employer 12.75%, and the total is 23.5%. The law also sets the statutory retirement age at 65.",
+   "summary_ar": "نظام التأمينات الاجتماعية الجديد (المرسوم الملكي م/273) ساري من 3 يوليو 2024 على الملتحقين بسوق العمل ممن ليس لهم مدد اشتراك سابقة في نظامي التقاعد المدني أو التأمينات الاجتماعية. نسبة فرع المعاشات تبدأ 9% لكل من المشترك وصاحب العمل وتزداد 0.5% في 1 يوليو من كل عام حتى تبلغ 11% في يوليو 2028. النسبة الحالية (من 1 يوليو 2026): 10% لكل طرف، فيصبح إجمالي استقطاع الموظف 10.75% وصاحب العمل 12.75%.",
+   "effectiveFrom": "2024-07-03",
+   "sources": [
+    {
+     "title": "Contributions (awareness PDF)",
+     "url": "https://awareness.gosi.gov.sa/pdf/Contributions.pdf",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Social Insurance Law",
+     "url": "https://beta.gosi.gov.sa/en/social-insurance",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "الثلاثاء المقبل.. رفع نسبة استقطاع التقاعد للموظفين الجدد تدريجيًا حتى 2028",
+     "url": "https://sabq.org/article/BvzNA6r",
+     "publisher": "Sabq (secondary)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Okaz report on July 2026 step to 10%",
+     "url": "https://www.okaz.com.sa/local/na/2251973",
+     "publisher": "Okaz (secondary)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Council of Ministers approves new social insurance law",
+     "url": "https://roedl.com/insights/saudi-council-ministers-approves-new-social-insurance-law",
+     "publisher": "Rödl & Partner (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The schedule table (9% from 3 Jul 2024, 9.5% from 1 Jul 2025, to 1 Jul 2028) appears in a GOSI awareness-PDF excerpt; the 2026/2027 steps follow arithmetically and match Okaz (10% from July 2026) and several payroll vendors (23.5% total). Some sources are confusing: one vendor states 9.5% for July 2026, and Argaam reported 'total 11% up from 9%', meaning the end state. Both are treated as errors or ambiguities. The Royal Decree number M/273 comes from secondary sources and Saudipedia, not a GOSI page. It is not verified whether GCC nationals or those returning after a gap fall in the new scheme.",
+   "values": {
+    "schedule": [
+     {
+      "from": "2024-07-03",
+      "employee": 0.09,
+      "employer": 0.09
+     },
+     {
+      "from": "2025-07-01",
+      "employee": 0.095,
+      "employer": 0.095
+     },
+     {
+      "from": "2026-07-01",
+      "employee": 0.1,
+      "employer": 0.1
+     },
+     {
+      "from": "2027-07-01",
+      "employee": 0.105,
+      "employer": 0.105
+     },
+     {
+      "from": "2028-07-01",
+      "employee": 0.11,
+      "employer": 0.11
+     }
+    ],
+    "eligibility": "Saudi, first registered on/after 2024-07-03 with no prior civil-retirement or social-insurance contribution periods"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "gosi_non_saudi": {
+   "summary_en": "Non-Saudi private-sector employees are covered only by the occupational hazards branch, at 2% of the contributory wage, paid entirely by the employer. Nothing is deducted from the employee's wage. They are not covered by annuities or SANED.",
+   "summary_ar": "غير السعوديين مشمولون بفرع الأخطار المهنية فقط بنسبة 2% من أجر الاشتراك يتحملها صاحب العمل بالكامل، ولا يُستقطع من راتب العامل شيء، ولا يشملهم فرع المعاشات ولا ساند.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Coverages",
+     "url": "https://gosi.gov.sa/GOSIOnline/Coverages&locale=en_US",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "SANED Law",
+     "url": "https://beta.gosi.gov.sa/en/saned",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "GCC nationals working in KSA follow GCC extension-of-coverage rules (home-country rates); not researched. The rates are unaffected by the 2024 law.",
+   "values": {
+    "hazardsEmployer": 0.02
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "gosi_wage_limits": {
+   "summary_en": "The contributory wage is the basic wage plus housing allowance, whether housing is paid in cash or provided in kind. Other allowances (transport, food, etc.) are excluded. The contributory wage may not exceed SAR 45,000 a month or fall below SAR 1,500 a month. For non-Saudis covered only by occupational hazards, secondary sources give a floor of SAR 400.",
+   "summary_ar": "أجر الاشتراك هو الأجر الأساسي مضافاً إليه بدل السكن (نقداً أو عيناً)، ولا تدخل فيه البدلات الأخرى. لا يزيد أجر الاشتراك على 45,000 ريال ولا يقل عن 1,500 ريال شهرياً، والحد الأدنى في فرع الأخطار المهنية لغير الخاضعين لفرع المعاشات 400 ريال (مصادر ثانوية).",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "The Insurance Protection Extension - Saudi Workers",
+     "url": "https://www.gosi.gov.sa/GOSIOnline/Saudi_Workers&locale=en_US",
+     "publisher": "GOSI",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "GOSI contribution wage",
+     "url": "https://www.qoyod.com/en/learn/gosi-contribution-wage/",
+     "publisher": "Qoyod (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The 45,000/1,500 limits and the basic+housing base come from a GOSI page excerpt, likely legacy-law wording. I did not confirm that the new 2024 law keeps exactly the same limits, though vendors apply them to both. The SAR 400 floor for hazards-only (non-Saudi) is secondary only; one old SAP blog states it. The valuation of in-kind housing is UNCONFIRMED: vendors variously cite 25% of basic or another imputed value, so the calculator should ask the user for a housing figure.",
+   "values": {
+    "minSaudi": 1500,
+    "max": 45000,
+    "minHazardsOnly": 400
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "salary_payment": {
+   "summary_en": "Private sector (Article 90): wages are paid in the official currency. A worker on a monthly wage must be paid at least once a month, and other pay frequencies have their own minimums. Salaries are paid through the Wage Protection System via MHRSD's Mudad platform, where employers upload wage files. Press reports MHRSD inspection triggers when wage files are more than 20 days late, and a vendor reports a 30-day upload cutoff from 1 Mar 2025. The Labor Law sets NO fixed calendar payday for the private sector. Government sector: Ministry of Finance pays civil and military state salaries on the 27th of each Gregorian month. If the 27th is a Friday, payment moves to the Thursday before, and if it is a Saturday, to the Sunday after. This follows Cabinet Decision No. 551 of 25/12/1437H, under Royal Decree M/6 of 12/4/1407H.",
+   "summary_ar": "القطاع الخاص (المادة 90): تُدفع الأجور بالعملة الرسمية، ويُدفع أجر العامل الشهري مرة في الشهر على الأقل، وتُصرف عبر نظام حماية الأجور (منصة مدد) دون يوم محدد نظاماً. القطاع الحكومي: تصرف وزارة المالية رواتب موظفي الدولة يوم 27 من كل شهر ميلادي، فإن وافق الجمعة فالخميس الذي قبله، وإن وافق السبت فالأحد الذي بعده (قرار مجلس الوزراء رقم 551 وتاريخ 25/12/1437هـ).",
+   "effectiveFrom": "2016-10-01",
+   "sources": [
+    {
+     "title": "Payroll schedule (mediacenter/Payroll)",
+     "url": "https://www.mof.gov.sa/mediacenter/Payroll/Pages/default.aspx",
+     "publisher": "Ministry of Finance",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "رواتب موظفي الدولة",
+     "url": "https://sabq.org/mawaeed/salaries",
+     "publisher": "Sabq (secondary)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Unreasonable wages and delays will trigger violations under Mudad system",
+     "url": "https://saudigazette.com.sa/article/654131",
+     "publisher": "Saudi Gazette (secondary)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "I did not read the Article 90 text; the monthly-frequency rule is from secondary summaries. The 27th rule and weekend shifts are from press citing the MoF schedule. The MoF page was found but not read, and MoF is outside the requested source list but is the competent authority. The effectiveFrom date (Gregorian switch, start of FY 1438H in Oct 2016) is approximate and unconfirmed. The Mudad thresholds (20 vs 30 days) conflict and are secondary. A calculator should not hard-code weekend or holiday shifts beyond the Fri->Thu / Sat->Sun rule; MoF publishes the actual dates.",
+   "values": {
+    "privateSector": {
+     "monthlyPaidMinFrequency": "monthly",
+     "statutoryPayday": null,
+     "wpsPlatform": "Mudad",
+     "wpsLateInspectionTriggerDays": 20
+    },
+    "governmentSector": {
+     "gregorianDay": 27,
+     "ifFriday": "previous_thursday",
+     "ifSaturday": "next_sunday",
+     "holidayAdjustment": "MoF may move the date for holidays"
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "electricity_residential": {
+   "summary_en": "Residential electricity is charged per kWh in two monthly tiers. Until 31 Dec 2026: 18 halalas/kWh for 1-6,000 kWh and 30 halalas/kWh above 6,000 kWh. From 1 Jan 2027: 21 and 33 halalas/kWh, with the same tier limits. A new fixed monthly charge by breaker size also applies (see electricity_meter_fees). Billing is monthly and prices exclude 15% VAT.",
+   "summary_ar": "تُحتسب الكهرباء السكنية بالكيلوواط ساعة على شريحتين شهريتين. حتى 31 ديسمبر 2026: 18 هللة للاستهلاك من 1 إلى 6000 ك.و.س، و30 هللة لما زاد على 6000. ابتداءً من 1 يناير 2027: 21 هللة و33 هللة، دون تغيير حدود الشرائح، مع مقابل ثابت شهري جديد حسب سعة القاطع. الفوترة شهرية، والأسعار لا تشمل ضريبة القيمة المضافة 15%.",
+   "effectiveFrom": "2018-01-01",
+   "sources": [
+    {
+     "title": "Consumption Tariffs (current until 31/12/2026 and post-adjustment from 01/01/2027)",
+     "url": "https://www.se.com.sa/en/Ourservices/ColumnC/Bills-and-Consumption/ConsumptionTariffs/",
+     "publisher": "Saudi Energy (formerly Saudi Electricity Company)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Energy Announces Electricity Service Tariff Adjustment as of 01/01/2027",
+     "url": "https://www.se.com.sa/en/News/CorporateNews/CorporateNews55",
+     "publisher": "Saudi Energy",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Energy Announces Electricity Service Tariff Adjustment from January 1, 2027",
+     "url": "https://www.spa.gov.sa/en/N2709801",
+     "publisher": "Saudi Press Agency",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces revised electricity, water and wastewater tariffs effective January 1, 2027",
+     "url": "https://saudigazette.com.sa/article/665754/saudi-arabia/saudi-arabia-announces-revised-electricity-water-and-wastewater-tariffs-effective-january-1-2027",
+     "publisher": "Saudi Gazette",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "السعودية للطاقة تعلن التعريفة الجديدة للكهرباء من 1 يناير 2027",
+     "url": "https://sabq.org/article/mzza5x9",
+     "publisher": "Sabq",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "NEW ELECTRICITY TARIFFS IN SAUDI ARABIA FROM 1st JAN 2018",
+     "url": "https://saudi-expatriates.com/2017/12/increase-in-electricity-tariffs-from-2018.html?m=1",
+     "publisher": "saudi-expatriates.com",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The 18/30 rates appear on se.com.sa (search extract) and in many outlets. The 21/33 rates are in the 2026-10-25 announcement, as reported by Saudi Gazette, Sabq, Argaam and Aleqt. Search extracts show the SPA and se.com.sa pages exist, but the rate figures were not read on those pages. effectiveFrom 2018-01-01 is for the current tariff and comes from a secondary source. One calculator site lists a 3-tier structure (0.30 for 6,001-8,000 and 0.32 above 8,000). That is not supported by official sources and should be ignored. Saudi Energy's guide states the published prices exclude VAT.",
+   "values": {
+    "unit": "halalas_per_kWh",
+    "sarPerHalala": 0.01,
+    "billingPeriod": "monthly",
+    "vatExclusive": true,
+    "current": {
+     "validUntil": "2026-12-31",
+     "tiers": [
+      {
+       "fromKWh": 1,
+       "toKWh": 6000,
+       "rate": 18
+      },
+      {
+       "fromKWh": 6001,
+       "toKWh": null,
+       "rate": 30
+      }
+     ]
+    },
+    "scheduled": {
+     "effectiveFrom": "2027-01-01",
+     "tiers": [
+      {
+       "fromKWh": 1,
+       "toKWh": 6000,
+       "rate": 21
+      },
+      {
+       "fromKWh": 6001,
+       "toKWh": null,
+       "rate": 33
+      }
+     ]
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "electricity_commercial": {
+   "summary_en": "Non-residential consumption tariffs in halalas/kWh. Until 31 Dec 2026: commercial 22 (1-6,000 kWh) and 32 (above); agricultural 18 and 22; charitable 16 and 20; government flat 32; industrial flat 20. From 1 Jan 2027: commercial, private health and private education 25 and 35; agricultural 19 and 23; charitable 17 and 21; government flat 35; industrial flat 23. Prices exclude VAT.",
+   "summary_ar": "تعرفة الاستهلاك لغير السكني بالهللة لكل ك.و.س. حتى 31 ديسمبر 2026: التجاري 22 (حتى 6000) و32 (ما زاد)، الزراعي 18 و22، الخيري 16 و20، الحكومي 32 ثابتة، الصناعي 20 ثابتة. من 1 يناير 2027: التجاري والصحي والتعليمي الأهلي 25 و35، الزراعي 19 و23، الخيري 17 و21، الحكومي 35، الصناعي 23. الأسعار لا تشمل الضريبة.",
+   "effectiveFrom": "2018-01-01",
+   "sources": [
+    {
+     "title": "Consumption Tariffs",
+     "url": "https://www.se.com.sa/en/Ourservices/ColumnC/Bills-and-Consumption/ConsumptionTariffs",
+     "publisher": "Saudi Energy",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces revised electricity, water and wastewater tariffs effective January 1, 2027",
+     "url": "https://saudigazette.com.sa/article/665754/saudi-arabia/saudi-arabia-announces-revised-electricity-water-and-wastewater-tariffs-effective-january-1-2027",
+     "publisher": "Saudi Gazette",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia increases power and water tariffs for 2027",
+     "url": "https://www.agbi.com/energy/2026/10/saudi-arabia-increases-power-and-water-tariffs-for-2027/",
+     "publisher": "AGBI",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Energy Intensive Electricity Consumption Tariff news (27 Apr 2025)",
+     "url": "https://www.se.com.sa/en/News/CorporateNews/CorporateNews32",
+     "publisher": "Saudi Energy",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "Current non-residential rates come from a search extract of the se.com.sa tariff page. 2027 rates come from press reports of the official announcement. Separate 'Intensive Electricity Consumption Tariff' for industrial, commercial and agricultural users, effective 2025-05-28 (not quantified here). Alyaum reports a 'new commercial classification' in 2027; details not confirmed.",
+   "values": {
+    "unit": "halalas_per_kWh",
+    "tierBreakKWh": 6000,
+    "billingPeriod": "monthly",
+    "vatExclusive": true,
+    "current": {
+     "validUntil": "2026-12-31",
+     "commercial": {
+      "upTo6000": 22,
+      "above6000": 32
+     },
+     "agricultural": {
+      "upTo6000": 18,
+      "above6000": 22
+     },
+     "charitable": {
+      "upTo6000": 16,
+      "above6000": 20
+     },
+     "government": {
+      "flat": 32
+     },
+     "industrial": {
+      "flat": 20
+     }
+    },
+    "scheduled": {
+     "effectiveFrom": "2027-01-01",
+     "commercial_privateHealth_privateEducation": {
+      "upTo6000": 25,
+      "above6000": 35
+     },
+     "agricultural": {
+      "upTo6000": 19,
+      "above6000": 23
+     },
+     "charitable": {
+      "upTo6000": 17,
+      "above6000": 21
+     },
+     "government": {
+      "flat": 35
+     },
+     "industrial": {
+      "flat": 23
+     }
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "electricity_meter_fees": {
+   "summary_en": "Until 31 Dec 2026, a monthly meter reading, maintenance and bill preparation fee applies by breaker capacity: SAR 10 for 20-<100 A, 15 for 100-<200 A, 21 for 200-<300 A, 22 for 300-<400 A, 25 for 400 A and 30 above 400 A. From 1 Jan 2027 this fee is replaced by a fixed monthly tariff. Residential: SAR 70 (20-<100 A), 80 (100-<200 A), 90 (200-<300 A), 100 (300 A and above). Agricultural and charitable: 140/160/180/200. Commercial, industrial and government: 350/500/700/900. The fixed charge is prorated as charge x billing days / 30. VAT 15% is extra.",
+   "summary_ar": "حتى 31 ديسمبر 2026 يُفرض رسم شهري لقراءة العداد وصيانته وإعداد الفاتورة حسب سعة القاطع: 10 ريالات (20 إلى أقل من 100 أمبير)، 15 (100 إلى أقل من 200)، 21 (200 إلى أقل من 300)، 22 (300 إلى أقل من 400)، 25 (400)، 30 (أكثر من 400). من 1 يناير 2027 يحل محله مقابل ثابت شهري. السكني: 70 و80 و90 و100 ريال. الزراعي والخيري: 140 و160 و180 و200. التجاري والصناعي والحكومي: 350 و500 و700 و900. يُحتسب تناسبياً (المقابل × أيام الفاتورة ÷ 30)، وتُضاف ضريبة 15%.",
+   "effectiveFrom": "2018-01-01",
+   "sources": [
+    {
+     "title": "Saudi Arabia Tariff Schedule 2022 (SEC schedule hosted by ESMAP RISE)",
+     "url": "https://rise.esmap.org/data/files/library/saudi-arabia/Renewable Energy/Saudi Arabia Tariff Schedule_2022.pdf",
+     "publisher": "ESMAP / World Bank (reproducing SEC schedule)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Electricity Bill Calculator",
+     "url": "https://ksaexpats.com/saudi-electricity-bill-calculator/",
+     "publisher": "KSA Expats",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces revised electricity, water and wastewater tariffs effective January 1, 2027",
+     "url": "https://saudigazette.com.sa/article/665754/saudi-arabia/saudi-arabia-announces-revised-electricity-water-and-wastewater-tariffs-effective-january-1-2027",
+     "publisher": "Saudi Gazette",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "السعودية للطاقة تعلن التعريفة الجديدة للكهرباء من 1 يناير 2027",
+     "url": "https://sabq.org/article/mzza5x9",
+     "publisher": "Sabq",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "تعرّف على تفاصيل التعريفة الجديدة لخدمة الكهرباء بالمملكة",
+     "url": "https://www.alwatan.com.sa/article/1187881",
+     "publisher": "Al Watan",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "Ajel reported 140-200 as applying to residential and commercial. Saudi Gazette, Sabq and Al Watan attribute 140-200 to agricultural and charitable users, and residential 70-100 is consistent across Saudi Gazette, Sabq and Shbabbek. The four breaker bands for the 350-900 commercial tier come from one Saudi Gazette extract. The current fee bands come from a 2022 SEC schedule reproduced by ESMAP and match calculators. The 400 A vs 'above 400 A' split is as reported. Check the se.com.sa tariff page.",
+   "values": {
+    "unit": "SAR_per_month",
+    "vatExclusive": true,
+    "current": {
+     "validUntil": "2026-12-31",
+     "name": "meter reading, maintenance and bill preparation fee",
+     "bandsAmps": [
+      {
+       "fromA": 20,
+       "toAExclusive": 100,
+       "fee": 10
+      },
+      {
+       "fromA": 100,
+       "toAExclusive": 200,
+       "fee": 15
+      },
+      {
+       "fromA": 200,
+       "toAExclusive": 300,
+       "fee": 21
+      },
+      {
+       "fromA": 300,
+       "toAExclusive": 400,
+       "fee": 22
+      },
+      {
+       "fromA": 400,
+       "toAExclusive": 401,
+       "fee": 25
+      },
+      {
+       "fromA": 401,
+       "toAExclusive": null,
+       "fee": 30
+      }
+     ]
+    },
+    "scheduled": {
+     "effectiveFrom": "2027-01-01",
+     "name": "fixed monthly tariff (replaces meter fee)",
+     "proration": "fixed * billingDays / 30",
+     "bandsAmps": [
+      {
+       "fromA": 20,
+       "toAExclusive": 100
+      },
+      {
+       "fromA": 100,
+       "toAExclusive": 200
+      },
+      {
+       "fromA": 200,
+       "toAExclusive": 300
+      },
+      {
+       "fromA": 300,
+       "toAExclusive": null
+      }
+     ],
+     "residential": [
+      70,
+      80,
+      90,
+      100
+     ],
+     "agricultural_charitable": [
+      140,
+      160,
+      180,
+      200
+     ],
+     "commercial_industrial_government": [
+      350,
+      500,
+      700,
+      900
+     ]
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "water_residential": {
+   "summary_en": "NWC residential water consumption is billed per m3 per month. The current tariff (in force since 2016, valid to 31 Dec 2026) has five tiers: water SAR 0.10 (1-15 m3), 1.00 (16-30), 3.00 (31-45), 4.00 (46-60), 6.00 (above 60). From 1 Jan 2027 there are four tiers: SAR 1 (0-15), 2 (15-30), 4 (30-45), 6 (above 45). A fixed monthly charge by meter diameter replaces the meter service fee: water SAR 20 (meter up to 20 mm) rising to SAR 100 (above 100 mm), plus SAR 20 for each additional unit.",
+   "summary_ar": "تُحتسب مياه القطاع السكني بالمتر المكعب شهرياً. التعرفة الحالية (منذ 2016 حتى 31 ديسمبر 2026) خمس شرائح للمياه: 0.10 ريال (1-15 م3)، 1 (16-30)، 3 (31-45)، 4 (46-60)، 6 (أكثر من 60). من 1 يناير 2027 أربع شرائح: 1 ريال (حتى 15)، 2 (15-30)، 4 (30-45)، 6 (أكثر من 45)، مع رسم ثابت شهري حسب قطر العداد يحل محل رسم خدمة العداد: من 20 ريالاً للمياه (عداد حتى 20 ملم) إلى 100 ريال (أكثر من 100 ملم)، و20 ريالاً لكل وحدة إضافية.",
+   "effectiveFrom": "2016-01-01",
+   "sources": [
+    {
+     "title": "NWC Announces Water Tariff Adjustment for Water and Wastewater from January 1, 2027",
+     "url": "https://www.spa.gov.sa/en/N2709804",
+     "publisher": "Saudi Press Agency",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "المياه الوطنية تعدّل تعريفة المياه من 2027: أربع شرائح للسكني من ريال إلى 6 ريالات للمتر المكعب",
+     "url": "https://sabq.org/article/rwk4574",
+     "publisher": "Sabq",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "NWC revises water, wastewater tariffs from Jan. 1",
+     "url": "https://argaam.com/en/article/articledetail/id/1946964",
+     "publisher": "Argaam",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "المياه الوطنية تعلن تعديل التعرفة (أجل)",
+     "url": "https://ajel.sa/local/1mpq84yte",
+     "publisher": "Ajel",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "بالتفاصيل.. التعرفة الجديدة للمياه وتوزيعها على الشرائح ومقارنتها بالقديمة (2016 tariff)",
+     "url": "https://www.argaam.com/ar/article/articledetail/id/416258",
+     "publisher": "Argaam",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "NWC eBranch Tariff calculator",
+     "url": "https://ebranch.nwc.com.sa/English/Pages/TariffCalculator.aspx",
+     "publisher": "National Water Company",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "2027 tiers are consistent across Sabq, Ajel, Argaam, Saudi Gazette and ARY, citing NWC. The official SPA notice confirms the date and the four-tier structure. Current 2016 tiers come from Argaam's 2016 article, which gives combined water and sewage of 0.15/1.5/4.5/6/9, and a calculator (hijri-calendars), which lists 16-30 at 3.00. That conflicts with Argaam's 1.00, so the current tier 2 rate is weakly confirmed. Combined-total arithmetic supports 1.00. The current monthly meter service fee amount was NOT found (unconfirmed). Intermediate meter-diameter fixed charges for 2027 were not found. effectiveFrom 2016-01-01 for the current tariff is approximate (Council of Ministers decision, Dec 2015).",
+   "values": {
+    "unit": "SAR_per_m3",
+    "billingPeriod": "monthly",
+    "current": {
+     "validUntil": "2026-12-31",
+     "waterTiers": [
+      {
+       "fromM3": 1,
+       "toM3": 15,
+       "rate": 0.1
+      },
+      {
+       "fromM3": 16,
+       "toM3": 30,
+       "rate": 1.0
+      },
+      {
+       "fromM3": 31,
+       "toM3": 45,
+       "rate": 3.0
+      },
+      {
+       "fromM3": 46,
+       "toM3": 60,
+       "rate": 4.0
+      },
+      {
+       "fromM3": 61,
+       "toM3": null,
+       "rate": 6.0
+      }
+     ],
+     "meterServiceFeeSARPerMonth": null
+    },
+    "scheduled": {
+     "effectiveFrom": "2027-01-01",
+     "waterTiers": [
+      {
+       "fromM3": 0,
+       "toM3": 15,
+       "rate": 1
+      },
+      {
+       "fromM3": 15,
+       "toM3": 30,
+       "rate": 2
+      },
+      {
+       "fromM3": 30,
+       "toM3": 45,
+       "rate": 4
+      },
+      {
+       "fromM3": 45,
+       "toM3": null,
+       "rate": 6
+      }
+     ],
+     "fixedMonthlyWaterSAR": {
+      "meterUpTo20mm": 20,
+      "meterAbove100mm": 100,
+      "intermediateDiameters": null,
+      "perAdditionalUnit": 20
+     },
+     "nonResidentialWaterSARPerM3": 8,
+     "nonResidentialFixedWaterSAR": {
+      "meterUpTo20mm": 40,
+      "meterAbove100mm": 150
+     },
+     "governmentWaterSARPerM3": 10,
+     "governmentFixedWaterSAR": 1000
+    },
+    "vat": "unconfirmed; NWC did not say whether 2027 prices include VAT. The NWC eBranch calculator and third-party calculators add 15% VAT on the current tariff."
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "water_sewage": {
+   "summary_en": "Wastewater (sewage) is charged at 50% of the water consumption charge, both now and from 2027. From 1 Jan 2027 the residential wastewater rates are SAR 0.50, 1, 2 and 3 per m3 across the four tiers. A fixed monthly wastewater charge runs from SAR 10 (meter up to 20 mm) to SAR 50 (above 100 mm), plus SAR 10 for each additional unit. It applies only to properties connected to the sewer network.",
+   "summary_ar": "تُحتسب خدمة الصرف الصحي بنسبة 50% من قيمة استهلاك المياه حالياً ومن 2027. من 1 يناير 2027 تبلغ للسكني 0.5 و1 و2 و3 ريالات للمتر المكعب حسب الشريحة، مع رسم ثابت شهري من 10 ريالات (عداد حتى 20 ملم) إلى 50 ريالاً (أكثر من 100 ملم)، و10 ريالات لكل وحدة إضافية. تُطبق على العقارات المتصلة بشبكة الصرف فقط.",
+   "effectiveFrom": "2016-01-01",
+   "sources": [
+    {
+     "title": "NWC eBranch Tariff calculator (states sewer = 50% of water consumption value)",
+     "url": "https://ebranch.nwc.com.sa/English/Pages/TariffCalculator.aspx",
+     "publisher": "National Water Company",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "NWC Announces Water Tariff Adjustment for Water and Wastewater from January 1, 2027",
+     "url": "https://www.spa.gov.sa/en/N2709804",
+     "publisher": "Saudi Press Agency",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "المياه الوطنية تعدّل تعريفة المياه من 2027",
+     "url": "https://sabq.org/article/rwk4574",
+     "publisher": "Sabq",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "المياه الوطنية تعلن تعديل التعرفة",
+     "url": "https://ajel.sa/local/1mpq84yte",
+     "publisher": "Ajel",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "The 50% rule is confirmed by an extract of NWC's own calculator page and by press reports on 2027. 2027 figures come from press reports of the NWC announcement. VAT treatment is unconfirmed.",
+   "values": {
+    "ratioOfWaterConsumptionCharge": 0.5,
+    "current": {
+     "validUntil": "2026-12-31",
+     "rule": "50% of water consumption charge",
+     "impliedTiersSARPerM3": [
+      0.05,
+      0.5,
+      1.5,
+      2.0,
+      3.0
+     ]
+    },
+    "scheduled": {
+     "effectiveFrom": "2027-01-01",
+     "residentialTiersSARPerM3": [
+      {
+       "fromM3": 0,
+       "toM3": 15,
+       "rate": 0.5
+      },
+      {
+       "fromM3": 15,
+       "toM3": 30,
+       "rate": 1
+      },
+      {
+       "fromM3": 30,
+       "toM3": 45,
+       "rate": 2
+      },
+      {
+       "fromM3": 45,
+       "toM3": null,
+       "rate": 3
+      }
+     ],
+     "fixedMonthlyWastewaterSAR": {
+      "meterUpTo20mm": 10,
+      "meterAbove100mm": 50,
+      "perAdditionalUnit": 10
+     },
+     "nonResidentialSARPerM3": 4,
+     "nonResidentialFixedSAR": {
+      "meterUpTo20mm": 20,
+      "meterAbove100mm": 75
+     },
+     "governmentSARPerM3": 5,
+     "governmentFixedSAR": 500
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "fuel_prices": {
+   "summary_en": "Aramco retail prices in SAR per litre: Gasoline 91 2.18 and Gasoline 95 2.33, both unchanged and capped since July 2021. Diesel 1.79 since 1 Jan 2026 (up from 1.66; diesel is reviewed annually). Kerosene 1.75 since 1 Jul 2026 (up from 1.59). Gasoline 98, launched Jan 2026 at 2.88, is reviewed monthly and reported at 5.33 for October 2026. The next monthly review was reported for around 11 Nov 2026.",
+   "summary_ar": "أسعار أرامكو بالتجزئة (ريال/لتر): بنزين 91 بسعر 2.18 وبنزين 95 بسعر 2.33، ثابتان منذ يوليو 2021. الديزل 1.79 منذ 1 يناير 2026 (من 1.66) ويُراجع سنوياً. الكيروسين 1.75 منذ 1 يوليو 2026 (من 1.59). بنزين 98 طُرح في يناير 2026 بسعر 2.88 ويُراجع شهرياً، وبلغ 5.33 لشهر أكتوبر 2026 حسب التقارير.",
+   "effectiveFrom": "2026-10-11",
+   "sources": [
+    {
+     "title": "Retail fuels",
+     "url": "https://www.aramco.com/en/what-we-do/energy-products/retail-fuels",
+     "publisher": "Saudi Aramco",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Aramco raises diesel prices by 7.8% to SR1.79 per liter",
+     "url": "https://cdn.saudigazette.com.sa/article/657857/SAUDI-ARABIA/Saudi-Aramco-raises-diesel-prices-by-78-to-SR179-per-liter",
+     "publisher": "Saudi Gazette",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi increases diesel prices",
+     "url": "https://www.mees.com/2026/1/2/news-in-brief/saudi-increases-diesel-prices/f2cdf290-e7df-11f0-aea8-4d31a1325bf5",
+     "publisher": "MEES",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "أرامكو ترفع سعر الكيروسين محلياً بنسبة 10%",
+     "url": "https://www.annahar.com/economy/325970/أرامكو-ترفع-سعر-الكيروسين-محليا-بنسبة-10-من-يستخدمه-ولماذا-يهمنا",
+     "publisher": "Annahar",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Aramco sets price of 98-octane gasoline at SR2.88 per litre",
+     "url": "https://gulfbase.com/news/aramco-sets-price-of-98-octane-gasoline-at-sr2-88-per-liters/214799",
+     "publisher": "Gulfbase",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Petrol Price in Saudi Arabia Today: 91, 95 and 98 Rates for October 2026",
+     "url": "https://saudilifeguide.com/?p=2066",
+     "publisher": "Saudi Life Guide",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Okaz LPG cylinder prices",
+     "url": "https://www.okaz.com.sa/economy/na/2229266",
+     "publisher": "Okaz",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "91, 95 and diesel are consistent across all sources, including a search extract of aramco.com, so treat them as effectively confirmed. Kerosene 1.75 is supported by a reported aramco.com extract and Annahar. The 98 price is volatile and sources conflict (3.83, 3.93, 4.51, 4.64, 5.33); 5.33 for Oct 2026 is secondary only. The exact October review date (11 Oct) is inferred from a secondary report of 'next update 11 Nov'. aramco.com could not be fetched; re-check after the November review. A November 2026 98 price was not yet published.",
+   "values": {
+    "unit": "SAR_per_litre",
+    "gasoline91": 2.18,
+    "gasoline95": 2.33,
+    "gasoline98": {
+     "price": 5.33,
+     "month": "2026-10",
+     "confidence": "secondary",
+     "history": [
+      {
+       "month": "2026-01",
+       "price": 2.88
+      },
+      {
+       "month": "2026-07",
+       "price": 3.93
+      },
+      {
+       "month": "2026-08",
+       "price": 4.49
+      },
+      {
+       "month": "2026-09",
+       "price": 4.64
+      },
+      {
+       "month": "2026-10",
+       "price": 5.33
+      }
+     ]
+    },
+    "diesel": 1.79,
+    "kerosene": 1.75,
+    "lpg": {
+     "cylinder11kgSAR": 26.23,
+     "cylinder5kgSAR": 11.93,
+     "centralTankSARPerLitre": 1.77,
+     "source": "Okaz (Jan 2026, GASCO pricing)",
+     "confidence": "secondary"
+    },
+    "recentChanges": [
+     {
+      "date": "2026-01-01",
+      "product": "diesel",
+      "from": 1.66,
+      "to": 1.79
+     },
+     {
+      "date": "2026-01",
+      "product": "gasoline98",
+      "event": "launched",
+      "to": 2.88
+     },
+     {
+      "date": "2026-07-01",
+      "product": "kerosene",
+      "from": 1.59,
+      "to": 1.75
+     },
+     {
+      "date": "2026-10",
+      "product": "gasoline98",
+      "from": 4.64,
+      "to": 5.33
+     }
+    ],
+    "gasoline91_95CappedSince": "2021-07",
+    "vatIncluded": "believed included (retail pump price); not confirmed in this research"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "vehicle_registration": {
+   "summary_en": "Private vehicle registration (istimara) costs SAR 100 per year of validity, paid via Absher or SADAD. A valid Fahas inspection, valid insurance and paid traffic fines are required. An annual fuel-efficiency fee of SAR 0-190 is added at issuance and renewal. For light vehicles of model year 2016 and later it depends on km/L: 0 at 16 or more, 50 at 14-15.99, 85 at 12-13.99, 130 at 10-11.99, 190 below 10. For 2015 and older light vehicles it depends on engine size: 0 up to 1.9 L, 50 for 1.91-2.4, 85 for 2.41-3.2, 130 for 3.21-4.5, 190 above 4.5. Ownership transfer is reported at SAR 150.",
+   "summary_ar": "رسم رخصة السير (الاستمارة) للمركبة الخاصة 100 ريال عن كل سنة، ويُدفع عبر أبشر أو سداد، ويشترط سريان الفحص الدوري والتأمين وسداد المخالفات. يضاف المقابل المالي السنوي لكفاءة استهلاك الوقود من 0 إلى 190 ريالاً. للمركبات الخفيفة موديل 2016 فأحدث يعتمد على كم/لتر: 0 (16 فأكثر)، 50 (14-15.99)، 85 (12-13.99)، 130 (10-11.99)، 190 (أقل من 10). لموديل 2015 فأقدم يعتمد على سعة المحرك: 0 (حتى 1.9 لتر)، 50، 85، 130، 190 (أكثر من 4.5). رسم نقل الملكية 150 ريالاً حسب التقارير.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Added Financial Consideration (fuel economy) - About / FAQs",
+     "url": "https://www.saso.gov.sa/ar/AddedFinancialConsideration/Pages/About.aspx",
+     "publisher": "SASO",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Council of Ministers decision on fuel-efficiency fee levels",
+     "url": "https://www.alwatan.com.sa/article/1085163",
+     "publisher": "Al Watan",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Comprehensive Guide to Car Registration in Saudi Arabia 2026",
+     "url": "https://yallamotor.com/news/comprehensive-car-registration-guide-saudi-arabia-2026-steps-fees-documents-55029",
+     "publisher": "YallaMotor",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Don't Let Your Istimara Expire! Learn How to Renew It via Absher",
+     "url": "https://ksa.carswitch.com/newsroom/en/2025/01/15/renew-istimara-via-absher/",
+     "publisher": "CarSwitch",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "رسوم نقل ملكية سيارة",
+     "url": "https://syarah.com/carsguide/transfer-car-ownership-fees/",
+     "publisher": "Syarah",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "No moi.gov.sa or Absher page was retrieved. The SAR 100/year istimara fee is consistent across secondary sources. A separate report mentions a reform extending private istimara to 10 years for SAR 400, which is not confirmed as current. The fuel-efficiency fee tiers come from the SASO official page (range 0-190) and the Council of Ministers decision as reported by Al Watan. Phase timing: 2023 for new light vehicles, the rest gradually to 2026. Plate issuance fee: NOT confirmed (one guide says SAR 100). Ownership transfer is SAR 150 per some sources, and one source says 200 for residents.",
+   "values": {
+    "unit": "SAR",
+    "privateRegistrationPerYear": 100,
+    "renewalWindowDaysBeforeExpiry": 180,
+    "fuelEfficiencyFeePerYear": {
+     "lightVehicles2016Plus_kmPerL": [
+      {
+       "minKmL": 16,
+       "fee": 0
+      },
+      {
+       "minKmL": 14,
+       "maxKmL": 15.99,
+       "fee": 50
+      },
+      {
+       "minKmL": 12,
+       "maxKmL": 13.99,
+       "fee": 85
+      },
+      {
+       "minKmL": 10,
+       "maxKmL": 11.99,
+       "fee": 130
+      },
+      {
+       "maxKmLExclusive": 10,
+       "fee": 190
+      }
+     ],
+     "lightVehicles2015AndOlder_and_heavy_engineL": [
+      {
+       "maxL": 1.9,
+       "fee": 0
+      },
+      {
+       "minL": 1.91,
+       "maxL": 2.4,
+       "fee": 50
+      },
+      {
+       "minL": 2.41,
+       "maxL": 3.2,
+       "fee": 85
+      },
+      {
+       "minL": 3.21,
+       "maxL": 4.5,
+       "fee": 130
+      },
+      {
+       "minLExclusive": 4.5,
+       "fee": 190
+      }
+     ]
+    },
+    "ownershipTransferPrivate": 150,
+    "plateIssuance": null,
+    "plateReplacementDamagedOrLost": 100,
+    "vat": "not applicable (government fee, outside VAT scope)"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "driving_licence": {
+   "summary_en": "Private driving licence issuance or renewal costs SAR 40 per year of validity: 2 years SAR 80, 5 years SAR 200, 10 years SAR 400. Citizens can get up to 10 years; residents' validity is tied to the iqama (reported up to 5 years). Online renewal on Absher opens when less than 180 days remain, and needs a medical check and paid fines. A public works licence is SAR 100 per year.",
+   "summary_ar": "رسم رخصة القيادة الخاصة 40 ريالاً عن كل سنة من مدة الصلاحية: سنتان 80 ريالاً، 5 سنوات 200 ريال، 10 سنوات 400 ريال. المواطن حتى 10 سنوات، والمقيم مرتبطة بصلاحية الإقامة (حتى 5 سنوات حسب التقارير). يتاح التجديد عبر أبشر قبل الانتهاء بأقل من 180 يوماً مع الفحص الطبي وسداد المخالفات. رخصة الأشغال العامة 100 ريال لكل سنة.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Driving license renewal fees in Saudi Arabia",
+     "url": "https://syarah.com/carsguide/en/renew-driving-license-fees/",
+     "publisher": "Syarah",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "رسوم رخصة القيادة",
+     "url": "https://www.almuraba.net/%d8%b1%d8%b3%d9%88%d9%85-%d8%b1%d8%ae%d8%b5%d8%a9-%d8%a7%d9%84%d9%82%d9%8a%d8%a7%d8%af%d8%a9/",
+     "publisher": "Al Muraba",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "المرور يعلن رسوم رخص السير والقيادة بجميع أنواعها",
+     "url": "https://ajel.sa/XNTfSk/",
+     "publisher": "Ajel (citing General Directorate of Traffic)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "ZATCA: government activity as public authority (e.g. issuing driving licenses) outside VAT scope",
+     "url": "https://zatca.gov.sa/en/MediaCenter/News/Pages/News_099.aspx",
+     "publisher": "ZATCA",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "No moi.gov.sa page retrieved. The SAR 40/year figure is consistent across many secondary sources. Whether a 1-year term is offered, and the exact resident validity limit, are unconfirmed. Separate fees for a first-time driving school course or test are not covered.",
+   "values": {
+    "unit": "SAR",
+    "privatePerYear": 40,
+    "examples": {
+     "years2": 80,
+     "years5": 200,
+     "years10": 400
+    },
+    "publicWorksPerYear": 100,
+    "maxValidityYearsCitizen": 10,
+    "maxValidityYearsResident": 5,
+    "renewalWindowDays": 180,
+    "vat": "not applicable (government fee, outside VAT scope)"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "vehicle_inspection": {
+   "summary_en": "Periodic technical inspection (Fahas / MVPI) for a private car costs SAR 115 including VAT (SAR 100 + SAR 15 VAT). Re-inspection costs SAR 37.95 including VAT and is allowed twice within 14 working days, checking only the failed items. The certificate is valid for one year. A new car's first inspection is due 3 years after first registration.",
+   "summary_ar": "رسم الفحص الفني الدوري (فحص) للسيارة الخاصة 115 ريالاً شاملة الضريبة (100 + 15 ضريبة). رسم إعادة الفحص 37.95 ريالاً شاملة الضريبة، ويسمح به مرتين خلال 14 يوم عمل للعناصر المرفوضة فقط. الشهادة صالحة سنة، وأول فحص للسيارة الجديدة بعد 3 سنوات من التسجيل.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "SASO Periodic Technical Inspection booking platform",
+     "url": "https://pti.saso.gov.sa",
+     "publisher": "SASO",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Fahas in Saudi Arabia 2026: What Gets Checked, How to Book, Fees",
+     "url": "https://www.sayarabay.com/car-news/fahas-in-saudi-arabia-2026-what-gets-checked-how-to-book-fees-and-what-to-do-if-your-car-fails",
+     "publisher": "SayaraBay",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Fahas Appointment 2026: How to Book MVPI Car Inspection Online, Fees and Validity",
+     "url": "https://saudilifeguide.com/?p=2194",
+     "publisher": "Saudi Life Guide",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Vehicle Periodic Inspection (Fahas) in Saudi Arabia: Complete Guide",
+     "url": "https://ksaexpats.com/how-to-perform-fahas-mvpi-in-saudi-arabia/",
+     "publisher": "KSA Expats",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "The SASO fee page was not retrieved directly; one secondary guide says it captured it on 2026-10-11. reinspectionExVat 33 is derived as 37.95/1.15. Fees may vary slightly by licensed provider.",
+   "values": {
+    "unit": "SAR",
+    "privateCarInspectionExVat": 100,
+    "privateCarInspectionInclVat": 115,
+    "reinspectionInclVat": 37.95,
+    "reinspectionExVat": 33,
+    "reinspectionWindowWorkingDays": 14,
+    "maxReinspections": 2,
+    "validityYears": 1,
+    "firstInspectionAfterYears": 3,
+    "vatApplies": true
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "ev_charging": {
+   "summary_en": "No regulated (WERA/SERA) public EV charging tariff was found. Public charging is priced by each operator. E-FILL (ASX E-Mobility) announced a standard public tariff of SAR 0.99/kWh in June 2025. No official EVIQ per-kWh tariff was found. Home charging pays the normal residential electricity tariff.",
+   "summary_ar": "لم يُعثر على تعرفة منظمة (من هيئة تنظيم المياه والكهرباء) لشحن السيارات الكهربائية العام. الأسعار تجارية يحددها كل مشغل. أعلنت E-FILL تعرفة موحدة 0.99 ريال لكل ك.و.س في يونيو 2025. لا توجد تعرفة رسمية منشورة لـ EVIQ. الشحن المنزلي يخضع للتعرفة السكنية العادية.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "E-FILL owned by ASX E-Mobility announces the first EV charging tariff in the Kingdom",
+     "url": "https://www.zawya.com/en/press-release/companies-news/e-fill-owned-by-asx-e-mobility-announces-the-first-ev-charging-tariff-in-the-kingdom-aljhumrx",
+     "publisher": "Zawya (press release)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "E-FILL Introduces Public Tariff to Advance Saudi Arabia's Electric Mobility Vision",
+     "url": "https://www.saudigulfprojects.com/2025/06/e-fill-introduces-public-tariff-to-advance-saudi-arabias-electric-mobility-vision",
+     "publisher": "Saudi Gulf Projects",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "unconfirmed",
+   "notes": "The E-FILL press release text says '0.99 halalas', but its example (50 kWh = SAR 49.5) implies SAR 0.99/kWh. EVIQ prices (0.65/0.99 SAR, or 2-3 SAR/kWh) appear only on unofficial sites with conflicting figures, so no number is given. The calculator should not present a regulated EV tariff.",
+   "values": {
+    "regulatedTariff": null,
+    "operatorPublished": [
+     {
+      "operator": "E-FILL (ASX E-Mobility)",
+      "SARPerKWh": 0.99,
+      "announced": "2025-06",
+      "vat": "unconfirmed"
+     }
+    ],
+    "eviq": null,
+    "homeCharging": "use electricity_residential"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "vat": {
+   "summary_en": "Standard VAT in Saudi Arabia is 15%, effective 1 July 2020 (up from 5%). It applies to electricity and water/wastewater bills (consumption and fixed or meter charges; published electricity tariffs exclude VAT), fuel at the pump (believed VAT-inclusive), Fahas inspection (SAR 100 + 15% = 115) and commercial EV charging. Government fees charged as a public authority, such as istimara, driving licences, plates and ownership transfer, are outside the VAT scope.",
+   "summary_ar": "نسبة ضريبة القيمة المضافة الأساسية 15% منذ 1 يوليو 2020 (بعد أن كانت 5%). تُطبق على فواتير الكهرباء والمياه والصرف الصحي (الاستهلاك والرسوم الثابتة، وأسعار الكهرباء المعلنة لا تشملها)، والوقود (يُعتقد أن سعر المضخة شامل الضريبة)، والفحص الدوري (100 + 15% = 115)، والشحن التجاري للسيارات الكهربائية. الرسوم الحكومية بصفتها سلطة عامة (الاستمارة، رخصة القيادة، اللوحات، نقل الملكية) خارج نطاق الضريبة.",
+   "effectiveFrom": "2020-07-01",
+   "sources": [
+    {
+     "title": "الزكاة والدخل: ضريبة القيمة المضافة بنسبة 15% تدخل حيّز التنفيذ",
+     "url": "https://zatca.gov.sa/en/MediaCenter/News/Pages/News-342.aspx",
+     "publisher": "ZATCA",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "GAZT: VAT of 15% Goes into Effect in July, 2020",
+     "url": "https://www.spa.gov.sa/2085204",
+     "publisher": "Saudi Press Agency",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Guideline for the Electricity and Public Utilities Sector under VAT Provisions",
+     "url": "https://zatca.gov.sa/en/HelpCenter/guidelines/Documents/Guideline-for-the-Electricity-and-Public-Utilities-Sector-under-VAT-Provisions.pdf",
+     "publisher": "ZATCA",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "ZATCA news: activities of government bodies as public authority (e.g. passports, driving licenses) outside VAT scope",
+     "url": "https://zatca.gov.sa/en/MediaCenter/News/Pages/News_099.aspx",
+     "publisher": "ZATCA",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "The 15% rate and 2020-07-01 date are confirmed by ZATCA and SPA. Utilities being standard-rated is supported by ZATCA's utilities guideline (title only seen) and by Saudi Energy's statement that VAT is added to bills. The 'outside scope' treatment of istimara and licence fees is inferred from ZATCA's public-authority rule, which names driving licences explicitly. Whether fuel prices include VAT was not verified.",
+   "values": {
+    "standardRate": 0.15,
+    "effectiveFrom": "2020-07-01",
+    "previousRate": 0.05,
+    "appliesTo": {
+     "electricity": true,
+     "water": true,
+     "wastewater": true,
+     "fuel": "true (pump prices believed VAT-inclusive; unconfirmed)",
+     "vehicleInspection": true,
+     "evChargingCommercial": true,
+     "vehicleRegistration": false,
+     "drivingLicence": false,
+     "plates": false,
+     "ownershipTransfer": false
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "national_holidays": {
+   "summary_en": "Two fixed Gregorian national holidays: Founding Day (22 February) and National Day (23 September), one day each, for both private and government sectors. Private sector: Article 24 of the Labor Law Implementing Regulations (Founding Day added by ministerial amendment in 2022); no compensation if either day coincides with an Eid holiday; if it falls on the weekly rest day the worker is compensated (another day off or extra pay). Government (Civil Service HR regulation, Art. 127(b) as amended): if the day falls on Friday it is observed on the preceding Thursday; if on Saturday, on the following Sunday.",
+   "summary_ar": "إجازتان وطنيتان ثابتتان بالتقويم الميلادي: يوم التأسيس (22 فبراير) واليوم الوطني (23 سبتمبر)، يوم واحد لكل منهما للقطاعين الخاص والحكومي. القطاع الخاص: المادة 24 من اللائحة التنفيذية لنظام العمل (أضيف يوم التأسيس بتعديل وزاري عام 2022)، ولا يعوَّض العامل إذا وافق أحدهما إجازة أحد العيدين، ويعوَّض إذا وافق يوم الراحة الأسبوعية. القطاع الحكومي (المادة 127/ب من اللائحة التنفيذية للموارد البشرية في الخدمة المدنية): إذا وافق الجمعة يعوَّض بالخميس السابق، وإذا وافق السبت يعوَّض بالأحد التالي.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "MHRSD amendment to Labor Law Implementing Regulations (Founding Day one day, 22 Feb; no compensation when coinciding with Eid)",
+     "url": "https://www.hrsd.gov.sa/sites/default/files/2023-02/E131235.pdf",
+     "publisher": "Ministry of Human Resources and Social Development",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "MHRSD amends work system regulation regarding Founding Day holiday",
+     "url": "https://saudigazette.com.sa/article/617298",
+     "publisher": "Saudi Gazette",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Civil Service HR regulation Art. 127(b) amendment: National/Founding Day weekend compensation",
+     "url": "https://www.okaz.com.sa/ampArticle/2125835",
+     "publisher": "Okaz",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Official holiday rules amended for state employees in Saudi Arabia",
+     "url": "https://gulfnews.com/amp/story/world%2Fgulf%2Fsaudi%2Fofficial-holiday-rules-amended-for-state-employees-in-saudi-arabia-1.93618921",
+     "publisher": "Gulf News",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "MHRSD announces National Day holiday 23 Sep 2026 (12 Rabi II 1448) for private and non-profit sectors",
+     "url": "https://www.ewdifh.com/jobs/72831",
+     "publisher": "ewdifh.com (reporting MHRSD)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "Founding Day/National Day rules confirmed via MHRSD PDF + press. Private-sector weekend compensation is per Art. 24 wording as reported; exact current Art. 24 text on laws.boe.gov.sa / hrsd.gov.sa not read in full (fetch blocked). Banks follow SAMA circulars, which may differ.",
+   "values": {
+    "founding_day": {
+     "date": "02-22",
+     "calendar": "gregorian",
+     "days": 1,
+     "since": "2022 (Royal Order, Jan 2022)"
+    },
+    "national_day": {
+     "date": "09-23",
+     "calendar": "gregorian",
+     "days": 1
+    },
+    "private_sector_weekend_rule": "compensated with another day off or extra pay if it falls on the weekly rest day; not compensated if it coincides with Eid holiday",
+    "government_weekend_rule": {
+     "friday": "observed preceding Thursday",
+     "saturday": "observed following Sunday"
+    },
+    "2026_instances": {
+     "founding_day": "2026-02-22 (Sunday)",
+     "national_day": "2026-09-23 (Wednesday) - announced by MHRSD for private & non-profit sectors"
+    },
+    "2027_instances_computed": {
+     "founding_day": "2027-02-22 (Monday; falls within Ramadan 1448)",
+     "national_day": "2027-09-23 (Thursday)"
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "eid_holidays": {
+   "summary_en": "Private and non-profit sector (Labor Law Implementing Regulations Art. 24): Eid al-Fitr 4 days starting the day after 29 Ramadan (Umm al-Qura); Eid al-Adha 4 days starting from Arafat Day (9 Dhu al-Hijjah). If an Eid holiday overlaps the weekly rest day, the worker is compensated with equivalent days before or after. MHRSD issues an announcement before each Eid confirming dates. Government sector: set by Cabinet decision; Cabinet Decision No. 532 (Jan 2024) as amended in July 2025 sets each Eid holiday at a minimum of 4 and maximum of 5 working days for employees under the Civil Service system (and Labor-Law contract staff in Civil-Service entities); actual government Eid holidays are often longer in calendar days (announced per Eid by circular).",
+   "summary_ar": "القطاع الخاص وغير الربحي (المادة 24 من اللائحة التنفيذية لنظام العمل): عيد الفطر أربعة أيام تبدأ من اليوم التالي لـ29 رمضان وفق تقويم أم القرى، وعيد الأضحى أربعة أيام تبدأ من يوم عرفة. وإذا تداخلت مع الراحة الأسبوعية يعوَّض العامل بما يعادلها قبل الإجازة أو بعدها. وتعلن وزارة الموارد البشرية المواعيد قبل كل عيد. القطاع الحكومي: بقرار مجلس الوزراء رقم 532 (يناير 2024) المعدّل في يوليو 2025: حد أدنى أربعة أيام عمل وحد أقصى خمسة أيام عمل لكل عيد.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Saudi Arabia modifies Eid holidays for gov't employees subject to Labor Law",
+     "url": "https://www.argaam.com/en/article/articledetail/id/1827194",
+     "publisher": "Argaam",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia revises Eid holidays under Labor Law for government entities (Jul 2025)",
+     "url": "https://www.saudi-expatriates.com/2025/07/saudi-arabia-revises-eid-holidays-under-labor-law-for-government-entities.html",
+     "publisher": "saudi-expatriates.com",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces Eid holiday rules, sets minimum 4-day break",
+     "url": "https://arabianbusiness.com/culture-society/saudi-arabia-announces-eid-holiday-rules-sets-minimum-4-day-break",
+     "publisher": "Arabian Business",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Article 24 of the Labor Law Implementing Regulations (Eid al-Fitr 4 days from day after 29 Ramadan Umm al-Qura)",
+     "url": "https://www.okaz.com.sa/local/na/2240202",
+     "publisher": "Okaz",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces Eid Al Fitr holidays for private and non-profit sectors",
+     "url": "https://gulfnews.com/world/gulf/saudi/saudi-arabia-announces-eid-al-fitr-holidays-for-private-and-non-profit-sectors-1.500462986",
+     "publisher": "Gulf News",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "4+4 private-sector rule consistent across MHRSD announcements (2025, 2026) and press. The July 2025 Cabinet amendment's exact scope is reported slightly differently by outlets (Civil Service employees vs. Labor-Law staff in government entities); verify on laws.boe.gov.sa. The Feb 2025 Labor Law amendments (Royal Decree M/44) did not, per sources found, change Eid lengths; updated implementing regulations not verified.",
+   "values": {
+    "private_sector": {
+     "eid_al_fitr_days": 4,
+     "eid_al_fitr_start": "day after 29 Ramadan (Umm al-Qura)",
+     "eid_al_adha_days": 4,
+     "eid_al_adha_start": "9 Dhu al-Hijjah (Arafat Day)",
+     "weekend_overlap": "compensated with equivalent days before/after"
+    },
+    "government_sector": {
+     "eid_working_days_min": 4,
+     "eid_working_days_max": 5,
+     "basis": "Cabinet Decision No. 532 (Jan 2024), amended July 2025"
+    },
+    "how_dates_set": "Hijri months per Umm al-Qura calendar; start of Ramadan, Shawwal and Dhu al-Hijjah confirmed by Supreme Court after crescent sighting on the 29th; MHRSD/government then announce holiday dates."
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "holiday_dates_2026": {
+   "summary_en": "2026 (1447 AH) official dates: Founding Day Sun 22 Feb; Ramadan began Wed 18 Feb (crescent sighted 17 Feb); Eid al-Fitr Fri 20 Mar (Shawwal crescent not sighted on 18 Mar, Ramadan completed 30 days); private-sector Eid al-Fitr holiday 4 days from end of work Wed 18 Mar (29 Ramadan). Dhu al-Hijjah began Mon 18 May; Arafat Day Tue 26 May; Eid al-Adha Wed 27 May; private-sector Eid al-Adha holiday 4 days starting 9 Dhu al-Hijjah (26 May) through 12 Dhu al-Hijjah (29 May). National Day Wed 23 Sep.",
+   "summary_ar": "مواعيد 2026 (1447هـ): يوم التأسيس الأحد 22 فبراير؛ بدأ رمضان الأربعاء 18 فبراير؛ عيد الفطر الجمعة 20 مارس (لم يُرَ هلال شوال مساء 18 مارس فأُكمل رمضان ثلاثين)؛ إجازة القطاع الخاص 4 أيام بدءاً من نهاية دوام الأربعاء 18 مارس (29 رمضان). بدأ ذو الحجة الاثنين 18 مايو؛ يوم عرفة الثلاثاء 26 مايو؛ عيد الأضحى الأربعاء 27 مايو؛ إجازة القطاع الخاص 4 أيام من 9 إلى 12 ذو الحجة (26–29 مايو). اليوم الوطني الأربعاء 23 سبتمبر.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Ramadan to begin Wednesday after crescent moon sighted in Saudi Arabia",
+     "url": "https://www.arabnews.pk/node/2633313",
+     "publisher": "Arab News",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces first day of Eid Al Fitr 2026; crescent not sighted",
+     "url": "https://gulfnews.com/world/gulf/saudi/saudi-arabia-announces-first-day-of-eid-al-fitr-2026-1.500478696",
+     "publisher": "Gulf News",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces Eid Al Fitr holidays for private and non-profit sectors",
+     "url": "https://gulfnews.com/world/gulf/saudi/saudi-arabia-announces-eid-al-fitr-holidays-for-private-and-non-profit-sectors-1.500462986",
+     "publisher": "Gulf News",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia: Crescent moon sighted, Eid al-Adha on May 27",
+     "url": "https://www.siasat.com/?p=3472684",
+     "publisher": "Siasat Daily",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Supreme Court calls for sighting of Dhu al-Hijjah crescent on Sunday",
+     "url": "https://petra.gov.jo/gweb/index.php/en/news/saudi-supreme-court-calls-for-sighting-of-dhu-al-hijjah-crescent-on-sunday",
+     "publisher": "Petra (Jordan News Agency)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "إجازة عيد الأضحى 2026 للقطاع الخاص في السعودية: الموارد البشرية تعلن المواعيد",
+     "url": "https://www.capsulaa.sa/اقتصاد/إجازة-عيد-الأضحى-2026-في-السعودية-للقطاعين-الخاص-وغير-الربحي-4-أيام/",
+     "publisher": "Capsulaa (reporting MHRSD)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "Eid/Ramadan dates confirmed by multiple outlets reporting Supreme Court announcements; SPA original not retrieved (site: search returned nothing). Exact last day of the Eid al-Fitr private holiday reported inconsistently (21 vs 22 Mar).",
+   "values": {
+    "founding_day": "2026-02-22",
+    "ramadan_start": "2026-02-18",
+    "eid_al_fitr": "2026-03-20",
+    "eid_al_fitr_private_holiday": {
+     "start": "after close of work 2026-03-18 (29 Ramadan 1447)",
+     "days": 4,
+     "end_reported": "2026-03-22 (some outlets said 21 Mar; 4-day count implies 22 Mar)"
+    },
+    "arafat_day": "2026-05-26",
+    "eid_al_adha": "2026-05-27",
+    "eid_al_adha_private_holiday": {
+     "start": "2026-05-26 (9 Dhu al-Hijjah)",
+     "end": "2026-05-29 (12 Dhu al-Hijjah)",
+     "days": 4,
+     "resume": "2026-05-30 for establishments working Saturdays"
+    },
+    "national_day": "2026-09-23",
+    "government_eid_holidays": "announced per circular; not verified in detail (reports for Eid al-Adha cite ~5–13 or 5–16 Dhu al-Hijjah)"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "holiday_dates_2027": {
+   "summary_en": "As of 3 Nov 2026, no official 2027 Eid dates/holidays have been announced (they are announced shortly before each Eid after crescent sighting). Umm al-Qura astronomical estimates: Ramadan 1448 begins ~Mon 8 Feb 2027; Eid al-Fitr ~Tue 9 Mar 2027; Arafat Day ~Sat 15 May 2027; Eid al-Adha ~Sun 16 May 2027. Fixed: Founding Day Mon 22 Feb 2027, National Day Thu 23 Sep 2027. All Hijri-based dates may shift by ±1 day.",
+   "summary_ar": "حتى 3 نوفمبر 2026 لم تُعلن رسمياً مواعيد أعياد 2027. التقديرات الفلكية وفق تقويم أم القرى: بداية رمضان 1448 نحو الاثنين 8 فبراير 2027؛ عيد الفطر نحو الثلاثاء 9 مارس 2027؛ يوم عرفة نحو السبت 15 مايو 2027؛ عيد الأضحى نحو الأحد 16 مايو 2027. يوم التأسيس الاثنين 22 فبراير 2027، واليوم الوطني الخميس 23 سبتمبر 2027. قد تتغير المواعيد الهجرية يوماً واحداً حسب الرؤية.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Ramadan 2027 Saudi Arabia: Expected Dates and Eid Al Fitr Holidays",
+     "url": "https://saudilifeguide.com/ramadan-2027-saudi-arabia-dates-eid-holidays/",
+     "publisher": "Saudi Life Guide",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia Eid Al Adha 2027 Holiday for Private and Public Sectors",
+     "url": "https://blog.wego.com/saudi-arabia-eid-ul-adha-holiday/",
+     "publisher": "Wego",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Moon sighting reports / Ramadan 1448 expectation",
+     "url": "https://moonsighting.org.uk/moon/sighting-reports/report-1448-09.html",
+     "publisher": "moonsighting.org.uk",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "عداد عيد الفطر (أم القرى)",
+     "url": "https://khaleejcalculators.com/countdown/eid-al-fitr",
+     "publisher": "Khaleej Calculators",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "unconfirmed",
+   "notes": "ESTIMATES ONLY. Umm al-Qura table not read directly from an official source. moonsighting.org.uk expects Shawwal 1448 on 10 Mar 2027 (one day later). Some sources put Eid al-Fitr estimate at 8 Mar. Founding Day and National Day dates are fixed and certain; weekday computed.",
+   "values": {
+    "announced": false,
+    "founding_day": "2027-02-22",
+    "ramadan_start_estimate": "2027-02-08",
+    "eid_al_fitr_estimate": "2027-03-09",
+    "arafat_day_estimate": "2027-05-15",
+    "eid_al_adha_estimate": "2027-05-16",
+    "national_day": "2027-09-23",
+    "estimate_basis": "Umm al-Qura calendar (astronomical); subject to Supreme Court crescent-sighting announcement"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "ramadan": {
+   "summary_en": "Ramadan 1447 began Wed 18 Feb 2026 (Supreme Court announced crescent sighted on evening of 17 Feb, 29 Sha'ban) and lasted 30 days (Eid al-Fitr 20 Mar 2026). Ramadan 1448 is expected (Umm al-Qura) to begin ~Mon 8 Feb 2027, 29 days to 8 Mar. Saudi Arabia confirms month starts by visual crescent sighting (Supreme Court call on the 29th), which can differ by a day from Umm al-Qura/astronomical predictions — e.g., 2026 start was announced although astronomers predicted the crescent would not be visible.",
+   "summary_ar": "بدأ رمضان 1447 يوم الأربعاء 18 فبراير 2026 بعد إعلان المحكمة العليا رؤية الهلال مساء 17 فبراير، واكتمل ثلاثين يوماً (عيد الفطر 20 مارس 2026). ويتوقع بحسب تقويم أم القرى أن يبدأ رمضان 1448 نحو الاثنين 8 فبراير 2027. وتعتمد المملكة الرؤية البصرية للهلال، وقد يختلف الإعلان يوماً عن الحساب الفلكي.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Ramadan to begin Wednesday after crescent moon sighted in Saudi Arabia",
+     "url": "https://www.arabnews.pk/node/2633313",
+     "publisher": "Arab News",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Ramadan 2026: Saudi Arabia calls on Muslims to sight crescent moon on Feb. 17",
+     "url": "https://english.alarabiya.net/News/saudi-arabia/2026/02/15/ramadan-2026-saudi-arabia-calls-on-muslims-to-sight-crescent-moon-on-feb-17",
+     "publisher": "Al Arabiya",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia declares Ramadan 2026 start date despite 'not visible' moon warning",
+     "url": "https://uk.news.yahoo.com/saudi-arabia-declares-ramadan-2026-163342225.html",
+     "publisher": "Yahoo News",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Ramadan 2027 Saudi Arabia: Expected Dates",
+     "url": "https://saudilifeguide.com/ramadan-2027-saudi-arabia-dates-eid-holidays/",
+     "publisher": "Saudi Life Guide",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "2026 confirmed (multiple outlets citing Supreme Court). 2027 is an estimate (secondary/unconfirmed).",
+   "values": {
+    "ramadan_1447": {
+     "start": "2026-02-18",
+     "end": "2026-03-19",
+     "days": 30,
+     "status": "official (Supreme Court)"
+    },
+    "ramadan_1448": {
+     "start_estimate": "2027-02-08",
+     "end_estimate": "2027-03-08",
+     "status": "Umm al-Qura estimate"
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "ramadan_working_hours": {
+   "summary_en": "Private sector: Labor Law Article 98 caps working hours for Muslim workers during Ramadan at 6 hours/day and 36 hours/week (normal cap 8/day, 48/week); MHRSD restates this each Ramadan. Government sector: MHRSD typically sets Ramadan official hours at 5 hours, 10:00–15:00, with flexibility for agencies (confirmed for 2023 announcement; 2026 reported by secondary sources).",
+   "summary_ar": "القطاع الخاص: تنص المادة 98 من نظام العمل على تخفيض ساعات العمل الفعلية للعمال المسلمين في رمضان بحيث لا تزيد على ست ساعات يومياً أو ستٍّ وثلاثين ساعة أسبوعياً (بدلاً من 8 ساعات يومياً و48 أسبوعياً). القطاع الحكومي: تحدد وزارة الموارد البشرية الدوام في رمضان عادةً من الساعة 10 صباحاً حتى 3 عصراً (5 ساعات) مع مرونة للجهات.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "MHRSD knowledge centre article on working hours",
+     "url": "https://www.hrsd.gov.sa/knowledge-centre/articles/312",
+     "publisher": "Ministry of Human Resources and Social Development",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "MHRSD announces Ramadan working hours for private sector",
+     "url": "https://english.ajel.sa/saudi-arabia/mhrsd-announces-ramadan-working-hours-for-private-sector",
+     "publisher": "Ajel",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia announces 2023 Ramadan working hours (government 10am-3pm)",
+     "url": "https://www.arabianbusiness.com/abnews/saudi-arabia-announces-2023-ramadan-working-hours",
+     "publisher": "Arabian Business",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "نص المادة 98 من نظام العمل",
+     "url": "https://www.mohamah.net/law/%d9%82%d8%b1%d8%a7%d8%a1%d8%a9-%d9%87%d8%a7%d9%85%d8%a9-%d9%81%d9%8a-%d9%86%d8%b5-%d8%a7%d9%84%d9%85%d8%a7%d8%af%d8%a9-98-%d9%85%d9%86-%d9%86%d8%b8%d8%a7%d9%85-%d8%a7%d9%84%d8%b9%d9%85%d9%84-%d8%a7/",
+     "publisher": "mohamah.net",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "Private 6h/36h rule is long-standing statute (Art. 98) and widely reported; Art. 98 text on laws.boe.gov.sa not read directly. Government 10:00–15:00 confirmed for 2023 announcement; no 2026 MHRSD release retrieved (one guide claimed 9:00–15:00). Treat government hours as 'secondary'.",
+   "values": {
+    "private_sector": {
+     "max_hours_per_day": 6,
+     "max_hours_per_week": 36,
+     "applies_to": "Muslim workers",
+     "legal_basis": "Labor Law Art. 98"
+    },
+    "private_sector_normal": {
+     "max_hours_per_day": 8,
+     "max_hours_per_week": 48
+    },
+    "government_sector": {
+     "hours": "10:00-15:00",
+     "hours_per_day": 5,
+     "flexibility": "agencies may adjust per work needs"
+    }
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "school_calendar_2025_2026": {
+   "summary_en": "Academic year 1447 AH (2025–2026): Cabinet approved return to TWO semesters for public schools starting 1447/1448 (replacing the 3-semester model); MOE published a multi-year calendar (reported as four years). At least 180 instructional days. Students started Sun 24 Aug 2025. Mid-year (first-semester) break ~20–28 Rajab 1447 (9–17 Jan 2026). Year-end summer holiday began ~10 Muharram 1448 (~25 Jun 2026). Reported to include 9 breaks (~59 days) incl. National Day, long weekends, Founding Day, Eid al-Fitr and Eid al-Adha breaks; Makkah, Madinah, Jeddah, Taif may have adjusted dates. Private/international schools and universities may choose their own model.",
+   "summary_ar": "العام الدراسي 1447هـ (2025–2026): وافق مجلس الوزراء على العودة إلى نظام الفصلين الدراسيين في مدارس التعليم العام بدءاً من 1447/1448هـ، واعتمدت وزارة التعليم تقويماً لعدة أعوام. لا يقل عن 180 يوماً دراسياً. بدأت الدراسة الأحد 24 أغسطس 2025. إجازة منتصف العام نحو 20–28 رجب 1447 (9–17 يناير 2026). بدأت إجازة نهاية العام نحو 10 محرم 1448 (نحو 25 يونيو 2026). يتضمن نحو 9 إجازات (قرابة 59 يوماً) منها اليوم الوطني وإجازات نهاية أسبوع مطولة ويوم التأسيس وعيدا الفطر والأضحى، مع مرونة لمكة والمدينة وجدة والطائف.",
+   "effectiveFrom": "2025-08-24",
+   "sources": [
+    {
+     "title": "Saudi Arabia returns to two-semester school year in 2025-2026",
+     "url": "https://www.saudigazette.com.sa/article/653944",
+     "publisher": "Saudi Gazette",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia returns to two-semester school year, unveils four-year academic roadmap",
+     "url": "https://gulfnews.com/world/gulf/saudi/saudi-arabia-returns-to-two-semester-school-year-unveils-four-year-academic-roadmap-1.500223782",
+     "publisher": "Gulf News",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "التعليم تعتمد التقويم الدراسي لعامي 1447 و1448هـ",
+     "url": "https://www.argaam.com/ar/article/articledetail/id/1833639",
+     "publisher": "Argaam",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "اعتماد فصلين دراسيين وإجازة منتصف عام مطولة.. تفاصيل التقويم الجديد للعامين 1447هـ و1448هـ",
+     "url": "https://sabq.org/article/88W5Bkt",
+     "publisher": "Sabq",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "9 إجازات خلال العام الدراسي 1447هـ بإجمالي 59 يومًا في نظام الفصلين",
+     "url": "https://www.al-madina.com/article/945795",
+     "publisher": "Al-Madina",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "Two-semester decision and start date confirmed by multiple reputable outlets reporting Cabinet/MOE. Official MOE calendar graphic on moe.gov.sa not retrieved; individual break dates come from press/aggregators and vary by 1–3 days. Year is now complete (historical).",
+   "values": {
+    "semesters": 2,
+    "min_instructional_days": 180,
+    "students_start": "2025-08-24",
+    "mid_year_break": {
+     "start": "2026-01-09",
+     "end": "2026-01-17",
+     "hijri": "20-28 Rajab 1447",
+     "status": "secondary"
+    },
+    "year_end_holiday_start": "~2026-06-25 (10 Muharram 1448); sources vary 22–26 Jun",
+    "breaks_count": "9 (reported, Al-Madina)",
+    "regional_variation": "Makkah, Madinah, Jeddah, Taif may differ"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "school_calendar_2026_2027": {
+   "summary_en": "Academic year 1448 AH (2026–2027), part of the MOE multi-year calendar: two semesters. Teachers returned Sun 16 Aug 2026; students started Sun 23 Aug 2026 (10 Rabi I 1448) in most regions (Makkah/Madinah/Jeddah/Taif reportedly 30 Aug 2026). Reported breaks: National Day 23–24 Sep 2026; long weekend ~19–20 Nov 2026; mid-year break from ~7/8 Jan 2027 with second semester starting ~17 Jan 2027; Founding Day break ~19–22 Feb 2027; Eid al-Fitr break ~26 Feb–13 Mar 2027 (19 Ramadan–5 Shawwal 1448); Eid al-Adha break from ~7 May 2027 (1 Dhu al-Hijjah); year ends with summer holiday from Thu 24 Jun 2027 (19 Muharram 1449).",
+   "summary_ar": "العام الدراسي 1448هـ (2026–2027) ضمن التقويم متعدد الأعوام: فصلان دراسيان. عودة المعلمين الأحد 16 أغسطس 2026، وبدء دراسة الطلاب الأحد 23 أغسطس 2026 (10 ربيع الأول 1448) في معظم المناطق (وفي مكة والمدينة وجدة والطائف 30 أغسطس حسب التقارير). الإجازات المنشورة: اليوم الوطني 23–24 سبتمبر 2026؛ إجازة نهاية أسبوع مطولة نحو 19–20 نوفمبر 2026؛ إجازة منتصف العام من نحو 7/8 يناير 2027 وبدء الفصل الثاني نحو 17 يناير 2027؛ إجازة يوم التأسيس نحو 19–22 فبراير 2027؛ إجازة عيد الفطر نحو 26 فبراير–13 مارس 2027؛ إجازة عيد الأضحى من نحو 7 مايو 2027؛ بداية إجازة نهاية العام الخميس 24 يونيو 2027 (19 محرم 1449).",
+   "effectiveFrom": "2026-08-23",
+   "sources": [
+    {
+     "title": "التعليم تعتمد التقويم الدراسي لعامي 1447 و1448هـ",
+     "url": "https://www.argaam.com/ar/article/articledetail/id/1833639",
+     "publisher": "Argaam",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "اعتماد فصلين دراسيين وإجازة منتصف عام مطولة.. تفاصيل التقويم الجديد للعامين 1447هـ و1448هـ",
+     "url": "https://sabq.org/article/88W5Bkt",
+     "publisher": "Sabq",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Okaz report on 1448 school year start and regional dates",
+     "url": "https://www.okaz.com.sa/news/local/2207705",
+     "publisher": "Okaz",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Academic Calendar 1448 H (2026-2027) — Term Dates & Holidays",
+     "url": "https://mdares.ai/sa-en/calendar",
+     "publisher": "Mdares (aggregator)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "التقويم الدراسي 1448",
+     "url": "https://www.wdeftksa.com/sa/guides/school-calendar",
+     "publisher": "Wdeftk (aggregator)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "Start date (23 Aug 2026) and two-semester structure consistent across sources. Break dates are from press/aggregators reproducing the MOE calendar and differ by ~1 day; Eid breaks depend on moon sighting. Official MOE calendar not retrieved directly.",
+   "values": {
+    "semesters": 2,
+    "teachers_return": "2026-08-16",
+    "students_start": "2026-08-23",
+    "students_start_makkah_madinah_jeddah_taif": "2026-08-30 (reported)",
+    "national_day_break": {
+     "start": "2026-09-23",
+     "end": "2026-09-24"
+    },
+    "long_weekend_nov": "~2026-11-19/20",
+    "mid_year_break": {
+     "start": "~2027-01-07/08",
+     "second_semester_start": "~2027-01-17"
+    },
+    "founding_day_break": "~2027-02-19 to 2027-02-22",
+    "eid_al_fitr_break": {
+     "start": "~2027-02-26",
+     "end": "~2027-03-13"
+    },
+    "eid_al_adha_break_start": "~2027-05-07",
+    "year_end_holiday_start": "2027-06-24"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "school_admission_age": {
+   "summary_en": "Grade 1: child must have completed 6 years on the first day of the school year (Gregorian cutoff tied to the start date). For 1448 (2026–2027): born on or before 24 Aug 2020. Exception: children up to 90 days younger than 6 may be admitted if they completed a full year of kindergarten. Kindergarten (1448): KG1 born 25 Aug 2022–24 Aug 2023 (age 3), KG2 born 25 Aug 2021–24 Aug 2022 (age 4), KG3 born 25 Aug 2020–24 Aug 2021 (age 5). Registration via Noor system; medical fitness check and vaccinations required.",
+   "summary_ar": "الصف الأول الابتدائي: أن يكون الطفل قد أتم ست سنوات في أول يوم من العام الدراسي (تاريخ ميلادي مرتبط ببداية الدراسة). للعام 1448هـ: المولودون في 24 أغسطس 2020 أو قبله. ويستثنى من يقل عمره عن ست سنوات بما لا يزيد على 90 يوماً بشرط إتمام سنة كاملة في رياض الأطفال. رياض الأطفال 1448: المستوى الأول لمواليد 25 أغسطس 2022–24 أغسطس 2023، والثاني لمواليد 25 أغسطس 2021–24 أغسطس 2022، والثالث لمواليد 25 أغسطس 2020–24 أغسطس 2021. التسجيل عبر نظام نور مع اشتراط الفحص الطبي والتطعيمات.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "التعليم تعلن أعمار القبول للصف الأول ورياض الأطفال للعام الدراسي 1448هـ–2026م",
+     "url": "https://sabq.org/article/gXkENsW",
+     "publisher": "Sabq (reporting MOE)",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "New Students Registration (Noor)",
+     "url": "https://moe.gov.sa/en/education/educationinksa/Pages/Registration.aspx",
+     "publisher": "Ministry of Education",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Okaz report on KG and Grade 1 registration / medical fitness",
+     "url": "https://www.okaz.com.sa/local/na/2242215",
+     "publisher": "Okaz",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "Sabq reports the MOE announcement; MOE page confirms Noor as channel but the age table itself was not read on moe.gov.sa. Some guides cite a 180-day exception (older rule) — 90 days is the figure in the 1448 announcement as reported. Exact KG boundary dates vary by 1 day across sources (24 vs 25 Aug).",
+   "values": {
+    "grade1_min_age_years": 6,
+    "cutoff_convention": "age completed on the first day of the academic year (Gregorian date)",
+    "grade1_cutoff_1448": "born on or before 2020-08-24",
+    "early_entry_exception_days": 90,
+    "early_entry_condition": "completed a full year of kindergarten",
+    "kindergarten_1448": {
+     "KG1": {
+      "born_from": "2022-08-25",
+      "born_to": "2023-08-24",
+      "approx_age": 3
+     },
+     "KG2": {
+      "born_from": "2021-08-25",
+      "born_to": "2022-08-24",
+      "approx_age": 4
+     },
+     "KG3": {
+      "born_from": "2020-08-25",
+      "born_to": "2021-08-24",
+      "approx_age": 5
+     }
+    },
+    "registration_channel": "Noor system"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "university_weighted_admission": {
+   "summary_en": "Saudi universities rank applicants by a weighted percentage (النسبة الموزونة) combining high-school GPA (%), Qudurat (General Aptitude Test, out of 100) and Tahsili (Achievement Test, out of 100), all from Qiyas/ETEC. Most common split for science/health tracks: 30% high school + 30% Qudurat + 40% Tahsili. Weights vary by university, track and program and are published before each cycle; there is no fixed cutoff—admission depends on ranking and seats. Confirmed examples: IAU 30/30/40 (official admission calculator); KSU health programs (e.g., Midwifery) 30/30/40, Medicine 30/30/40 plus interview; KFUPM regular track 10% high school + 50% Qudurat + 40% Tahsili, KFUPM primary/early track 50% Qudurat + 50% KFUPM achievement test; KAU uses track-specific tables (1447 guide shows 30/30/40 components; preparatory-year variants such as 40/40/20 in older guides).",
+   "summary_ar": "تفاضل الجامعات السعودية بين المتقدمين بالنسبة الموزونة التي تجمع معدل الثانوية ودرجة اختبار القدرات العامة ودرجة الاختبار التحصيلي (من هيئة تقويم التعليم والتدريب/قياس). الصيغة الأكثر شيوعاً للمسارات العلمية والصحية: 30% ثانوية + 30% قدرات + 40% تحصيلي. وتختلف الأوزان حسب الجامعة والمسار والبرنامج وتعلن قبل كل دورة قبول، ولا توجد نسبة ثابتة للقبول بل بحسب المفاضلة والمقاعد. أمثلة: جامعة الإمام عبدالرحمن بن فيصل 30/30/40؛ جامعة الملك سعود للبرامج الصحية 30/30/40 (والطب مع مقابلة)؛ جامعة الملك فهد للبترول والمعادن المسار المعتاد 10% ثانوية + 50% قدرات + 40% تحصيلي، والمسار الأساسي/المبكر 50% قدرات + 50% تحصيلي الجامعة؛ جامعة الملك عبدالعزيز جداول حسب المسار.",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "بوابة القبول - حاسبة النسبة الموزونة",
+     "url": "https://admitportal.iau.edu.sa/web/Calc/",
+     "publisher": "Imam Abdulrahman Bin Faisal University",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Admission Requirements for the Bachelor of Science in Midwifery Program",
+     "url": "https://nursing.ksu.edu.sa/en/node/5045",
+     "publisher": "King Saud University",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "College of Medicine Admission",
+     "url": "https://medicine.ksu.edu.sa/en/node/379",
+     "publisher": "King Saud University",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "KSU undergraduate admission guide 2024 (track weights)",
+     "url": "https://dar.ksu.edu.sa/sites/dar.ksu.edu.sa/files/2024-05/admission2024.pdf",
+     "publisher": "King Saud University - Deanship of Admission and Registration",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "KFUPM Admission FAQ (weighted score 50% Qudurat, 40% Tahsili, 10% high school)",
+     "url": "https://admissions.kfupm.edu.sa/en/faq's",
+     "publisher": "KFUPM",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "KFUPM Undergraduate Primary Admission",
+     "url": "https://apply.kfupm.edu.sa/early-admissions/",
+     "publisher": "KFUPM",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "KFUPM Your Personal Guide to Joining KFUPM 2027",
+     "url": "https://admissions.kfupm.edu.sa/docs/default-source/default-document-library/digital-version_en_2026.pdf",
+     "publisher": "KFUPM",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "دليل القبول لبرامج البكالوريوس والدبلوم 1447هـ",
+     "url": "https://kau.edu.sa/web/static?path=uploads%2F2025%2FOct%2Fmediacenter%2F%D8%A3%D8%AF%D9%84%D8%A9_%D8%A7%D9%84%D9%82%D8%A8%D9%88%D9%84%2FV1zqGjIKeE3AaN0v.pdf",
+     "publisher": "King Abdulaziz University",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "secondary",
+   "notes": "Per-university confidence differs (see values). Official PDFs could not be opened (fetch blocked); weights taken from search snippets of official edu.sa pages. KFUPM 2026/2027 guide says the 'secondary/vacancies' track excludes the KFUPM Tahsili and uses Qudurat + national Tahsili + HS, while apply.kfupm.edu.sa lists 50/40/10 — treat KFUPM track details as subject to verification. KSU humanities and KAU per-track weights need direct check of the current admission guides.",
+   "values": {
+    "general_formula": "weighted = HS% * w1 + Qudurat * w2 + Tahsili * w3",
+    "most_common_weights": {
+     "high_school": 0.3,
+     "qudurat": 0.3,
+     "tahsili": 0.4
+    },
+    "admission_cycle": "1447 AH (2025–2026) guides; 1448 (2026–2027) guides where noted",
+    "universities": {
+     "IAU": {
+      "all_tracks_calc": {
+       "high_school": 0.3,
+       "qudurat": 0.3,
+       "tahsili": 0.4
+      },
+      "confidence": "confirmed (official calculator)"
+     },
+     "KSU": {
+      "health_programs": {
+       "high_school": 0.3,
+       "qudurat": 0.3,
+       "tahsili": 0.4,
+       "note": "Medicine adds interview"
+      },
+      "humanities": "not confirmed (weights published per track in DAR admission guide)",
+      "confidence": "confirmed for health programs"
+     },
+     "KFUPM": {
+      "regular_track": {
+       "high_school": 0.1,
+       "qudurat": 0.5,
+       "tahsili": 0.4
+      },
+      "primary_early_track": {
+       "qudurat": 0.5,
+       "kfupm_achievement_test": 0.5
+      },
+      "confidence": "confirmed (kfupm.edu.sa); track naming varies by year"
+     },
+     "KAU": {
+      "1447_guide": "track tables using HS, Qudurat, Tahsili with 30%/30%/40% components (order not legible in snippet); secondary sites report 30/30/40",
+      "older_examples": "40/40/20 (example in older guide); preparatory-year science 50/30/20 and humanities 60/40 reported by unofficial sites",
+      "confidence": "unconfirmed"
+     }
+    },
+    "test_provider": "Education & Training Evaluation Commission (ETEC) – Qiyas"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "government_payday": {
+   "summary_en": "Government employees' salaries are paid on the 27th of each Gregorian month, per Royal directive / Cabinet decision effective from the 2016–2017 fiscal year (first Gregorian payday 27 Oct 2016 per Ministry of Finance). When the 27th falls on a weekend, payment is commonly reported to move to the preceding working day (Thursday), and the Ministry of Finance sometimes pays earlier before holidays (e.g., May 2026 salary reportedly paid on the 24th before Eid al-Adha).",
+   "summary_ar": "تصرف رواتب موظفي الدولة في اليوم السابع والعشرين من كل شهر ميلادي، بموجب توجيه ملكي وقرار مجلس الوزراء منذ عام 2016. وإذا وافق يوم 27 عطلة نهاية الأسبوع يُصرف عادةً في يوم العمل السابق (الخميس) بحسب ما تتداوله المصادر، وقد تُبكِّر وزارة المالية الصرف قبل الأعياد.",
+   "effectiveFrom": "2016-10-27",
+   "sources": [
+    {
+     "title": "State Employees to Get Salaries As Per Georgian Calendar King Salman Orders",
+     "url": "https://www.okaz.com.sa/article/1604004/English/State-Employees-to-Get-Salaries-As-Per-Georgian-Calendar-King-Salman-Orders",
+     "publisher": "Okaz / Saudi Gazette",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi Arabia orders state entities to calculate salaries on Georgian calendar",
+     "url": "https://www.argaam.com/en/article/articledetail/id/1586446",
+     "publisher": "Argaam",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Saudi government workers to be paid according to Gregorian calendar",
+     "url": "https://thenationalnews.com/world/saudi-government-workers-to-be-paid-according-to-gregorian-calendar-1.94596",
+     "publisher": "The National",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "موعد نزول الرواتب في السعودية 2026",
+     "url": "https://www.wdeftksa.com/sa/guides/salary-payment-dates",
+     "publisher": "Wdeftk (aggregator)",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "27th Gregorian rule confirmed by multiple reputable outlets reporting the Royal directive. Weekend shift rule is NOT confirmed by an official source (only aggregators, which conflict on Saturday); mark as unconfirmed in UI. Private sector has no fixed national payday (paid per contract, via Wage Protection System).",
+   "values": {
+    "payday_day_of_month": 27,
+    "calendar": "gregorian",
+    "since": "2016 (FY 2016/2017 transition; Cabinet decision)",
+    "weekend_rule": "reported: moved to preceding Thursday (UNCONFIRMED; one source claims Saturday moves to Sunday)",
+    "early_payment_before_holidays": "occasionally announced by Ministry of Finance"
+   },
+   "verifiedOn": "2026-11-03"
+  },
+  "gpa_scales": {
+   "summary_en": "Saudi universities follow the Higher Education Council study & examination regulation grade table, with GPA on a 5.00 scale (most universities, e.g., KSU, IAU, Majmaah, KAU) or 4.00 scale (e.g., KFUPM, UQU; many transcripts show both). Mapping: 95–100 A+ (5.00 / 4.00); 90–<95 A (4.75 / 3.75); 85–<90 B+ (4.50 / 3.50); 80–<85 B (4.00 / 3.00); 75–<80 C+ (3.50 / 2.50); 70–<75 C (3.00 / 2.00); 65–<70 D+ (2.50 / 1.50); 60–<65 D (2.00 / 1.00); <60 F (1.00 on 5-scale / 0.00 on 4-scale). Pass mark is 60.",
+   "summary_ar": "تتبع الجامعات السعودية جدول التقديرات في لائحة الدراسة والاختبارات للمرحلة الجامعية الصادرة عن مجلس التعليم العالي، ويحسب المعدل من 5 (أغلب الجامعات مثل جامعة الملك سعود وجامعة الإمام عبدالرحمن والمجمعة) أو من 4 (مثل جامعة الملك فهد للبترول والمعادن وأم القرى). التقديرات: 95–100 أ+ (5.00/4.00)، 90–أقل من 95 أ (4.75/3.75)، 85–أقل من 90 ب+ (4.50/3.50)، 80–أقل من 85 ب (4.00/3.00)، 75–أقل من 80 ج+ (3.50/2.50)، 70–أقل من 75 ج (3.00/2.00)، 65–أقل من 70 د+ (2.50/1.50)، 60–أقل من 65 د (2.00/1.00)، أقل من 60 هـ راسب (1.00 من 5 / 0.00 من 4).",
+   "effectiveFrom": null,
+   "sources": [
+    {
+     "title": "Regulations of Study and Examinations of Undergraduate Stage (Article 28 grade table)",
+     "url": "https://engineering.ksu.edu.sa/sites/engineering.ksu.edu.sa/files/imce_images/regulations_of_study_and_examinations_of_ksu.pdf",
+     "publisher": "King Saud University",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Rules & Regulations for Courses & Examinations at University Level 2017",
+     "url": "https://www.iau.edu.sa/sites/default/files/resources/rules_regulations_-_course_exams_university_level_2017.pdf",
+     "publisher": "Imam Abdulrahman Bin Faisal University",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Grades - Deanship of Admission and Registration",
+     "url": "https://www.mu.edu.sa/en/deanships/deanship-of-admission-and-registration/26265",
+     "publisher": "Majmaah University",
+     "accessed": "2026-11-03"
+    },
+    {
+     "title": "Transcript Information (grade points)",
+     "url": "https://registrar.kfupm.edu.sa/transcripts-certificates/transcript-information/",
+     "publisher": "KFUPM Registrar",
+     "accessed": "2026-11-03"
+    }
+   ],
+   "confidence": "confirmed",
+   "notes": "A+ through B+ values seen directly in official snippets (KSU Art. 28, IAU, Majmaah, KFUPM); lower rows follow the same standard Higher Education Council table (consistent pattern, not each row individually seen in snippets). Some universities (e.g., UQU) use 'E' code for fail. KAU has its own Feb 2026 study regulation (not reviewed).",
+   "values": {
+    "scales": [
+     "5.00",
+     "4.00"
+    ],
+    "pass_mark_percent": 60,
+    "table": [
+     {
+      "range": "95-100",
+      "letter": "A+",
+      "ar": "ممتاز مرتفع",
+      "gpa5": 5.0,
+      "gpa4": 4.0
+     },
+     {
+      "range": "90-<95",
+      "letter": "A",
+      "ar": "ممتاز",
+      "gpa5": 4.75,
+      "gpa4": 3.75
+     },
+     {
+      "range": "85-<90",
+      "letter": "B+",
+      "ar": "جيد جداً مرتفع",
+      "gpa5": 4.5,
+      "gpa4": 3.5
+     },
+     {
+      "range": "80-<85",
+      "letter": "B",
+      "ar": "جيد جداً",
+      "gpa5": 4.0,
+      "gpa4": 3.0
+     },
+     {
+      "range": "75-<80",
+      "letter": "C+",
+      "ar": "جيد مرتفع",
+      "gpa5": 3.5,
+      "gpa4": 2.5
+     },
+     {
+      "range": "70-<75",
+      "letter": "C",
+      "ar": "جيد",
+      "gpa5": 3.0,
+      "gpa4": 2.0
+     },
+     {
+      "range": "65-<70",
+      "letter": "D+",
+      "ar": "مقبول مرتفع",
+      "gpa5": 2.5,
+      "gpa4": 1.5
+     },
+     {
+      "range": "60-<65",
+      "letter": "D",
+      "ar": "مقبول",
+      "gpa5": 2.0,
+      "gpa4": 1.0
+     },
+     {
+      "range": "<60",
+      "letter": "F",
+      "ar": "راسب",
+      "gpa5": 1.0,
+      "gpa4": 0.0
+     }
+    ],
+    "kfupm_note": "KFUPM cumulative GPA max 4.00; A+ 4.00, A 3.75, B+ 3.50, B 3.00, C+ 2.50, C 2.00, D+ 1.50, D 1.00, F 0"
+   },
+   "verifiedOn": "2026-11-03"
+  }
+ }
+}

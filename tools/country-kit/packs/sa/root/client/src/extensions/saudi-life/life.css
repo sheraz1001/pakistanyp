@@ -1,0 +1,13 @@
+/* Saudi Life guides and print layout */
+.life-prose h2 { font-size: 1.35rem; font-weight: 600; margin: 1.6em 0 .6em; }
+.life-prose h3 { font-size: 1.1rem; font-weight: 600; margin: 1.2em 0 .5em; }
+.life-prose p { margin: 0 0 1em; line-height: 1.85; color: #283141; }
+.life-prose ul, .life-prose ol { margin: 0 0 1em; padding-inline-start: 1.4em; line-height: 1.8; }
+.life-prose ul { list-style: disc; } .life-prose ol { list-style: decimal; }
+html[lang="ar"] .life-prose ol { list-style: arabic-indic; }
+.life-prose li { margin: .25em 0; }
+.life-prose a { color: #006C35; text-decoration: underline; text-underline-offset: 2px; }
+@media print {
+  .site-header, footer, .life-calc-form button, nav[aria-label="Breadcrumb"], nav[aria-label="مسار التنقل"] { display: none !important; }
+  .life-page { background: #fff; }
+}

@@ -195,7 +195,7 @@ export default function Header() {
   return (
     <header className="site-header sticky top-0 z-50 border-b border-[#E7E9EE] bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/85">
       <FlagStripe />
-      <div className="yp-wrap flex min-h-[72px] items-center gap-5 py-2.5">
+      <div className="yp-wrap flex min-h-[72px] items-center gap-3 py-2.5 2xl:gap-5">
         <PakistanypLogo href="/" onClick={go("/")} />
 
         {/* Desktop navigation — admin-configured menu when available */}
@@ -205,7 +205,7 @@ export default function Header() {
               key={item.name}
               href={item.href}
               aria-current={!item.external && isActive(item.href) ? "page" : undefined}
-              className="inline-flex items-center gap-2 rounded-[10px] px-3 py-2.5 text-sm font-medium text-[#3A4354] no-underline transition-colors hover:bg-[#F1F2F6] hover:text-[#0A0A0A] aria-[current=page]:bg-[#F1F2F6] aria-[current=page]:text-[#0A0A0A]"
+              className="inline-flex items-center gap-2 rounded-[10px] px-2 py-2.5 text-sm 2xl:px-3 font-medium text-[#3A4354] no-underline transition-colors hover:bg-[#F1F2F6] hover:text-[#0A0A0A] aria-[current=page]:bg-[#F1F2F6] aria-[current=page]:text-[#0A0A0A]"
               onClick={go(item.href, item.external)}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}

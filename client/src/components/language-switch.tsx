@@ -39,7 +39,7 @@ export function LanguageSwitch({ className, compact = false }: { className?: str
       data-testid="language-switch"
     >
       <Languages className="h-4 w-4" aria-hidden="true" />
-      <span>{label}</span>
+      {compact ? <><span className="2xl:hidden">{target === "en" ? "EN" : SECOND.name.slice(0, 1)}</span><span className="hidden 2xl:inline">{label}</span></> : <span>{label}</span>}
     </a>
   );
 }
