@@ -1,7 +1,11 @@
 import { ensureSchema } from "./ensureSchema";
 import { syncPlaceGuides } from "./placeGuides";
-import { registerExtensionRoutes, startExtensions } from "./extensions";
+import { runStartupTasks } from "./startupTasks";
+import { registerExtensionRoutes } from "./extensions";
 import { registerSchemaHealth } from "./ensureSchema";
+import { dbMetricsMiddleware, registerDbMetrics, meterAs } from "./dbMetrics";
+import { botGuard } from "./botGuard";
+import { apiCache } from "./apiCache";
 import { publishContent } from "./contentPublisher";
 import { syncCatalog } from "./catalogSync";
 import { registerIndexNowKeyRoute, startSitemapWatcher } from "./indexNow";
@@ -127,6 +131,13 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+// Database usage per route (server/dbMetrics.ts)
+app.use(dbMetricsMiddleware);
+// Bot protection and per-IP rate limits (server/botGuard.ts), then the in-memory cache for public data
+// (server/apiCache.ts) — registered before the API routes and before localizeApi so localized bodies are cached
+app.use(botGuard);
+app.use(apiCache);
 
 // Security headers, canonical-host redirects and CORS
 app.use((req, res, next) => {
@@ -308,12 +319,13 @@ function escapeJsonForScript(json: string): string {
       await emailTemplateService.initializeDefaultTemplates();
     }
     // background, with retries – never blocks the health check; then load province/city guides
-    void ensureSchema().then(() => syncCatalog()).then(() => syncPlaceGuides()).then(() => publishContent())
-      .then(() => startExtensions()).catch((e) => console.error("[extensions] start failed:", e?.message || e));
+    // Start-up tasks: schema, then (only when this build is new) catalog, guides and content sync — server/startupTasks.ts
+    void runStartupTasks();
     registerIndexNowKeyRoute(app);
     // Country extension APIs (server/extensions) before the directory routes
     registerExtensionRoutes(app);
     registerSchemaHealth(app);
+    registerDbMetrics(app, (req: any) => ["super_admin", "admin"].includes(req.session?.user?.role));
     const server = await registerRoutes(app);
     console.log('Routes registered successfully');
 

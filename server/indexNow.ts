@@ -88,7 +88,7 @@ export function startSitemapWatcher() {
   started = true;
   if (process.env.NODE_ENV !== "production" || process.env.INDEXNOW_DISABLED === "true") return;
   if (/localhost|127\.0\.0\.1/.test(country.origin)) return;
-  const minutes = Math.max(2, Number(process.env.INDEXNOW_INTERVAL_MINUTES) || 10);
+  const minutes = Math.max(2, Number(process.env.INDEXNOW_INTERVAL_MINUTES) || 180); // every 3 hours: each check wakes the database
   // Start a little in the past so changes made just before a restart are not missed
   let since = new Date(Date.now() - minutes * 60 * 1000);
 

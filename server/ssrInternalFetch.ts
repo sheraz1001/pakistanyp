@@ -43,6 +43,7 @@ function socketPair(): [Duplex, Duplex] {
   b = make(() => a);
   for (const s of [a, b] as any[]) {
     s.remoteAddress = "127.0.0.1";
+    s.__ypInternal = true; // in-process SSR request: exempt from rate limits (server/botGuard.ts)
     s.remotePort = 0;
     s.localAddress = "127.0.0.1";
     s.localPort = 0;

@@ -1,3 +1,4 @@
+import { memoizeMethods } from "./apiCache";
 import { arabicSearchCondition } from "./i18n";
 import { normalizeLocalitySlug, publicLocality } from "../shared/locality-slug";
 import {
@@ -5315,3 +5316,14 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
+
+// Reference data changes rarely and is read on almost every page: keep it in memory (cleared on any write,
+// see server/apiCache.ts). Everything else still reads the database.
+const H = 60 * 60 * 1000;
+memoizeMethods(storage, {
+  getProvinces: 6 * H, getProvincesWithStats: 1 * H, getLocalities: 6 * H, getLocalitiesByProvince: 6 * H, getLocalitiesWithStats: 1 * H,
+  getCategories: 6 * H, getCategoriesWithStats: 1 * H, getCategoriesByLevel: 6 * H, getCategoriesByParent: 6 * H,
+  getCategoryHierarchy: 6 * H, getCategoriesHierarchical: 6 * H, getBusinessCountsByLocality: 1 * H, getBusinessCountsByProvince: 1 * H,
+  getLocalityCountsByProvince: 6 * H, getStats: 1 * H, getNewsCategories: 6 * H, getBlogCategories: 6 * H,
+  getAllMenus: 1 * H, getMenuItemsByLocation: 1 * H,
+});
