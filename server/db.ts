@@ -3,6 +3,7 @@ import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
 import { createRequire } from "module";
 import * as schema from "@shared/schema";
+import { meterPool } from "./dbMetrics";
 
 // Configure Neon for WebSocket with better error handling
 neonConfig.webSocketConstructor = ws;
@@ -38,6 +39,8 @@ function createPool(): Pool {
 }
 
 export const pool = createPool();
+// Per-route query/row/byte metering (server/dbMetrics.ts)
+meterPool(pool);
 
 // Add better error handling for pool connections
 pool.on('error', (err) => {

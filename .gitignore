@@ -10,3 +10,6 @@ vite.config.ts.*
 .audit/
 client/public/__shots/
 .kit-leaks.txt
+backups/
+*.dump
+*.sql.gz

@@ -27,9 +27,7 @@ export const PRIVATE_PATH = new RegExp(
   "i"
 );
 
-const ROBOTS_TXT = `# robots.txt for https://${CANONICAL_HOST}
-User-agent: *
-Allow: /
+const ROBOTS_RULES = `Allow: /
 Disallow: /admin
 Disallow: /super-admin
 Disallow: /dashboard
@@ -39,7 +37,43 @@ Disallow: /moderator-dashboard
 Disallow: /content-dashboard
 Disallow: /api/admin/
 Disallow: /api/auth/
+Disallow: /search
+Disallow: /search-results
+Disallow: /ar/search
+Disallow: /ar/search-results
 Disallow: /*?*_cb=
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+Disallow: /*?*view=
+Disallow: /*?q=
+Disallow: /*&q=`;
+
+// Google and Bing get the rules without a delay; other crawlers are asked to wait between requests;
+// scrapers and AI-training crawlers are refused (also enforced in server/botGuard.ts).
+const ROBOTS_TXT = `# robots.txt for https://${CANONICAL_HOST}
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Google-InspectionTool
+User-agent: Bingbot
+User-agent: BingPreview
+${ROBOTS_RULES}
+
+User-agent: *
+Crawl-delay: 10
+${ROBOTS_RULES}
+
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: CCBot
+User-agent: Bytespider
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: MJ12bot
+User-agent: DotBot
+User-agent: PetalBot
+User-agent: ClaudeBot
+User-agent: Amazonbot
+Disallow: /
 
 Sitemap: https://${CANONICAL_HOST}/sitemap.xml
 `;
