@@ -1,5 +1,6 @@
 import { ensureSchema } from "./ensureSchema";
 import { syncPlaceGuides } from "./placeGuides";
+import { registerExtensionRoutes, startExtensions } from "./extensions";
 import { publishContent } from "./contentPublisher";
 import { syncCatalog } from "./catalogSync";
 import { registerIndexNowKeyRoute, startSitemapWatcher } from "./indexNow";
@@ -306,8 +307,11 @@ function escapeJsonForScript(json: string): string {
       await emailTemplateService.initializeDefaultTemplates();
     }
     // background, with retries – never blocks the health check; then load province/city guides
-    void ensureSchema().then(() => syncCatalog()).then(() => syncPlaceGuides()).then(() => publishContent());
+    void ensureSchema().then(() => syncCatalog()).then(() => syncPlaceGuides()).then(() => publishContent())
+      .then(() => startExtensions()).catch((e) => console.error("[extensions] start failed:", e?.message || e));
     registerIndexNowKeyRoute(app);
+    // Country extension APIs (server/extensions) before the directory routes
+    registerExtensionRoutes(app);
     const server = await registerRoutes(app);
     console.log('Routes registered successfully');
 

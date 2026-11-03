@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { HomeExtension } from "@/extensions";
 import { useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { ShieldCheck, MapPinned, Clock } from "lucide-react";
@@ -177,6 +178,9 @@ export default function Home() {
       <BusinessNewsTicker />
       
       <FeaturedCategories onCategoryClick={handleCategoryClick} />
+
+      {/* Country extension block (client/src/extensions), e.g. SaudiYP's Saudi Life portal */}
+      {HomeExtension && <HomeExtension />}
 
       <ProvincesGrid />
 

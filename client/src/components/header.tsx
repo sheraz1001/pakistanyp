@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { LanguageSwitch } from "@/components/language-switch";
+import { EXTENSION_NAV } from "@/extensions";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -103,6 +104,13 @@ export default function Header() {
     navItems.splice(provincesIndex >= 0 ? provincesIndex + 1 : navItems.length, 0, {
       name: 'Localities', href: '/localities', icon: Map, external: false, badge: null,
     });
+  }
+
+  // Country extension sections (client/src/extensions), before Blogs
+  for (const ext of EXTENSION_NAV) {
+    if (navItems.some((item) => item.href === ext.href)) continue;
+    const at = navItems.findIndex((item) => item.href === '/blogs');
+    navItems.splice(at >= 0 ? at : navItems.length, 0, { name: ext.name, href: ext.href, icon: Compass, external: false, badge: null });
   }
 
   // Enhanced icon component mapping with adaptive icon support

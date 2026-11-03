@@ -1,3 +1,4 @@
+import { EXTENSION_SITEMAPS } from "./extensions";
 import { registerLanguageRoutes } from "./i18n";
 import { country } from "@shared/country";
 import { registerPhase2Routes } from "./phase2";
@@ -6265,6 +6266,14 @@ Instructions:
   });
 
   // Additional Public Pages Sitemap
+  // Country extension sitemap sections (server/extensions)
+  for (const ext of EXTENSION_SITEMAPS) {
+    app.get(`/${ext.file}`, async (_req, res) => {
+      try { res.set('Content-Type', 'application/xml').set('Cache-Control', 'public, max-age=3600').send(await ext.generate()); }
+      catch (e) { console.error(`[sitemap] ${ext.file}:`, e); res.status(500).send(''); }
+    });
+  }
+
   app.get('/sitemap-news.xml', async (req, res) => {
     try {
       const { generateNewsSitemap } = await import('./sitemap');

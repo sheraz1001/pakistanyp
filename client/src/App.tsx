@@ -15,51 +15,8 @@ import { country } from "@shared/country";
  *   server HTML and client-render the page (React #421). The server makes sure
  *   modules are loaded before its final render pass, so both sides match.
  */
-const routeLoaders = new Map<string, () => Promise<unknown>>();
-const loadedRoutes = new Set<string>();
-
-function lazy(factory: () => Promise<{ default: ComponentType<any> }>, id: string) {
-  let Loaded: ComponentType<any> | null = null;
-  let failure: unknown = null;
-  let pending: Promise<unknown> | null = null;
-  const load = () =>
-    (pending ||= factory().then(
-      (m) => { Loaded = m.default; loadedRoutes.add(id); },
-      (e) => { failure = e; },
-    ));
-  routeLoaders.set(id, load);
-
-  function RouteModule(props: any) {
-    if (failure) throw failure;
-    if (!Loaded) throw load();
-    const C = Loaded;
-    return <C {...props} />;
-  }
-
-  return function DeferredRoute(props: any) {
-    if (typeof window === "undefined") {
-      (globalThis as any).__pakistanypSsrStore?.getStore()?.routes?.add(id);
-    }
-    if (Loaded) {
-      const C = Loaded;
-      return <C {...props} />;
-    }
-    return <Suspense fallback={<div role="status" className="min-h-[60vh] flex items-center justify-center">Loading page…</div>}>
-      <RouteModule {...props} />
-    </Suspense>;
-  };
-}
-
-/** True when every listed route module has already been loaded. */
-export function routesLoaded(ids: Iterable<string>): boolean {
-  return Array.from(ids).every((id) => loadedRoutes.has(id));
-}
-
-/** Load the route chunks the server rendered, before hydration. */
-export function preloadRoutes(ids: unknown): Promise<unknown> {
-  const list = Array.isArray(ids) ? ids : [];
-  return Promise.all(list.map((id) => routeLoaders.get(String(id))?.()).filter(Boolean));
-}
+import { lazy, routesLoaded, preloadRoutes } from "@/lib/lazy-route";
+export { routesLoaded, preloadRoutes };
 
 const AdminApprovals = lazy(() => import("@/pages/admin-approvals"), "pages/admin-approvals");
 const MyProfileContent = lazy(() => import("@/pages/my-profile"), "pages/my-profile");
@@ -112,6 +69,7 @@ const AIRecommendationsPage = lazy(() => import("@/pages/ai-recommendations"), "
 const AIRecommendationsEnhanced = lazy(() => import("@/pages/ai-recommendations-enhanced"), "pages/ai-recommendations-enhanced");
 const AdvancedReporting = lazy(() => import("@/components/advanced-reporting"), "components/advanced-reporting");
 import NotFound from "@/pages/not-found";
+import { EXTENSION_ROUTES } from "@/extensions";
 const Login = lazy(() => import("@/pages/login"), "pages/login");
 const Register = lazy(() => import("@/pages/register"), "pages/register");
 const ForgotPassword = lazy(() => import("@/pages/forgot-password"), "pages/forgot-password");
@@ -181,6 +139,8 @@ function Router() {
     <Switch>
       {/* Always show the new Home component for the main homepage */}
       <Route path="/" component={Home} />
+      {/* Country extension sections (client/src/extensions), before the catch-all place routes */}
+      {EXTENSION_ROUTES.map((r) => <Route key={r.path} path={r.path} component={r.component} />)}
       
       {/* Authentication-specific routes - using inline conditionals (no fragments) */}
             <Route path="/dashboard">{() => <RequireAuth><Dashboard /></RequireAuth>}</Route>

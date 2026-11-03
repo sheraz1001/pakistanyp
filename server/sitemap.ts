@@ -1,3 +1,4 @@
+import { EXTENSION_SITEMAPS } from "./extensions";
 import { pathInLang } from "@shared/i18n";
 import { country, regionUrl } from '@shared/country';
 import categoryRedirects from "./categoryRedirects.json";
@@ -103,6 +104,7 @@ export async function generateSitemapIndex() {
     ['sitemap-blog.xml', d.pages],
     ['sitemap-news.xml', d.news],
   ];
+  for (const ext of EXTENSION_SITEMAPS) sections.push([ext.file, await ext.lastmod().catch(() => d.static)]);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sections.map(([file, lastmod]) => `  <sitemap>
