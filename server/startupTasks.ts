@@ -10,7 +10,7 @@ import { pool } from "./db";
 import { ensureSchema } from "./ensureSchema";
 import { syncCatalog } from "./catalogSync";
 import { syncPlaceGuides } from "./placeGuides";
-import { publishContent } from "./contentPublisher";
+import { publishContent, scheduleContent } from "./contentPublisher";
 import { startExtensions } from "./extensions";
 import { meterAs } from "./dbMetrics";
 import { clearApiCache } from "./apiCache";
@@ -32,10 +32,12 @@ export async function runStartupTasks(): Promise<void> {
       } else {
         await syncCatalog();
         await syncPlaceGuides();
-        await publishContent();
         await pool.query(`insert into catalog_sync_state (key, value) values ('startup_build', $1)
           on conflict (key) do update set value = excluded.value`, [hash]);
       }
+      // articles: cheap when nothing is due (one small query); scheduled ones are published at their time
+      await publishContent();
+      scheduleContent();
       await startExtensions();
     } catch (e: any) {
       console.error("[startup] failed:", e?.message || e);

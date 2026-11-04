@@ -2,6 +2,9 @@ import { country } from "@shared/country";
 import fs from "fs";
 import path from "path";
 import { pool } from "./db";
+import { richMarkdownToHtml } from "./richMarkdown";
+import { clearApiCache } from "./apiCache";
+import { meterAs } from "./dbMetrics";
 
 /**
  * Publishes the news articles and blog posts in content/news/*.md and content/blog/*.md.
@@ -11,6 +14,10 @@ import { pool } from "./db";
  *
  * An article is inserted only when no article with its slug exists yet, so once it is published,
  * edits (and deletions) made in the admin panel are never overwritten.
+ *
+ * Scheduling: an article whose publishedAt is in the future is not inserted until that time. A timer fires at
+ * the next due time (no polling), and each published slug is recorded in content_published, so an article
+ * deleted in the admin panel is not published again.
  */
 
 const ROOT = path.resolve(import.meta.dirname, "..", "content");
@@ -39,63 +46,39 @@ function readDocs(dir: string): Doc[] {
   });
 }
 
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const inline = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-const idAttr = (s: string) => { const id = slugId(s); return id ? ` id="${id}"` : ""; };
-const slugId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-
-/** Minimal Markdown to HTML: ## / ### headings, paragraphs, - and 1. lists (one nested level), **bold**. */
-export function markdownToHtml(md: string): string {
-  const lines = md.replace(/<!--[\s\S]*?-->/g, "").split("\n");
-  const out: string[] = [];
-  let para: string[] = [];
-  let list: { tag: "ul" | "ol"; items: { text: string; sub: string[] }[] } | null = null;
-  const flushPara = () => { if (para.length) { out.push(`<p>${inline(para.join(" "))}</p>`); para = []; } };
-  const flushList = () => {
-    if (!list) return;
-    out.push(`<${list.tag}>${list.items.map((it) => `<li>${inline(it.text)}${it.sub.length ? `<ul>${it.sub.map((s) => `<li>${inline(s)}</li>`).join("")}</ul>` : ""}</li>`).join("")}</${list.tag}>`);
-    list = null;
-  };
-  for (const raw of lines) {
-    const line = raw.trimEnd();
-    const t = line.trim();
-    if (!t) { flushPara(); continue; }
-    const nested = /^\s{2,}[-*] /.test(line);
-    if (nested && list && list.items.length) { list.items[list.items.length - 1].sub.push(t.slice(2).trim()); continue; }
-    if (t.startsWith("### ")) { flushPara(); flushList(); out.push(`<h3${idAttr(t.slice(4))}>${inline(t.slice(4))}</h3>`); continue; }
-    if (t.startsWith("## ")) { flushPara(); flushList(); out.push(`<h2${idAttr(t.slice(3))}>${inline(t.slice(3))}</h2>`); continue; }
-    const ul = t.match(/^[-*] (.*)$/);
-    const ol = t.match(/^\d+\. (.*)$/);
-    if (ul || ol) {
-      flushPara();
-      const tag = ul ? "ul" : "ol";
-      if (!list || list.tag !== tag) { flushList(); list = { tag, items: [] }; }
-      list.items.push({ text: (ul || ol)![1], sub: [] });
-      continue;
-    }
-    flushList();
-    para.push(t);
-  }
-  flushPara();
-  flushList();
-  return out.join("\n");
-}
+/** Markdown to HTML (headings, lists, links, tables, callouts, CTA banners, FAQ, infographics): server/richMarkdown.ts */
+export function markdownToHtml(md: string): string { return richMarkdownToHtml(md); }
 
 const words = (html: string) => html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
 const date = (s?: string) => { const d = s ? new Date(s) : new Date(); return Number.isNaN(d.getTime()) ? new Date() : d; };
 
+const isDue = (d: Doc, now = Date.now()) => !d.meta.publishedAt || date(d.meta.publishedAt).getTime() <= now;
+let logReady = false;
+
 export async function publishContent(): Promise<void> {
   try {
     const allNews = readDocs("news"), allBlog = readDocs("blog");
-    const news = allNews.filter((d) => !isSecond(d));
-    const blog = allBlog.filter((d) => !isSecond(d));
+    const due = (d: Doc) => !isSecond(d) && isDue(d);
+    if (!allNews.some(due) && !allBlog.some(due)) return;
+    if (!logReady) {
+      await pool.query("create table if not exists content_published (kind text not null, slug text not null, published_at timestamptz not null default now(), primary key (kind, slug))");
+      logReady = true;
+    }
+    const done = new Set((await pool.query("select kind || ':' || slug as k from content_published")).rows.map((r: any) => r.k));
+    const pending = (d: Doc, kind: string) => due(d) && !done.has(`${kind}:${d.meta.slug || d.file.replace(/\.md$/, "")}`);
+    const news = allNews.filter((d) => pending(d, "news"));
+    const blog = allBlog.filter((d) => pending(d, "blog"));
     if (!news.length && !blog.length) return;
+    const record = (kind: string, slug: string) => pool.query("insert into content_published (kind, slug) values ($1, $2) on conflict do nothing", [kind, slug]);
+    const fresh = new Set<string>();
     let added = 0;
 
     for (const d of news) {
       const slug = d.meta.slug || d.file.replace(/\.md$/, "");
       const exists = await pool.query("select 1 from news_articles where slug = $1", [slug]);
+      await record("news", slug);
       if (exists.rows.length) continue;
+      fresh.add(slug);
       await pool.query(
         `insert into news_articles (title, slug, summary, content, source, author, image_url, category, tags, published_at,
            is_active, is_featured, status, meta_title, meta_description, created_at, updated_at)
@@ -117,7 +100,9 @@ export async function publishContent(): Promise<void> {
     for (const d of blog) {
       const slug = d.meta.slug || d.file.replace(/\.md$/, "");
       const exists = await pool.query("select 1 from blog_posts where slug = $1", [slug]);
+      await record("blog", slug);
       if (exists.rows.length) continue;
+      fresh.add(slug);
       const html = markdownToHtml(d.body);
       await pool.query(
         `insert into blog_posts (title, slug, excerpt, content, featured_image, author_id, category, meta_title, meta_description,
@@ -130,7 +115,7 @@ export async function publishContent(): Promise<void> {
       );
       added++;
     }
-    if (added) console.log(`[content] published ${added} new article(s)`);
+    if (added) { console.log(`[content] published ${added} new article(s)`); clearApiCache(); }
 
     // Second-language versions fill the *_<code> columns once (later edits in the admin panel are kept)
     let translated = 0;
@@ -138,6 +123,7 @@ export async function publishContent(): Promise<void> {
       const news = allNews.includes(d);
       const base = (news ? allNews : allBlog).find((x) => x.file === d.file.replace(`.${L2}.md`, ".md"));
       const slug = d.meta.slug || base?.meta.slug || d.file.replace(`.${L2}.md`, "");
+      if (!fresh.has(slug)) continue; // only articles published in this run
       const table = news ? "news_articles" : "blog_posts";
       const r = await pool.query(
         `update ${table} set title_${L2} = $2, ${news ? "summary" : "excerpt"}_${L2} = $3, content_${L2} = $4, meta_title_${L2} = $5,
@@ -150,4 +136,18 @@ export async function publishContent(): Promise<void> {
   } catch (error: any) {
     console.error("[content] publishing failed:", error?.message || error);
   }
+}
+
+/** Publish each scheduled article at its publishedAt time (one timer for the next due article, no polling). */
+let timer: NodeJS.Timeout | null = null;
+export function scheduleContent(): void {
+  if (timer) clearTimeout(timer);
+  const now = Date.now();
+  const next = [...readDocs("news"), ...readDocs("blog")].filter((d) => !isSecond(d) && !isDue(d, now))
+    .map((d) => date(d.meta.publishedAt).getTime()).sort((a, b) => a - b)[0];
+  if (!next) return;
+  const wait = Math.min(next - now + 5000, 24 * 3600 * 1000); // re-check at least daily (timer limit ~24 days)
+  timer = setTimeout(() => { void meterAs("content", publishContent).finally(scheduleContent); }, wait);
+  timer.unref?.();
+  console.log(`[content] next scheduled article at ${new Date(next).toISOString()}`);
 }

@@ -1,4 +1,4 @@
-import { Link, useParams } from "wouter";
+import { Link, useLocation, useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, ChevronRight, Clock } from "lucide-react";
 import Header from "@/components/header";
@@ -35,11 +35,19 @@ function withHeadingIds(html: string) {
   return { html: out, toc };
 }
 
+/** Questions and answers of the article's FAQ block (server/richMarkdown.ts), for FAQPage structured data. */
+function faqItems(html: string) {
+  const text = (s: string) => s.replace(/<\/(p|li|div)>/g, " ").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+  return [...html.matchAll(/<details class="yp-faq-item"[^>]*><summary>([\s\S]*?)<\/summary><div class="yp-faq-a">([\s\S]*?)<\/div><\/details>/g)]
+    .map((m) => ({ q: text(m[1]), a: text(m[2]) })).filter((x) => x.q && x.a);
+}
+
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
 /** Single blog post or news story. */
 export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
   const cfg = EDITORIAL[kind];
+  const [, navigate] = useLocation();
   const { slug = "" } = useParams() as { slug?: string };
   const { data, isLoading, isError, error, refetch } = useQuery<ArticleResponse>({ queryKey: [`/api/editorial/${kind}/${slug}`], enabled: !!slug });
 
@@ -72,6 +80,8 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
   const image = a.image ? (/^https?:/.test(a.image) ? a.image : `${country.origin}${a.image}`) : `${country.origin}${country.ogImage}`;
   const updated = a.updatedAt && new Date(a.updatedAt).getTime() - new Date(a.publishedAt).getTime() > 36 * 3600 * 1000 ? a.updatedAt : null;
   const author = a.author || "PakistanYP Editorial";
+  const faq = faqItems(html);
+  const words = html.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] text-[#0A0A0A]">
@@ -96,7 +106,14 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
             mainEntityOfPage: { "@type": "WebPage", "@id": url },
             articleSection: a.category,
             keywords: a.tags.join(", ") || undefined,
+            wordCount: words,
+            inLanguage: "en",
           },
+          ...(faq.length ? [{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faq.map((x) => ({ "@type": "Question", name: x.q, acceptedAnswer: { "@type": "Answer", text: x.a } })),
+          }] : []),
           breadcrumbLd([
             { name: "Home", path: "/" },
             { name: cfg.label, path: cfg.base },
@@ -145,6 +162,14 @@ export default function EditorialArticle({ kind }: { kind: EditorialKind }) {
             <div
               className="prose prose-lg max-w-none prose-headings:scroll-mt-28 prose-headings:font-semibold prose-headings:tracking-[-0.02em] prose-headings:text-[#0A0A0A] prose-h2:mt-10 prose-h2:text-[26px] prose-h3:text-[20px] prose-p:text-[#3A4354] prose-p:leading-[1.8] prose-a:text-[#0B6B2E] prose-a:font-medium prose-strong:text-[#0A0A0A] prose-li:text-[#3A4354] prose-li:marker:text-[#0B6B2E] prose-img:rounded-[16px]"
               dangerouslySetInnerHTML={{ __html: html }}
+              onClick={(e) => {
+                const link = (e.target as HTMLElement).closest?.("a");
+                const href = link?.getAttribute("href");
+                if (!link || !href || !href.startsWith("/") || link.target || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                e.preventDefault();
+                navigate(href);
+                window.scrollTo(0, 0);
+              }}
             />
             {a.source && kind === "news" && (
               <p className="mt-8 border-t border-[#EEF0F4] pt-4 text-sm text-[#5B6475]">Source: {a.sourceUrl ? <a href={a.sourceUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-[#0B6B2E]">{a.source}</a> : a.source}</p>
