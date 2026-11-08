@@ -90,9 +90,24 @@ async function sectionDates(): Promise<Record<string, string>> {
   }
 }
 
+// Child sitemaps without any URL are left out of the index: Google and Bing report empty sitemaps as issues.
+// (Category and locality pages without businesses are noindex, so these sections fill up as listings are added.)
+async function emptySections(): Promise<Set<string>> {
+  const skip = new Set<string>();
+  try {
+    const { rows } = await pool.query(`select exists(select 1 from businesses where coalesce(is_active, true)) as has_businesses`);
+    if (!rows[0]?.has_businesses) { skip.add('sitemap-businesses.xml'); skip.add('sitemap-top.xml'); }
+  } catch { /* keep every section if the check fails */ }
+  try {
+    if (!(await generateLocalitiesSitemap()).includes('<url>')) skip.add('sitemap-localities.xml');
+  } catch { /* keep */ }
+  return skip;
+}
+
 export async function generateSitemapIndex() {
   const baseUrl = country.origin;
   const d = await sectionDates();
+  const skip = await emptySections();
   const sections: Array<[string, string]> = [
     ['sitemap-static.xml', d.static],
     ['sitemap-provinces.xml', d.provinces],
@@ -107,7 +122,7 @@ export async function generateSitemapIndex() {
   for (const ext of EXTENSION_SITEMAPS) sections.push([ext.file, await ext.lastmod().catch(() => d.static)]);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sections.map(([file, lastmod]) => `  <sitemap>
+${sections.filter(([file]) => !skip.has(file)).map(([file, lastmod]) => `  <sitemap>
     <loc>${baseUrl}/${file}</loc>
     <lastmod>${lastmod}</lastmod>
   </sitemap>`).join('\n')}
