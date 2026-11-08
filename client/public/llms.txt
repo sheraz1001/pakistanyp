@@ -1,0 +1,122 @@
+# PakistanYP (Pakistan Yellow Pages)
+
+> Find verified companies across Karachi, Lahore, Islamabad and all provinces and territories.
+
+PakistanYP (https://pakistanyp.com) is a business directory for Pakistan. People use it to find companies by category and by location across all provinces and territories, compare business details and contact businesses directly. Businesses can add and manage their own listings. Verified businesses carry a badge after submitting registration documents.
+
+Key facts for AI assistants:
+- Coverage: Pakistan only, organised by category, provinces and territories, cities and localities.
+- Listings show the business name, category, location and contact details.
+- All public pages are server-rendered HTML; the full URL list is in the sitemap.
+- Contact: info@pakistanyp.com
+- Sitemap: https://pakistanyp.com/sitemap.xml
+
+## Main pages
+
+- [Pakistan Yellow Pages – Business Directory](https://pakistanyp.com/): Find verified companies across Karachi, Lahore, Islamabad and all provinces and territories.
+- [Business Categories in Pakistan | Complete Directory](https://pakistanyp.com/categories): Browse comprehensive business categories across Pakistan.
+- [Pakistani Provinces – Business Directory by Province](https://pakistanyp.com/provinces): Browse businesses in Punjab, Sindh, Khyber Pakhtunkhwa, Balochistan, Islamabad Capital Territory, Gilgit-Baltistan, Azad Jammu and Kashmir.
+- [Cities in Pakistan – Business Directory by City](https://pakistanyp.com/cities): Browse businesses in 463 cities and towns across Pakistan: Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad, Peshawar, Multan, Quetta and more.
+- [Pakistani Business Localities – Areas & Districts](https://pakistanyp.com/localities): Find businesses by area in Pakistan. Browse localities across Karachi, Lahore, Islamabad & all provinces.
+- [PakistanYP News – Updates & Announcements](https://pakistanyp.com/news): Company news, product updates and announcements from PakistanYP, Pakistan's business directory.
+- [PakistanYP Blogs – Guides & Insights for Pakistani Businesses](https://pakistanyp.com/blogs): Practical guides, tips and insights for Pakistani businesses and the customers who look for them.
+- [All Business Categories in Pakistan – Full List](https://pakistanyp.com/category-hierarchy): Browse every business category and subcategory on Pakistan Yellow Pages, from construction and healthcare to IT, retail and services across Pakistan.
+- [Help Center - PakistanYP Business Directory](https://pakistanyp.com/help-center): Find answers to your questions about PakistanYP.
+- [Contact Us - PakistanYP Business Directory | Support & Inquiries](https://pakistanyp.com/contact-us): Contact PakistanYP for business listing support, partnerships, technical assistance, and general inquiries.
+- [About Us - Pakistani Business Directory](https://pakistanyp.com/about)
+- [Advertise with PakistanYP - Premium Business Advertising Packages](https://pakistanyp.com/advertise-with-us): Boost your business visibility across Pakistan with PakistanYP's premium advertising packages.
+- [Business Guidelines - PakistanYP Directory Standards](https://pakistanyp.com/business-guidelines): Comprehensive guidelines for businesses listing on PakistanYP.
+- [Pricing Plans - Pakistani Business Directory](https://pakistanyp.com/pricing): Choose the perfect business directory plan for your Pakistani business. From free listings to enterprise solutions. Transparent pricing with no hidden fees.
+- [Privacy Policy - PakistanYP Business Directory](https://pakistanyp.com/pages/privacy-policy): PakistanYP Privacy Policy detailing how we collect, use, and protect your personal information on our Pakistani business directory platform.
+- [Terms of Service - PakistanYP Business Directory](https://pakistanyp.com/pages/terms-of-service): PakistanYP Terms of Service outlining user agreements, platform usage guidelines, and legal terms for Pakistan business directory users and business owners.
+
+## Business categories
+
+- [Property & Construction](https://pakistanyp.com/categories/property-construction)
+- [Energy & Utilities](https://pakistanyp.com/categories/energy-utilities)
+- [Education & Training](https://pakistanyp.com/categories/education-training)
+- [Health & Medical](https://pakistanyp.com/categories/health-medical)
+- [Weddings & Events](https://pakistanyp.com/categories/weddings-events)
+- [Fashion & Textiles](https://pakistanyp.com/categories/fashion-textiles)
+- [Food & Dining](https://pakistanyp.com/categories/food-dining)
+- [Grocery & Daily Needs](https://pakistanyp.com/categories/grocery-daily-needs)
+- [Automotive](https://pakistanyp.com/categories/automotive)
+- [Travel & Transport](https://pakistanyp.com/categories/travel-transport)
+- [Overseas & Immigration](https://pakistanyp.com/categories/overseas-immigration)
+- [Finance & Legal](https://pakistanyp.com/categories/finance-legal)
+- [Home Services](https://pakistanyp.com/categories/home-services)
+- [Electronics & Mobile](https://pakistanyp.com/categories/electronics-mobile)
+- [IT & Digital](https://pakistanyp.com/categories/it-digital)
+- [Beauty & Wellness](https://pakistanyp.com/categories/beauty-wellness)
+- [Industry & Manufacturing](https://pakistanyp.com/categories/industry-manufacturing)
+- [Agriculture & Livestock](https://pakistanyp.com/categories/agriculture-livestock)
+- [Wholesale & Trade](https://pakistanyp.com/categories/wholesale-trade)
+- [Religious & Community](https://pakistanyp.com/categories/religious-community)
+- [Government & Public Services](https://pakistanyp.com/categories/government-public-services)
+- [Pets, Sports & Leisure](https://pakistanyp.com/categories/pets-sports-leisure)
+- [Property Dealers & Estate Agents](https://pakistanyp.com/categories/property-dealers-estate-agents)
+- [Housing Societies & Plots](https://pakistanyp.com/categories/housing-societies-plots)
+- [Rentals & Accommodation](https://pakistanyp.com/categories/rentals-accommodation)
+- [Builders & Construction Firms](https://pakistanyp.com/categories/builders-construction-firms)
+- [Architects & Engineers](https://pakistanyp.com/categories/architects-engineers)
+- [Contractors & Specialists](https://pakistanyp.com/categories/contractors-specialists)
+- [Building Materials](https://pakistanyp.com/categories/building-materials)
+- [Finishing Materials](https://pakistanyp.com/categories/finishing-materials)
+
+## Provinces & territories
+
+- [Businesses in Punjab, Pakistan](https://pakistanyp.com/punjab)
+- [Businesses in Sindh, Pakistan](https://pakistanyp.com/sindh)
+- [Businesses in Khyber Pakhtunkhwa, Pakistan](https://pakistanyp.com/khyber-pakhtunkhwa)
+- [Businesses in Balochistan, Pakistan](https://pakistanyp.com/balochistan)
+- [Businesses in Islamabad Capital Territory, Pakistan](https://pakistanyp.com/islamabad)
+- [Businesses in Gilgit-Baltistan, Pakistan](https://pakistanyp.com/gilgit-baltistan)
+- [Businesses in Azad Jammu and Kashmir, Pakistan](https://pakistanyp.com/azad-kashmir)
+
+## Cities
+
+- [Lahore Business Directory – Firms & Services](https://pakistanyp.com/cities/lahore)
+- [Faisalabad Business Directory – Textile & Trade](https://pakistanyp.com/cities/faisalabad)
+- [Rawalpindi Business Directory – Shops & Firms](https://pakistanyp.com/cities/rawalpindi)
+- [Multan Business Directory – Firms & Markets](https://pakistanyp.com/cities/multan)
+- [Gujranwala Business Directory – Makers & Trade](https://pakistanyp.com/cities/gujranwala)
+- [Sialkot Business Directory – Exporters & Makers](https://pakistanyp.com/cities/sialkot)
+- [Bahawalpur Business Directory – Firms & Trade](https://pakistanyp.com/cities/bahawalpur)
+- [Sargodha Businesses & Services](https://pakistanyp.com/cities/sargodha)
+- [Sheikhupura Businesses & Services](https://pakistanyp.com/cities/sheikhupura)
+- [Rahim Yar Khan Businesses & Services](https://pakistanyp.com/cities/rahim-yar-khan)
+- [Gujrat Businesses & Services](https://pakistanyp.com/cities/gujrat)
+- [Sahiwal Businesses & Services](https://pakistanyp.com/cities/sahiwal)
+- [Karachi Business Directory – Firms & Services](https://pakistanyp.com/cities/karachi)
+- [Hyderabad (Sindh) Business Directory](https://pakistanyp.com/cities/hyderabad)
+- [Sukkur Businesses & Services](https://pakistanyp.com/cities/sukkur)
+- [Larkana Businesses & Services](https://pakistanyp.com/cities/larkana)
+- [Peshawar Business Directory – Traders & Firms](https://pakistanyp.com/cities/peshawar)
+- [Mardan Businesses & Services](https://pakistanyp.com/cities/mardan)
+- [Abbottabad Businesses & Services](https://pakistanyp.com/cities/abbottabad)
+- [Quetta Business Directory – Traders & Services](https://pakistanyp.com/cities/quetta)
+
+## Localities
+
+- [F-5, Islamabad, Islamabad Capital Territory Business Directory](https://pakistanyp.com/localities/islamabad-capital-territory/f-5-islamabad)
+
+## Guides (blog)
+
+- [How to Become a Filer in Pakistan (2026)](https://pakistanyp.com/blogs/how-to-become-a-filer-in-pakistan): How to become a filer in Pakistan: register on FBR IRIS, file your return and wealth statement, join the Active Taxpayer List and avoid non-filer tax rates.
+- [How to Register a Company in Pakistan (2026)](https://pakistanyp.com/blogs/how-to-register-a-company-in-pakistan): Learn how to register a company in Pakistan: SECP eZfile, name reservation, NTN, FBR and provincial sales tax, bank account and annual filings, step by step.
+- [10 Tips to Make Your Business Listing Stand Out](https://pakistanyp.com/blogs/make-your-pakistanyp-listing-stand-out): Ten practical ways to get more calls from your PakistanYP listing: categories, locality, description, photos, hours, WhatsApp, verification and reviews.
+- [Find Trusted Local Services in Your City](https://pakistanyp.com/blogs/find-trusted-local-services-pakistanyp): How to search PakistanYP by province, city and locality, compare businesses, check verified badges and reviews, and request quotes from up to five businesses.
+- [PakistanYP Verified Badge: Accepted Documents (NTN, SECP)](https://pakistanyp.com/blogs/pakistanyp-verified-badge-documents): Which documents earn a PakistanYP verified badge: NTN, STRN, SECP incorporation, chamber membership, trade licence, PMDC, PEC and more, plus approval tips.
+- [How to List Your Business on PakistanYP (Free Guide)](https://pakistanyp.com/blogs/how-to-list-your-business-on-pakistanyp): Step-by-step guide to adding your business to PakistanYP for free: account, categories, province, city and locality, contact details and verification.
+
+## News
+
+- [Tajir Dost Scheme Explained: 2026 Update](https://pakistanyp.com/news/fbr-retailer-registration-tajir-dost-explained): The Tajir Dost scheme explained: what the FBR launched in 2024, the 2026-27 fixed tax for small shops, the Asaan Tajir app, and what shops should do now.
+- [Raast Payment for Businesses: 2026 Update](https://pakistanyp.com/news/raast-digital-payments-what-businesses-need-to-know): Raast payment explained for Pakistani shops: how QR acceptance works, the SBP subsidy, the fuel station deadline and what to check before you join.
+- [Verified Business Badges Now Live](https://pakistanyp.com/news/pakistanyp-verified-business-badges): PakistanYP businesses can now earn a verified badge with phone confirmation and documents such as NTN, STRN or SECP registration. Here is how it works.
+- [PakistanYP Launches – Pakistan's Business Directory](https://pakistanyp.com/news/pakistanyp-launches-pakistan-business-directory): PakistanYP.com is live: a free business directory covering 7 provinces and territories, 463 cities and 821 localities, with verified listings and quotes.
+
+## Optional
+
+- [Full sitemap](https://pakistanyp.com/sitemap.xml): every public category, location, listing and article page
+- [Privacy policy](https://pakistanyp.com/pages/privacy-policy)
