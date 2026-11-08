@@ -95,8 +95,7 @@ async function sectionDates(): Promise<Record<string, string>> {
 async function emptySections(): Promise<Set<string>> {
   const skip = new Set<string>();
   try {
-    const { rows } = await pool.query(`select exists(select 1 from businesses where coalesce(is_active, true)) as has_businesses`);
-    if (!rows[0]?.has_businesses) { skip.add('sitemap-businesses.xml'); skip.add('sitemap-top.xml'); }
+    if (!(await generateBusinessSitemap()).includes('<url>')) { skip.add('sitemap-businesses.xml'); skip.add('sitemap-top.xml'); }
   } catch { /* keep every section if the check fails */ }
   try {
     if (!(await generateLocalitiesSitemap()).includes('<url>')) skip.add('sitemap-localities.xml');
