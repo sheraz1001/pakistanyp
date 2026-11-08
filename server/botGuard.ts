@@ -1,13 +1,13 @@
 /**
  * Bot protection that keeps SEO intact: search engines (Google, Bing, Yandex, DuckDuckGo, Apple, Baidu...) are
- * never blocked; scrapers and AI-training crawlers listed below get 403; every client is rate-limited per IP,
+ * never blocked; scrapers listed below get 403 (AI crawlers are allowed); every client is rate-limited per IP,
  * more strictly on search and the API. App-level, so it works without Cloudflare.
  * BLOCKED_BOTS / ALLOWED_BOTS env vars (comma-separated, case-insensitive) adjust the lists.
  */
 import type { Request, Response, NextFunction } from "express";
 
-const DEFAULT_BLOCKED = ["GPTBot", "ChatGPT-User", "CCBot", "Bytespider", "AhrefsBot", "SemrushBot", "MJ12bot", "DotBot", "PetalBot",
-  "ClaudeBot", "anthropic-ai", "Amazonbot", "DataForSeoBot", "BLEXBot", "SeekportBot", "serpstatbot", "Barkrowler", "ImagesiftBot", "MegaIndex", "Scrapy"];
+// AI crawlers (GPTBot, ChatGPT-User, ClaudeBot, CCBot, Amazonbot...) are allowed for AI-search visibility (Nov 2026).
+const DEFAULT_BLOCKED = ["Bytespider", "AhrefsBot", "SemrushBot", "MJ12bot", "DotBot", "PetalBot", "DataForSeoBot", "BLEXBot", "SeekportBot", "serpstatbot", "Barkrowler", "ImagesiftBot", "MegaIndex", "Scrapy"];
 const list = (env: string | undefined, fallback: string[]) => (env ? env.split(",").map((s) => s.trim()).filter(Boolean) : fallback);
 const BLOCKED = new RegExp(list(process.env.BLOCKED_BOTS, DEFAULT_BLOCKED).map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "i");
 const SEARCH_ENGINES = new RegExp(["Googlebot", "Google-InspectionTool", "Storebot-Google", "AdsBot-Google", "bingbot", "BingPreview", "YandexBot", "DuckDuckBot", "Applebot", "Baiduspider",
