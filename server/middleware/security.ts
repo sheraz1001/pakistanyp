@@ -13,11 +13,11 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
 
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https: http:",
-    "connect-src 'self' https://api.stripe.com https://api.openweathermap.org https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com wss: ws:",
+    "connect-src 'self' https://api.stripe.com https://api.openweathermap.org https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com wss: ws:",
     "frame-src 'self' https://js.stripe.com https://www.google.com",
     "frame-ancestors 'none'",
     "object-src 'none'",
