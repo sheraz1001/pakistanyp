@@ -49,7 +49,7 @@ Disallow: /*?q=
 Disallow: /*&q=`;
 
 // Google and Bing get the rules without a delay; other crawlers are asked to wait between requests;
-// scrapers and AI-training crawlers are refused (also enforced in server/botGuard.ts).
+// scrapers are refused; AI crawlers are welcome (also enforced in server/botGuard.ts).
 const ROBOTS_TXT = `# robots.txt for https://${CANONICAL_HOST}
 User-agent: Googlebot
 User-agent: Googlebot-Image
@@ -58,21 +58,40 @@ User-agent: Bingbot
 User-agent: BingPreview
 ${ROBOTS_RULES}
 
+# AI search & assistant crawlers are welcome (AI visibility): same rules as search engines, no delay
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: GoogleOther
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: Amazonbot
+User-agent: CCBot
+User-agent: meta-externalagent
+User-agent: meta-externalfetcher
+User-agent: DuckAssistBot
+User-agent: MistralAI-User
+User-agent: cohere-ai
+User-agent: YouBot
+${ROBOTS_RULES}
+
 User-agent: *
 Crawl-delay: 10
 ${ROBOTS_RULES}
 
-User-agent: GPTBot
-User-agent: ChatGPT-User
-User-agent: CCBot
 User-agent: Bytespider
 User-agent: AhrefsBot
 User-agent: SemrushBot
 User-agent: MJ12bot
 User-agent: DotBot
 User-agent: PetalBot
-User-agent: ClaudeBot
-User-agent: Amazonbot
 Disallow: /
 
 Sitemap: https://${CANONICAL_HOST}/sitemap.xml
