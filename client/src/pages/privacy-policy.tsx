@@ -292,7 +292,7 @@ export default function PrivacyPolicy() {
                 <a href="/pages/terms-of-service" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">
                   Terms of Service
                 </a>
-                <a href="/pages/business-guidelines" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">
+                <a href="/business-guidelines" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">
                   Business Guidelines
                 </a>
                 <a href="/contact-us" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">
