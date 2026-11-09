@@ -338,7 +338,7 @@ export default function TermsOfService() {
                 <a href="/pages/privacy-policy" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">
                   Privacy Policy
                 </a>
-                <a href="/pages/business-guidelines" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">
+                <a href="/business-guidelines" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">
                   Business Guidelines
                 </a>
                 <a href="/help-center" className="block text-[#0B6B2E] hover:text-[#05501F] font-medium text-sm">

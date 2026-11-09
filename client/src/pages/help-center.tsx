@@ -179,8 +179,8 @@ export default function HelpCenter() {
                 {[
                   ['/pages/terms-of-service', 'Terms of Service'],
                   ['/pages/privacy-policy', 'Privacy Policy'],
-                  ['/pages/business-guidelines', 'Business Guidelines'],
-                  ['/pages/advertise-with-us', 'Advertise With Us'],
+                  ['/business-guidelines', 'Business Guidelines'],
+                  ['/advertise-with-us', 'Advertise With Us'],
                 ].map(([href, label]) => (
                   <Link key={href} href={href} className="flex items-center justify-between min-h-[44px] px-3 -mx-3 rounded-xl text-[15px] font-medium text-[#3A4354] hover:bg-[#F1F2F6] hover:text-[#0A0A0A]">
                     {label}
