@@ -5227,6 +5227,61 @@ Instructions:
   });
 
   // Premium Payment Routes
+  // Premium upgrade through Stripe hosted Checkout (the page needs no Stripe.js / publishable key).
+  // Prices come from the server-side table below, never from the browser.
+  app.post('/api/create-premium-checkout', isAuthenticated, async (req: any, res) => {
+    try {
+      if (!stripe) {
+        return res.status(500).json({ message: "Payment processing is not available" });
+      }
+      const { businessId, planType } = req.body;
+      const userId = req.user.id;
+      const business = await storage.getBusinessById(businessId);
+      if (!business) {
+        return res.status(404).json({ message: "Business not found" });
+      }
+      if (business.ownerId !== userId) {
+        return res.status(403).json({ message: "You don't own this business" });
+      }
+      const pricing = {
+        monthly: { amount: 29900, duration: 1 }, // 299 PKR for 1 month
+        yearly: { amount: 299900, duration: 12 }  // 2999 PKR for 12 months (save 600 PKR)
+      };
+      const plan = pricing[planType as keyof typeof pricing];
+      if (!plan) {
+        return res.status(400).json({ message: "Invalid plan type" });
+      }
+      const metadata = {
+        source: 'premium_checkout',
+        businessId: String(businessId),
+        userId: String(userId),
+        planType: String(planType),
+        planDuration: plan.duration.toString(),
+      };
+      const origin = country.origin;
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        customer_email: req.user.email || undefined,
+        line_items: [{
+          quantity: 1,
+          price_data: {
+            currency: country.currency.toLowerCase(),
+            unit_amount: plan.amount,
+            product_data: { name: `Premium listing (${planType}) - ${business.name || 'Business'}` },
+          },
+        }],
+        payment_intent_data: { metadata },
+        metadata,
+        success_url: `${origin}/upgrade-premium?businessId=${businessId}&payment=success`,
+        cancel_url: `${origin}/upgrade-premium?businessId=${businessId}&payment=cancelled`,
+      });
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error("Error creating premium checkout:", error);
+      res.status(500).json({ message: "Error creating checkout: " + error.message });
+    }
+  });
+
   app.post('/api/create-payment-intent', isAuthenticated, async (req: any, res) => {
     try {
       const { businessId, planType } = req.body;
@@ -5320,6 +5375,30 @@ Instructions:
       
       try {
         // Update payment status
+        // Payments started from hosted Checkout have no pending record yet: create it from the metadata
+        if (paymentIntent.metadata?.source === 'premium_checkout') {
+          const months = parseInt(paymentIntent.metadata.planDuration || '1');
+          const startDate = new Date();
+          const endDate = new Date();
+          endDate.setMonth(endDate.getMonth() + months);
+          try {
+            await storage.createPremiumPayment({
+              businessId: parseInt(paymentIntent.metadata.businessId),
+              userId: paymentIntent.metadata.userId,
+              stripePaymentIntentId: paymentIntent.id,
+              amount: (paymentIntent.amount / 100).toString(),
+              currency: paymentIntent.currency.toUpperCase(),
+              status: "pending",
+              planType: paymentIntent.metadata.planType,
+              planDuration: months,
+              startDate,
+              endDate,
+              metadata: { stripePaymentIntentId: paymentIntent.id, source: 'premium_checkout' }
+            } as any);
+          } catch (e) {
+            console.error('Could not record checkout payment (it may already exist):', e);
+          }
+        }
         await storage.updatePremiumPaymentStatus(paymentIntent.id, 'succeeded');
         
         // Upgrade business to premium
