@@ -395,9 +395,9 @@ export default function Register() {
                 />
                 <span>
                   I agree to the{" "}
-                  <Link href="/terms" className="text-[#0B6B2E] hover:text-[#05501F] font-medium">Terms of Service</Link>{" "}
+                  <Link href="/pages/terms-of-service" className="text-[#0B6B2E] hover:text-[#05501F] font-medium">Terms of Service</Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-[#0B6B2E] hover:text-[#05501F] font-medium">Privacy Policy</Link>.
+                  <Link href="/pages/privacy-policy" className="text-[#0B6B2E] hover:text-[#05501F] font-medium">Privacy Policy</Link>.
                 </span>
               </label>
 
