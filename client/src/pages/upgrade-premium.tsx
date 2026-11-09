@@ -141,27 +141,16 @@ export default function UpgradePremium() {
   const [clientSecret, setClientSecret] = useState<string>("");
   const [, navigate] = useLocation();
 
-  // Check if Stripe is available
-  if (!stripePromise) {
-    return (
-      <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center px-6 py-16">
-        <Card className="max-w-md w-full rounded-[24px]">
-          <CardHeader>
-            <span className="w-12 h-12 rounded-[14px] grid place-items-center bg-[#E8F4EC] text-[#0B6B2E] mb-3">
-              <Crown className="w-6 h-6" />
-            </span>
-            <CardTitle className="text-2xl tracking-[-0.03em]">Payment Not Available</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-[#4B5565]">Payment processing is currently unavailable. Please contact support for assistance.</p>
-            <Button onClick={() => navigate('/')} className="mt-4">
-              Go Home
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+
+  // Message after returning from Stripe Checkout
+  useEffect(() => {
+    const status = new URLSearchParams(window.location.search).get("payment");
+    if (status === "success") {
+      toast({ title: "Payment received", description: "Thank you! Your listing will be upgraded to Premium in a moment." });
+    } else if (status === "cancelled") {
+      toast({ title: "Payment cancelled", description: "No charge was made. You can try again any time." });
+    }
+  }, []);
 
   // Get business ID from URL params
   useEffect(() => {
@@ -201,9 +190,14 @@ export default function UpgradePremium() {
   // Create payment intent mutation
   const createPaymentMutation = useMutation({
     mutationFn: async (data: { businessId: number; planType: string }) => {
-      return await apiRequest("POST", "/api/create-payment-intent", data);
+      return await apiRequest("POST", "/api/create-premium-checkout", data);
     },
     onSuccess: (data) => {
+      // Hosted Stripe Checkout: send the customer to Stripe's secure payment page
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
       setClientSecret(data.clientSecret);
     },
     onError: (error: Error) => {
