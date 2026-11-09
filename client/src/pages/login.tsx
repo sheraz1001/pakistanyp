@@ -95,8 +95,8 @@ export default function Login() {
       footnote={
         <>
           © {new Date().getFullYear()}{` ${country.brand} ·`}{" "}
-          <Link href="/privacy" className="text-[#5B6475] hover:text-[#0A0A0A]">Privacy</Link> ·{" "}
-          <Link href="/terms" className="text-[#5B6475] hover:text-[#0A0A0A]">Terms</Link>
+          <Link href="/pages/privacy-policy" className="text-[#5B6475] hover:text-[#0A0A0A]">Privacy</Link> ·{" "}
+          <Link href="/pages/terms-of-service" className="text-[#5B6475] hover:text-[#0A0A0A]">Terms</Link>
         </>
       }
     >
@@ -171,8 +171,8 @@ export default function Login() {
 
         <p className="m-0 text-center text-xs text-[#5B6475]">
           By signing in, you agree to our{" "}
-          <Link href="/terms" className="underline hover:text-[#0A0A0A]">Terms of Service</Link> and{" "}
-          <Link href="/privacy" className="underline hover:text-[#0A0A0A]">Privacy Policy</Link>.
+          <Link href="/pages/terms-of-service" className="underline hover:text-[#0A0A0A]">Terms of Service</Link> and{" "}
+          <Link href="/pages/privacy-policy" className="underline hover:text-[#0A0A0A]">Privacy Policy</Link>.
         </p>
       </form>
     </AuthSplit>
