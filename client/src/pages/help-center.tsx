@@ -152,7 +152,7 @@ export default function HelpCenter() {
             <div className="yp-tint rounded-[24px] p-6 flex flex-col gap-4">
               <span className="yp-label !text-[#0B6B2E]">Support</span>
               <h3 className="yp-h3">Need More Help?</h3>
-              <Link href="/support/new-ticket" className="yp-btn yp-btn-primary w-full">
+              <Link href="/contact-us" className="yp-btn yp-btn-primary w-full">
                 <MessageCircle className="w-4 h-4" aria-hidden="true" />
                 Submit Support Ticket
               </Link>
