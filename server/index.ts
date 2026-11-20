@@ -12,7 +12,7 @@ import { registerIndexNowKeyRoute, startSitemapWatcher } from "./indexNow";
 import { bootstrapDatabase } from "./bootstrapDatabase";
 import compression from "compression";
 import connectPgSimple from "connect-pg-simple";
-import { seoGuards, localityDuplicateRedirect , legacyGone } from "./middleware/seoGuards";
+import { seoGuards, localityDuplicateRedirect, legacyGone, missingFile404 } from "./middleware/seoGuards";
 import { composeSSRPage, countryTemplate, SITE_ORIGIN } from "./ssrPage";
 import { languageRouting, localizeApi, htmlLangAttributes, preferredLanguageRedirect } from "./i18n";
 import { installSsrInternalFetch } from "./ssrInternalFetch";
@@ -103,8 +103,8 @@ app.get('/', (req, res, next) => {
 // their canonical redirects keep the language prefix
 app.use(languageRouting);
 app.use(legacyGone);
+app.use(localityDuplicateRedirect); // before seoGuards: one redirect for un-normalised locality URLs
 app.use(seoGuards);
-app.use(localityDuplicateRedirect);
 
 // Default X-Robots-Tag and HTML caching for page requests
 // This middleware MUST run before all other middleware to ensure search engines can crawl
@@ -540,6 +540,9 @@ function escapeJsonForScript(json: string): string {
         setHeaders: staticCacheHeaders,
       }));
       
+      // Files that do not exist get a real 404, not the HTML shell (server/middleware/seoGuards.ts)
+      app.use(missingFile404);
+
       // SSR handler for all HTML requests with improved error handling
       app.use("*", async (req, res, next) => {
         const url = req.originalUrl;
