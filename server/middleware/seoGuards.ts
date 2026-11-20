@@ -41,7 +41,6 @@ Disallow: /search
 Disallow: /search-results
 Disallow: /ar/search
 Disallow: /ar/search-results
-Disallow: /*?*_cb=
 Disallow: /*?*sort=
 Disallow: /*?*filter=
 Disallow: /*?*view=
@@ -135,7 +134,6 @@ export function seoGuards(req: Request, res: Response, next: NextFunction) {
     const seg = target.split("/").filter(Boolean);
     if (seg[0] === country.regionsPath.slice(1) && seg.length === 2 && PROVINCES.has(seg[1])) target = `/${seg[1]}`;
     else if (seg[0] === "business-profile" && seg.length === 2) target = `/business/${seg[1]}`;
-    else if (seg.length === 2 && PROVINCES.has(seg[0])) target = `/localities/${seg[0]}/${seg[1]}`;
     if (target.startsWith("/localities/")) target = target.replace(/-{2,}/g, "-");
 
     if (target !== path) return res.redirect(301, target + qs);
@@ -145,23 +143,36 @@ export function seoGuards(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-const dupCache = new Map<string, boolean>();
-/** /localities/<province>/<slug>-2 -> /localities/<province>/<slug> when the original exists (duplicate rows in DB). */
+// ---- locality slugs ("<province>/<locality>"), loaded once and refreshed every 6 hours (one small query, no per-URL lookups)
+let localitySlugs: Set<string> | null = null;
+let localitySlugsAt = 0;
+let localitySlugsLoading: Promise<Set<string> | null> | null = null;
+const norm = (slug: string) => slug.toLowerCase().replace(/-{2,}/g, "-");
+
+async function knownLocalities(): Promise<Set<string> | null> {
+  if (localitySlugs && Date.now() - localitySlugsAt < 6 * 3600 * 1000) return localitySlugs;
+  localitySlugsLoading ||= pool.query("select slug from localities")
+    .then((r: any) => { localitySlugs = new Set(r.rows.map((x: any) => norm(String(x.slug)))); localitySlugsAt = Date.now(); return localitySlugs; })
+    .catch((e: any) => { console.error("[seoGuards] locality list failed", e?.message || e); return localitySlugs; }) // keep the old list on error
+    .finally(() => { localitySlugsLoading = null; });
+  return localitySlugsLoading;
+}
+
+/**
+ * /<province>/<locality>            -> 301 /localities/<province>/<locality>, only when that locality exists.
+ * /localities/<province>/<slug>-2   -> 301 /localities/<province>/<slug> when the original exists (duplicate rows in DB).
+ * Anything else falls through: the app answers unknown two-segment URLs with a real 404 (see App.tsx, /:province/:locality).
+ */
 export async function localityDuplicateRedirect(req: Request, res: Response, next: NextFunction) {
-  const m = req.path.match(/^\/localities\/([a-z-]+)\/(.+)-(\d{1,2})$/);
-  if (!m || (req.method !== "GET" && req.method !== "HEAD")) return next();
-  const base = `${m[1]}/${m[2]}`;
-  try {
-    let exists = dupCache.get(base);
-    if (exists === undefined) {
-      const r = await pool.query("select 1 from localities where regexp_replace(slug, '-{2,}', '-', 'g') = $1 limit 1", [base]);
-      exists = (r.rowCount ?? 0) > 0;
-      dupCache.set(base, exists);
-    }
-    if (exists) return res.redirect(301, `/localities/${base}`);
-  } catch (e) {
-    console.error("[seoGuards] locality redirect lookup failed", e);
-  }
+  if (req.method !== "GET" && req.method !== "HEAD") return next();
+  const seg = req.path.split("/").filter(Boolean);
+  const short = seg.length === 2 && PROVINCES.has(seg[0]) && !isAssetPath(req.path);
+  const dup = req.path.match(/^\/localities\/([a-z-]+)\/(.+)-(\d{1,2})$/);
+  if (!short && !dup) return next();
+  const known = await knownLocalities();
+  const qs = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
+  if (short && known?.has(norm(`${seg[0]}/${seg[1]}`))) return res.redirect(301, `/localities/${norm(`${seg[0]}/${seg[1]}`)}${qs}`);
+  if (dup && known?.has(norm(`${dup[1]}/${dup[2]}`))) return res.redirect(301, `/localities/${norm(`${dup[1]}/${dup[2]}`)}${qs}`);
   next();
 }
 
@@ -174,4 +185,19 @@ export function legacyGone(req: Request, res: Response, next: NextFunction) {
   res.set("X-Robots-Tag", "noindex");
   res.set("Cache-Control", "public, max-age=86400");
   res.status(410).type("html").send("<!doctype html><html><head><title>410 Gone</title><meta name=\"robots\" content=\"noindex\"></head><body><h1>This page no longer exists</h1><p>The translated pages of the old website were removed. Visit <a href=\"https://pakistanyp.com/\">pakistanyp.com</a> for Pakistan business directory.</p></body></html>");
+}
+
+/**
+ * Unknown file-like paths (/assets/*, /img/*, /.well-known/*, anything ending in an extension such as .js, .svg,
+ * .json, .html) get a real 404 with a tiny body, never the HTML app shell. Mount AFTER the static file handlers
+ * and the real file routes (sitemaps, robots.txt, uploads), right before the page renderer.
+ */
+const FILE_ONLY_PREFIX = /^\/(?:assets|img|\.well-known)(?:\/|$)/i;
+
+export function missingFile404(req: Request, res: Response, next: NextFunction) {
+  if (req.path.startsWith("/api/")) return next();
+  if (!FILE_ONLY_PREFIX.test(req.path) && !/\.[a-z0-9]{2,5}$/i.test(req.path)) return next();
+  res.set("X-Robots-Tag", "noindex");
+  res.set("Cache-Control", "public, max-age=300");
+  res.status(404).type("text/plain").send("404 Not Found\n");
 }

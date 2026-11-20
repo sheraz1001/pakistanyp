@@ -20,6 +20,7 @@ import { Router as WouterRouter } from "wouter";
 import { getQueryFn } from "@/lib/queryClient";
 import App, { preloadRoutes, routesLoaded } from "./App";
 import NotFound from "@/pages/not-found";
+import { country } from "@shared/country";
 import { SECOND, SECOND_PREFIX, langOfPath, setDictionary, hasDictionary } from "@shared/i18n";
 import { loadDictionary } from "@shared/countries/dictionary";
 
@@ -110,6 +111,7 @@ function primaryApiPatterns(pathname: string): RegExp[] {
   if (seg[0] === "categories" && last && seg.length > 1) return [new RegExp(`^/api/categories/(by-slug/)?${esc(last)}$`)];
   if (seg[0] === "cities" && seg[1]) return [new RegExp(`^/api/cities/slug/${esc(seg[1])}$`)];
   if (seg[0] === "localities" && seg.length === 3) return [new RegExp(`^/api/localities/.*${esc(last)}$`)];
+  if (seg.length === 2 && country.regions.some((r) => r.slug === seg[0])) return [new RegExp(`^/api/localities/.*${esc(last)}$`)]; // /<province>/<unknown locality>
   if (seg[0] === "blogs" && seg[1] && !["category", "tag"].includes(seg[1])) return [new RegExp(`^/api/editorial/blogs/${esc(seg[1])}$`)];
   if (seg[0] === "news" && seg[1] && !["category", "tag"].includes(seg[1])) return [new RegExp(`^/api/editorial/news/${esc(seg[1])}$`)];
   if (seg[0] === "news" && seg[1]) return [new RegExp(`^/api/news/(slug/)?${esc(seg[1])}$`)];
@@ -240,7 +242,8 @@ async function renderInLang(url: string, lang: string): Promise<SSRRenderResult>
         result = await renderOnce();
       }
 
-      const patterns = primaryApiPatterns(pathname);
+      // language prefix (/ar/...) removed: the API paths are the same in every language
+      const patterns = primaryApiPatterns(base && pathname.startsWith(`${base}/`) ? pathname.slice(base.length) : pathname);
       const notFound = fetchLog.some((f) => f.status === 404 && patterns.some((p) => p.test(f.url)));
       // Unknown slug: serve the real "Page not found" page (status 404 + noindex is set
       // by server/ssrPage.ts) instead of the page's empty shell with the default title.

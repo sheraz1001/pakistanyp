@@ -257,7 +257,11 @@ function Router() {
       <Route path="/video-pitch-generator" component={VideoPitchGeneratorPage} />
       <Route path="/mascot-guide-demo" component={MascotGuideDemo} />
       <Route path="/category-hierarchy" component={CategoryHierarchyPage} />
-      <Route path="/:province/:locality" component={LocalityDetail} />
+      {/* Catch-all for two-segment URLs: only /<real province>/<locality> is a page; anything else is a 404.
+          (Existing localities are 301'd to /localities/... by the server before they get here.) */}
+      <Route path="/:province/:locality">
+        {(params) => (country.regions.some((r) => r.slug === String(params.province).toLowerCase()) ? <LocalityDetail /> : <NotFound />)}
+      </Route>
       <Route component={NotFound} />
     </Switch>
       </ErrorBoundary>
