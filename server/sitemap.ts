@@ -13,7 +13,7 @@ async function categoryBusinessCounts(): Promise<Map<number, number>> {
   const { rows } = await pool.query(`
     with own as (
       select category_id as id, count(*)::int as n from businesses
-      where coalesce(is_active, true) and category_id is not null group by category_id
+      where coalesce(is_active, true) and coalesce(admin_approved, true) and category_id is not null group by category_id
     )
     select c.id,
       coalesce((select n from own where own.id = c.id), 0)
@@ -27,7 +27,7 @@ async function categoryBusinessCounts(): Promise<Map<number, number>> {
 async function localityBusinessCounts(): Promise<Map<number, number>> {
   const { rows } = await pool.query(`
     select locality_id as id, count(*)::int as n from businesses
-    where coalesce(is_active, true) and locality_id is not null group by locality_id`);
+    where coalesce(is_active, true) and coalesce(admin_approved, true) and locality_id is not null group by locality_id`);
   return new Map(rows.map((r: any) => [Number(r.id), Number(r.n)]));
 }
 

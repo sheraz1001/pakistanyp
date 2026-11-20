@@ -473,7 +473,7 @@ function escapeJsonForScript(json: string): string {
           // Compose final document (single title/meta/canonical, real 404s) - see server/ssrPage.ts
           const page = composeSSRPage(template, { url, appHtml, helmet: helmetContext?.helmet, dehydratedState, notFound, routes, isProduction: false });
           res.setHeader('X-SSR-Rendered', 'true');
-          if (page.status === 404) res.setHeader('X-Robots-Tag', 'noindex, follow');
+          if (page.status === 404 || /<meta[^>]*name="robots"[^>]*content="noindex/.test(page.html)) res.setHeader('X-Robots-Tag', 'noindex, follow'); // header agrees with the page's robots meta
           res.status(page.status).set({ "Content-Type": "text/html; charset=utf-8" }).end(page.html);
           ssrMetrics.successfulRenders++;
           console.log(`[SSR] Successfully rendered ${url} (${Date.now() - startTime}ms)`);
@@ -615,7 +615,7 @@ function escapeJsonForScript(json: string): string {
               // Compose final document (single title/meta/canonical, real 404s) - see server/ssrPage.ts
               const page = composeSSRPage(template, { url, appHtml, helmet: helmetContext?.helmet, dehydratedState, notFound, routes, isProduction: true });
               res.setHeader('X-SSR-Rendered', 'true');
-              if (page.status === 404) res.setHeader('X-Robots-Tag', 'noindex, follow');
+              if (page.status === 404 || /<meta[^>]*name="robots"[^>]*content="noindex/.test(page.html)) res.setHeader('X-Robots-Tag', 'noindex, follow'); // header agrees with the page's robots meta
               res.status(page.status).set({ "Content-Type": "text/html; charset=utf-8" }).end(page.html);
               ssrMetrics.successfulRenders++;
               console.log(`[Production SSR] Successfully rendered ${url} (${Date.now() - startTime}ms)`);

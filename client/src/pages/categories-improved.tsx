@@ -197,20 +197,14 @@ export default function CategoriesImproved() {
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="min-h-[40px]"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (category.slug) {
-                                    setLocation(`/categories/${category.slug}`);
-                                  } else {
-                                    setLocation(`/search?category=${category.id}`);
-                                  }
-                                }}
-                              >
-                                Browse All
+                              {/* real links (not click handlers) so search engines can follow them */}
+                              <Button asChild variant="outline" size="sm" className="min-h-[40px]">
+                                <Link
+                                  href={category.slug ? `/categories/${category.slug}` : `/search?category=${category.id}`}
+                                  onClick={(e: any) => e.stopPropagation()}
+                                >
+                                  Browse All
+                                </Link>
                               </Button>
                               {expandedCategories.has(category.id) ? 
                                 <ChevronUp className="h-5 w-5 text-[#5B6475]" /> :
@@ -233,16 +227,10 @@ export default function CategoriesImproved() {
                               <h3 className="yp-label mb-3">{tj("Subcategories ({0})", category.subcategories.length)}</h3>
                               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
                                 {category.subcategories.map((subcategory) => (
-                                  <div 
+                                  <Link
                                     key={subcategory.id}
-                                    className="yp-card yp-card-link cursor-pointer rounded-[14px] p-4"
-                                    onClick={() => {
-                                      if (subcategory.slug) {
-                                        setLocation(`/categories/${subcategory.slug}`);
-                                      } else {
-                                        setLocation(`/search?category=${subcategory.id}`);
-                                      }
-                                    }}
+                                    href={subcategory.slug ? `/categories/${subcategory.slug}` : `/search?category=${subcategory.id}`}
+                                    className="yp-card yp-card-link block cursor-pointer rounded-[14px] p-4 no-underline"
                                   >
                                     <div className="mb-1 flex items-center justify-between gap-2">
                                       <h4 className="text-sm font-semibold text-[#0A0A0A]">
@@ -261,7 +249,7 @@ export default function CategoriesImproved() {
                                         {subcategory.description.substring(0, 80)}...
                                       </p>
                                     )}
-                                  </div>
+                                  </Link>
                                 ))}
                               </div>
                             </div>
@@ -295,16 +283,10 @@ export default function CategoriesImproved() {
                 <h3 className="yp-label mb-2">Top Categories</h3>
                 <div className="space-y-1">
                   {categoryHierarchy.slice(0, 6).map((category) => (
-                    <div 
+                    <Link
                       key={category.id}
-                      className="flex min-h-[44px] cursor-pointer items-center justify-between gap-2 rounded-xl px-2 hover:bg-[#F1F2F6]"
-                      onClick={() => {
-                        if (category.slug) {
-                          setLocation(`/categories/${category.slug}`);
-                        } else {
-                          setLocation(`/search?category=${category.id}`);
-                        }
-                      }}
+                      href={category.slug ? `/categories/${category.slug}` : `/search?category=${category.id}`}
+                      className="flex min-h-[44px] cursor-pointer items-center justify-between gap-2 rounded-xl px-2 no-underline hover:bg-[#F1F2F6]"
                     >
                       <div className="flex min-w-0 items-center gap-2.5">
                         {(() => {
@@ -320,7 +302,7 @@ export default function CategoriesImproved() {
                       <span className="text-[13px] text-[#5B6475]">
                         {category.businessCount || 0}
                       </span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
