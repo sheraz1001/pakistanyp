@@ -103,8 +103,8 @@ app.get('/', (req, res, next) => {
 // their canonical redirects keep the language prefix
 app.use(languageRouting);
 app.use(legacyGone);
+app.use(localityDuplicateRedirect); // before seoGuards: one redirect for un-normalised locality URLs
 app.use(seoGuards);
-app.use(localityDuplicateRedirect);
 
 // Default X-Robots-Tag and HTML caching for page requests
 // This middleware MUST run before all other middleware to ensure search engines can crawl

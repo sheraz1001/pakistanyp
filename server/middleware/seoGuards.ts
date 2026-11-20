@@ -165,9 +165,12 @@ async function knownLocalities(): Promise<Set<string> | null> {
  */
 export async function localityDuplicateRedirect(req: Request, res: Response, next: NextFunction) {
   if (req.method !== "GET" && req.method !== "HEAD") return next();
-  const seg = req.path.split("/").filter(Boolean);
-  const short = seg.length === 2 && PROVINCES.has(seg[0]) && !isAssetPath(req.path);
-  const dup = req.path.match(/^\/localities\/([a-z-]+)\/(.+)-(\d{1,2})$/);
+  // normalised here (case, double and trailing slashes) so that /Dubai/Al-Barsha/ reaches its page in one redirect
+  let path = req.path.replace(/\/{2,}/g, "/").toLowerCase();
+  if (path.length > 1) path = path.replace(/\/+$/, "");
+  const seg = path.split("/").filter(Boolean);
+  const short = seg.length === 2 && PROVINCES.has(seg[0]) && !isAssetPath(path);
+  const dup = path.match(/^\/localities\/([a-z-]+)\/(.+)-(\d{1,2})$/);
   if (!short && !dup) return next();
   const known = await knownLocalities();
   const qs = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
